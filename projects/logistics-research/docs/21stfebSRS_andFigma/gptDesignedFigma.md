@@ -4,11 +4,15 @@ Now we design this properly — structured, clean, zero confusion.
 
 You chose:
 
-* Structured hierarchy (Transporter → Trucker → Driver)
-* Multiple shipments per trucker
-* Mobile app (role-based views)
-* Pure stack navigation
-* Web-only broker link
+Structured hierarchy (Transporter → Trucker → Driver)
+
+Multiple shipments per trucker
+
+Mobile app (role-based views)
+
+Pure stack navigation
+
+Web-only broker link
 
 Good. Now let’s design Figma wireframe structure aligned 100% with your locked SRS + real-world flow.
 
