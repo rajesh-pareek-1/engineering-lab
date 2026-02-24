@@ -1,0 +1,128 @@
+%-------------------------
+% Frontend-Focused Resume - LaTeX (Premium Styling)
+%-------------------------
+\documentclass[a4paper,10pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=0.6in]{geometry}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{multicol}
+\usepackage{lmodern}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{fontawesome5}
+\usepackage{xcolor}
+
+% ---------- Header / Footer ----------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% ---------- Sections ----------
+\titleformat{\section}{\large\bfseries\color{black}}{}{0em}{}[\vspace{-2pt}\color{gray}\titlerule]
+\setlist[itemize]{noitemsep, topsep=2pt, leftmargin=*}
+
+% ---------- Custom Commands ----------
+\newcommand{\resumeItem}[1]{\item #1}
+\newcommand{\resumeSubheading}[4]{
+  \vspace{1pt}\item
+    \begin{tabular*}{\textwidth}{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{2pt}
+}
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}}
+
+\begin{document}
+
+%----------HEADING----------
+\begin{center}
+    {\Huge \textbf{Rajesh Pareek}} \\[2pt]
+    \small
+    \faEnvelope\ \href{mailto:rajeshpareekdevo@gmail.com}{rajeshpareekdevo@gmail.com} \quad
+    \faLinkedin\ \href{https://linkedin.com/in/rajeshpareek}{linkedin.com/in/rajeshpareek} \quad
+    \faGithub\ \href{https://github.com/rajesh-pareek}{github.com/rajesh-pareek} \quad
+    \faPhone\ \href{tel:+917665386328}{+91 76653 86328}
+\end{center}
+
+\vspace{1mm}
+
+%-----------SUMMARY-----------
+\section*{Professional Summary}
+\small{
+Frontend-focused engineer with 2+ years of experience building production-grade \textbf{React 18 \& TypeScript} web applications and \textbf{cross-platform React Native} mobile apps. Contributed to multi-tenant SaaS platforms, reusable component libraries, and high-performance dashboards. Skilled in \textbf{state management, API integration, responsive design, lazy-loading, testing, and CI/CD pipelines}. Minor backend experience in \textbf{.NET Core and REST APIs} to support frontend features. Collaborates with engineers, QA, and designers to deliver scalable, maintainable, and high-quality user interfaces.
+}
+
+\vspace{2mm}
+
+%-----------EXPERIENCE-----------
+\section*{Experience}
+\resumeSubHeadingListStart
+
+\resumeSubheading
+{Frontend Engineer --- Feedlot Manager Platform}{Remote}
+{React 18, TypeScript, Redux Toolkit, RTK Query, AG Grid, Vite, Azure DevOps}{2024 -- Present}
+\resumeItemListStart
+\resumeItem{Contributed to a multi-app SPA, collaborating with a team of 5 engineers and QA to deliver domain-isolated modules and a shared component library.}
+\resumeItem{Implemented 70+ RTK Query slices for type-safe API integration, reducing manual API work by 80\%.}
+\resumeItem{Built reusable hooks and components (\texttt{useDecimalInput}, \texttt{useLocalization}, AG Grid wrappers) used across dashboards and forms.}
+\resumeItem{Optimized rendering using React memoization, lazy-loading, and virtualization for large data tables.}
+\resumeItem{Implemented responsive, accessible UI with i18n support (English/Spanish).}
+\resumeItem{Participated in code reviews and mentoring juniors, establishing best practices for state management and API caching.}
+\resumeItemListEnd
+
+\resumeSubheading
+{Frontend Engineer --- Roll On Dispatch Web Platform}{Remote}
+{React 18, TypeScript, Redux Toolkit, RTK Query, Google Maps API}{2024 -- Present}
+\resumeItemListStart
+\resumeItem{Developed core features for a logistics dispatch app including shipment builder, load board, and driver management.}
+\resumeItem{Integrated Google Maps real-time route visualization and PDF/Excel/CSV export functionality.}
+\resumeItem{Implemented Multi-Carrier Shipping module with Redux Toolkit \texttt{createAsyncThunk}, API integration, and paginated views.}
+\resumeItem{Contributed to CI/CD pipeline with automated linting, unit testing (Vitest, React Testing Library), and staging/production deployments.}
+\resumeItemListEnd
+
+\resumeSubheading
+{Mobile Engineer --- Roll On Dispatch Driver App}{Remote}
+{React Native 0.74/0.75, TypeScript, React Navigation, PostHog, Firebase, APNS}{2024 -- Present}
+\resumeItemListStart
+\resumeItem{Built cross-platform driver app screens with real-time GPS tracking, push notifications, and offline sync.}
+\resumeItem{Integrated PostHog session replay and analytics hooks to track interactions and performance.}
+\resumeItem{Implemented native device features: document scanning, image compression, secure token storage, geolocation-aware timezone detection.}
+\resumeItem{Collaborated with mobile and backend engineers to deliver context-driven state management and clean architecture.}
+\resumeItemListEnd
+
+\resumeSubheading
+{Mobile Engineer --- Feedlot Manager Mobile App}{Remote}
+{React Native, Redux Toolkit, React Native Paper, TypeScript}{2024 -- Present}
+\resumeItemListStart
+\resumeItem{Developed iPad-optimized mobile app with top-tab navigation, form entry UI, and reusable components.}
+\resumeItemListEnd
+
+\resumeSubHeadingListEnd
+
+%-----------SKILLS-----------
+\section*{Technical Skills}
+\begin{multicols}{2}
+\begin{itemize}[leftmargin=0.15in]
+    \resumeItem{\textbf{Frontend:} React 18, React Native, TypeScript 5.x, Vite, Redux Toolkit, RTK Query, AG Grid, Chart.js, FullCalendar, react-beautiful-dnd, React Router v6, i18next, Storybook, React Testing Library}
+    \resumeItem{\textbf{Mobile:} React Navigation (Stack/Drawer/Tabs), PostHog, Firebase Cloud Messaging, APNS, Keychain, Geolocation, Document Scanner, Image Compression, Reanimated}
+    \resumeItem{\textbf{Testing \& Quality:} Vitest, Jest, React Testing Library, ESLint, Prettier, Husky, lint-staged, CI lint-ratcheting, Cypress (E2E)}
+    \resumeItem{\textbf{DevOps \& Tooling:} Azure DevOps Pipelines, Azure Static Web Apps, pnpm, Swagger codegen, Auth0, Git, CI/CD pipelines}
+    \resumeItem{\textbf{Backend (supporting):} .NET 8, C\#, Entity Framework Core, JWT/Auth0, REST APIs, Azure SQL}
+\end{itemize}
+\end{multicols}
+
+%-----------EDUCATION-----------
+\section*{Education}
+\resumeSubHeadingListStart
+\resumeSubheading{Bachelor of Technology}{2020 -- 2024}{Computer Science \& Engineering}{Rajasthan Technical University, Jaipur}
+\resumeSubHeadingListEnd
+
+\end{document}
