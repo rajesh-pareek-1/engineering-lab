@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>SC R&DT · Wireframe Demo</title>
+<style>
+/* ════════════════════════════════════════
+   WIREFRAME DESIGN TOKENS
+   All colors are neutral grayscale only.
+════════════════════════════════════════ */
+:root{
+  /* Remapped color vars — all original component CSS uses these, now grayscale */
+  --blue:#111;        --blue-l:#f2f2f2;   --blue-b:#c0c0c0;
+  --orange:#444;      --orange-l:#f5f5f5; --orange-b:#d8d8d8;
+  --green:#111;       --green-l:#f2f2f2;  --green-b:#c0c0c0; --green-d:#e8e8e8;
+  --purple:#333;      --purple-l:#f5f5f5; --purple-b:#d8d8d8;
+  --gray:#777;        --gray-l:#f2f2f2;   --gray-b:#ddd;
+  --wa:#333;          --wa-bg:#efefef;
+  --red:#333;
+
+  /* Text scale */
+  --t1:#111; --t2:#333; --t3:#666; --t4:#999; --t5:#ccc;
+
+  /* Borders */
+  --brd:#ccc; --brd2:#ddd;
+
+  /* No shadows */
+  --sh:none; --sh-sm:none;
+
+  /* Wireframe-specific extras */
+  --wf-border:1.5px solid #333;
+  --wf-border-light:1px solid #ccc;
+  --wf-r:4px;   /* reduced radius = more wireframe-y */
+  --wf-r-sm:3px;
+}
+
+/* ── RESET ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{
+  background:#e0e0e0;
+  min-height:100vh;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  display:flex;align-items:flex-start;justify-content:center;
+  gap:24px;padding:32px 20px;
+  color:#111;
+  overflow-x:hidden;
+}
+
+/* ── OUTER LAYOUT ── */
+.layout{display:flex;align-items:flex-start;gap:24px}
+
+/* ════════════════════════════════════════
+   GUIDE PANEL
+════════════════════════════════════════ */
+.guide{width:216px;flex-shrink:0;position:sticky;top:32px;display:flex;flex-direction:column;gap:10px}
+.g-hd{display:flex;align-items:center;gap:8px;padding:0 2px 4px}
+.g-logo{
+  width:26px;height:26px;
+  background:#111;border-radius:var(--wf-r);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.g-logo svg{stroke:#fff;stroke-width:2;fill:none}
+.g-brand{font-size:12px;font-weight:700;color:#111;letter-spacing:0}
+.g-brand span{color:#111}
+
+.g-card{background:#fff;border:1px solid #bbb;border-radius:var(--wf-r);padding:12px}
+.g-sec-title{
+  font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;
+  color:#999;margin-bottom:8px;border-bottom:1px solid #eee;padding-bottom:5px;
+}
+.g-role-btn{
+  width:100%;padding:8px 10px;background:#fff;
+  border:1px solid #ccc;border-radius:var(--wf-r-sm);
+  display:flex;align-items:center;gap:8px;cursor:pointer;
+  margin-bottom:5px;text-align:left;
+  transition:background .08s,border-color .08s;
+}
+.g-role-btn:last-child{margin-bottom:0}
+.g-role-btn:hover{background:#f5f5f5;border-color:#888}
+.g-role-btn.active{background:#f0f0f0;border-color:#333}
+.g-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;background:#888}
+.g-role-btn.active .g-dot{background:#111}
+.g-role-name{font-size:12px;font-weight:600;color:#444;flex:1}
+.g-role-btn.active .g-role-name{color:#111;font-weight:700}
+.g-tag{
+  font-size:9px;font-weight:600;background:#f0f0f0;
+  color:#777;padding:1px 5px;border-radius:2px;border:1px solid #ddd;
+}
+
+.g-step{display:flex;align-items:flex-start;gap:7px;margin-bottom:7px}
+.g-step:last-child{margin-bottom:0}
+.g-step-n{
+  width:16px;height:16px;border-radius:50%;
+  background:#333;color:#fff;font-size:8px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:1px;
+}
+.g-step-t{font-size:11px;color:#666;line-height:1.45}
+.g-step-t strong{color:#111}
+
+.g-screen-name{
+  font-size:11px;font-weight:600;color:#666;
+  padding:6px 9px;background:#f5f5f5;border-radius:var(--wf-r-sm);
+  border:1px solid #ddd;display:flex;align-items:center;gap:5px;
+}
+.g-screen-dot{width:5px;height:5px;border-radius:50%;background:#555;flex-shrink:0}
+
+/* ════════════════════════════════════════
+   PHONE FRAME — wireframe style
+════════════════════════════════════════ */
+.phone-wrap{flex-shrink:0}
+.phone{
+  width:375px;height:812px;
+  background:#fff;
+  border-radius:32px;
+  border:3px solid #222;
+  /* No decorative shadows — wireframe is flat */
+  overflow:hidden;
+  display:flex;flex-direction:column;
+  position:relative;
+}
+
+/* ── PHONE CHROME ── */
+.notch{
+  width:110px;height:28px;
+  background:#222;border-radius:0 0 18px 18px;
+  margin:0 auto;flex-shrink:0;z-index:20;
+}
+.sbar{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:4px 20px 3px;background:#fff;
+  border-bottom:1px solid #eee;flex-shrink:0;z-index:10;
+}
+.s-time{font-size:12px;font-weight:600;color:#111}
+.s-icons{display:flex;gap:5px;align-items:center}
+.s-icons svg{fill:#333}
+.hi{height:22px;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hi span{width:100px;height:4px;background:#333;border-radius:4px;opacity:.3}
+
+/* ── SCREEN STACK ── */
+.stk{flex:1;position:relative;overflow:hidden;overflow-x:hidden}
+.screen{
+  position:absolute;inset:0;
+  display:none;flex-direction:column;
+  overflow:hidden;background:#fff;
+}
+.screen.active{display:flex}
+
+/* ── SCROLLABLE BODY ── */
+.sb{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.sb::-webkit-scrollbar{display:none}
+.sb-pad{padding:16px;display:flex;flex-direction:column;gap:12px}
+
+/* ── APP HEADER ── */
+.ah{
+  background:#fff;padding:11px 16px;
+  display:flex;align-items:center;gap:10px;
+  border-bottom:1.5px solid #ddd;
+  flex-shrink:0;position:relative;z-index:5;
+}
+.ah-title{font-size:18px;font-weight:700;color:#111}
+.ah-title-lg{font-size:18px;font-weight:700;color:#111;flex:1}
+.ah-sub{font-size:11px;color:#999;margin-top:2px}
+.ah-meta{display:flex;flex-direction:column;gap:3px}
+
+.bk{
+  width:34px;height:34px;border-radius:var(--wf-r);
+  background:#f5f5f5;border:1px solid #ccc;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;flex-shrink:0;
+}
+.bk svg{stroke:#333;stroke-width:2;fill:none}
+.bk.dark{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.3)}
+.bk.dark svg{stroke:#fff}
+
+.role-pill{font-size:10px;font-weight:700;padding:2px 8px;border-radius:var(--wf-r-sm);border:1px solid #bbb;background:#f5f5f5;color:#555;letter-spacing:.2px}
+
+/* ── STICKY FOOTER ── */
+.sf{background:#fff;padding:12px 16px 18px;border-top:1.5px solid #ddd;flex-shrink:0}
+
+/* ════════════════════════════════════════
+   BUTTONS — wireframe flat style
+════════════════════════════════════════ */
+.btn{
+  width:100%;border:none;border-radius:var(--wf-r);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  gap:7px;font-family:inherit;font-weight:700;transition:opacity .08s;
+}
+.btn:active{opacity:.8}
+
+/* Primary — filled dark */
+.bp{height:50px;background:#111;color:#fff;font-size:15px;border:2px solid #111}
+.bp svg{stroke:#fff;stroke-width:2.2;fill:none}
+.bp.grn{background:#111;border-color:#111} /* same as primary in wireframe */
+
+/* Disabled */
+.bp:disabled,.bp.dis{background:#e8e8e8;color:#aaa;border-color:#ddd;cursor:not-allowed}
+.bp:disabled svg,.bp.dis svg{stroke:#aaa}
+
+/* Secondary — outlined */
+.bs{height:44px;background:#fff;color:#111;border:1.5px solid #555;font-size:13.5px}
+.bs svg{stroke:#333;stroke-width:2;fill:none}
+
+/* Ghost */
+.bg{height:44px;background:#f5f5f5;color:#333;font-size:13.5px;border:1px solid #bbb}
+
+/* Icon button (header +) */
+.ico-btn{width:36px;height:36px;border-radius:var(--wf-r);display:flex;align-items:center;justify-content:center;cursor:pointer;border:1.5px solid #333;flex-shrink:0}
+.ico-blue{background:#111}
+.ico-blue svg{stroke:#fff;stroke-width:2.5;fill:none}
+
+/* ════════════════════════════════════════
+   SECTION CARDS
+════════════════════════════════════════ */
+.sc{background:#fff;border-radius:var(--wf-r);border:1px solid #ccc;overflow:hidden}
+.sc-hd{
+  padding:10px 16px;border-bottom:1px solid #e8e8e8;
+  display:flex;align-items:center;gap:7px;
+  background:#f9f9f9;
+}
+.sc-hd svg{width:14px;height:14px;stroke:#777;stroke-width:1.5;fill:none;flex-shrink:0}
+.sc-title{font-size:14px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.3px}
+.sc-bd{padding:12px 16px;display:flex;flex-direction:column;gap:11px}
+
+.priv-badge{
+  margin-left:auto;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;
+  padding:1px 6px;border-radius:2px;border:1px solid #bbb;background:#f5f5f5;color:#777;
+}
+
+/* ════════════════════════════════════════
+   SHIPMENT CARDS (dashboard)
+════════════════════════════════════════ */
+.ship-card{
+  background:#fff;border-radius:var(--wf-r);
+  padding:12px 16px;border:1px solid #ccc;
+  cursor:pointer;
+}
+.ship-card:active{background:#fafafa}
+.c-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px}
+.c-top-r{display:flex;align-items:center;gap:5px;flex-shrink:0}
+.c-num{font-size:14px;font-weight:700;color:#111;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.c-divider{height:1px;background:#eee;margin:5px 0}
+.c-rows{display:flex;flex-direction:column;gap:4px}
+.c-row{display:flex;align-items:center;gap:6px}
+.c-row-ico{width:13px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.c-row-ico svg{width:12px;height:12px;stroke:#999;stroke-width:1.4;fill:none}
+.c-label{font-size:13px;color:#999;font-weight:500;min-width:72px}
+.c-value{font-size:13px;color:#333;font-weight:500}
+.c-value.muted{color:#bbb;font-style:italic}
+.c-ts{display:flex;align-items:center;gap:4px;margin-top:6px}
+.c-ts svg{stroke:#bbb;width:10px;height:10px;fill:none;flex-shrink:0}
+.c-ts-text{font-size:10px;color:#bbb}
+
+/* WhatsApp button — wireframe: gray */
+.wa-cbtn{width:26px;height:26px;border-radius:var(--wf-r-sm);background:#efefef;border:1px solid #ccc;display:flex;align-items:center;justify-content:center;text-decoration:none;flex-shrink:0}
+.wa-cbtn svg{fill:#555}
+
+/* ════════════════════════════════════════
+   STATUS BADGES — wireframe progression
+   No color. Progression: dashed→light solid→dark solid→inverted
+════════════════════════════════════════ */
+.badge{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:2px 7px;border-radius:var(--wf-r-sm);
+  font-size:12px;font-weight:700;white-space:nowrap;
+  letter-spacing:.3px;text-transform:uppercase;flex-shrink:0;
+}
+.badge::before{content:'';width:4px;height:4px;border-radius:50%;flex-shrink:0}
+
+/* Created — dashed border, white bg, faint text */
+.b-created{background:#fff;border:1px dashed #aaa;color:#666}
+.b-created::before{background:#aaa}
+
+/* Assigned — solid light border, off-white bg */
+.b-assigned{background:#f5f5f5;border:1px solid #888;color:#333}
+.b-assigned::before{background:#888}
+
+/* POD Uploaded — solid medium border, light gray bg */
+.b-pod{background:#eee;border:1px solid #555;color:#111;font-weight:800}
+.b-pod::before{background:#555}
+
+/* Shared — inverted: dark bg white text = "complete / final" */
+.b-shared{background:#111;border:1px solid #111;color:#fff}
+.b-shared::before{background:#aaa}
+
+/* ════════════════════════════════════════
+   INFO ROWS (detail screen)
+════════════════════════════════════════ */
+.ir{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ir+.ir{padding-top:9px;border-top:1px solid #eee}
+.ir-lbl{font-size:13px;color:#888;font-weight:500;display:flex;align-items:center;gap:5px}
+.ir-lbl svg{width:12px;height:12px;stroke:#ccc;stroke-width:1.5;fill:none}
+.ir-val{font-size:13px;font-weight:600;color:#111;text-align:right}
+
+/* ════════════════════════════════════════
+   FORMS
+════════════════════════════════════════ */
+.fg{display:flex;flex-direction:column;gap:6px}
+.fl{font-size:12px;font-weight:700;color:#333}
+.fi{
+  width:100%;max-width:100%;height:48px;background:#fafafa;
+  border:1.5px solid #ccc;border-radius:var(--wf-r);
+  padding:0 12px;font-size:14px;color:#111;
+  font-family:inherit;outline:none;
+}
+.fi:focus{border-color:#333;background:#fff}
+.fsel{
+  width:100%;max-width:100%;height:48px;background:#fafafa;
+  border:1.5px solid #ccc;border-radius:var(--wf-r);
+  padding:0 12px;font-size:14px;color:#111;
+  font-family:inherit;outline:none;
+  appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpolyline points='4,6 8,10 12,6' fill='none' stroke='%23888' stroke-width='2'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 11px center;
+}
+.fsel:focus{border-color:#333;background-color:#fff}
+
+/* ── POD PREVIEW ── */
+.pod-prev{
+  width:100%;height:120px;
+  background:#f7f7f7;border-radius:var(--wf-r);
+  border:1.5px dashed #bbb;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  cursor:default;
+}
+.pod-prev svg{width:28px;height:28px;stroke:#bbb;stroke-width:1.4;fill:none}
+.pod-fname{font-size:12px;font-weight:600;color:#444}
+.pod-meta{font-size:10.5px;color:#aaa}
+.pod-ts{display:flex;align-items:center;gap:4px;font-size:10.5px;color:#aaa}
+.pod-ts svg{stroke:#ccc;width:11px;height:11px;fill:none}
+
+/* ── BROKER CONTACT ── */
+.bc-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.bc-name{font-size:11px;color:#888;font-weight:500;margin-bottom:3px}
+.bc-phone{font-size:14px;font-weight:700;color:#111}
+.wa-btn{
+  width:40px;height:40px;border-radius:var(--wf-r);
+  background:#f0f0f0;border:1px solid #bbb;
+  display:flex;align-items:center;justify-content:center;
+  text-decoration:none;flex-shrink:0;cursor:pointer;
+}
+.wa-btn svg{width:20px;height:20px;fill:#555}
+.priv-note{
+  display:flex;align-items:flex-start;gap:5px;
+  padding-top:9px;border-top:1px solid #eee;
+  font-size:11px;color:#aaa;font-style:italic;line-height:1.5;
+}
+.priv-note svg{stroke:#ddd;stroke-width:1.5;fill:none;flex-shrink:0;margin-top:2px;width:12px;height:12px}
+
+.btn-add-bc{
+  width:100%;height:44px;background:#fafafa;color:#555;
+  border:1.5px dashed #bbb;border-radius:var(--wf-r);
+  font-size:13px;font-weight:700;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  font-family:inherit;
+}
+.btn-add-bc:hover{background:#f0f0f0;border-color:#888}
+.btn-add-bc svg{stroke:#777;stroke-width:2;fill:none}
+
+/* ════════════════════════════════════════
+   MODAL OVERLAY
+════════════════════════════════════════ */
+.mo{
+  display:none;position:absolute;inset:0;
+  background:rgba(0,0,0,.38);
+  z-index:60;align-items:flex-end;
+}
+.mo.open{display:flex}
+.ms{
+  background:#fff;border-radius:0;
+  border-top:2px solid #333;
+  padding:0 18px 24px;width:100%;
+  max-height:88%;overflow-y:auto;overflow-x:hidden;
+}
+.ms-hdl{display:flex;justify-content:center;padding:10px 0 7px}
+.ms-hdl span{width:32px;height:3px;background:#ccc;border-radius:2px}
+.ms-title{font-size:16px;font-weight:700;color:#111;margin-bottom:14px}
+.mf{margin-bottom:11px}
+.ml{font-size:11px;font-weight:700;color:#555;margin-bottom:5px;display:block;text-transform:uppercase;letter-spacing:.4px}
+.mi{
+  width:100%;max-width:100%;height:46px;background:#fafafa;
+  border:1.5px solid #ccc;border-radius:var(--wf-r);
+  padding:0 12px;font-size:14px;color:#111;
+  font-family:inherit;outline:none;
+}
+.mi:focus{border-color:#333;background:#fff}
+.mo-acts{display:flex;gap:9px;margin-top:16px}
+.mo-save{flex:1;height:48px;background:#111;color:#fff;border:none;border-radius:var(--wf-r);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+.mo-cancel{flex:1;height:48px;background:#f5f5f5;color:#333;border:1px solid #bbb;border-radius:var(--wf-r);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+
+/* Share modal */
+.share-url-box{
+  background:#f7f7f7;border:1px solid #ccc;border-radius:var(--wf-r);
+  padding:11px 12px;display:flex;align-items:center;gap:9px;margin-bottom:11px;
+}
+.share-url-txt{font-size:11.5px;color:#444;flex:1;word-break:break-all;font-family:monospace;line-height:1.5}
+.copy-btn{width:32px;height:32px;background:#111;border:none;border-radius:var(--wf-r-sm);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.copy-btn svg{stroke:#fff;stroke-width:2;fill:none}
+.expiry-note{background:#f7f7f7;border:1px solid #ddd;border-radius:var(--wf-r);padding:9px 12px;font-size:11.5px;color:#555;line-height:1.5}
+
+/* ════════════════════════════════════════
+   CAMERA SCREEN — keep dark (contextual)
+════════════════════════════════════════ */
+.cam-hd{padding:12px 14px;background:#1a1a1a;display:flex;align-items:center;gap:11px;border-bottom:1px solid rgba(255,255,255,.1);flex-shrink:0}
+.cam-title{font-size:16px;font-weight:700;color:#fff;flex:1}
+.cam-body{flex:1;background:#1a1a1a;display:flex;align-items:center;justify-content:center}
+.vf{width:270px;height:190px;position:relative}
+.vc{position:absolute;width:26px;height:26px;border-color:#fff;border-style:solid;border-width:0}
+.vc.tl{top:0;left:0;border-top-width:2.5px;border-left-width:2.5px}
+.vc.tr{top:0;right:0;border-top-width:2.5px;border-right-width:2.5px}
+.vc.bl{bottom:0;left:0;border-bottom-width:2.5px;border-left-width:2.5px}
+.vc.br{bottom:0;right:0;border-bottom-width:2.5px;border-right-width:2.5px}
+.vf-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px}
+.vf-inner svg{width:36px;height:36px;stroke:rgba(255,255,255,.45);stroke-width:1.5;fill:none}
+.vf-hint{color:rgba(255,255,255,.45);font-size:12.5px;font-weight:500;text-align:center}
+.cam-footer{padding:16px 18px 24px;background:#1a1a1a;display:flex;gap:11px;flex-shrink:0}
+.btn-retake{flex:1;height:48px;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:var(--wf-r);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+.btn-confirm{flex:1;height:48px;background:#fff;color:#111;border:none;border-radius:var(--wf-r);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+
+/* ════════════════════════════════════════
+   SUCCESS SCREEN
+════════════════════════════════════════ */
+.succ-body{flex:1;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center}
+.chk-ring{
+  width:80px;height:80px;border-radius:50%;
+  background:#f5f5f5;border:2px solid #333;
+  display:flex;align-items:center;justify-content:center;margin-bottom:20px;
+}
+.chk-ring svg{stroke:#111;stroke-width:2.5;fill:none}
+.succ-h1{font-size:20px;font-weight:700;color:#111;line-height:1.2;margin-bottom:8px}
+.succ-sub{font-size:13px;color:#666;line-height:1.6;margin-bottom:24px}
+.ship-chip{
+  background:#f7f7f7;border:1px solid #ccc;border-radius:var(--wf-r);
+  padding:12px 14px;display:flex;align-items:center;gap:10px;
+  margin-bottom:24px;width:100%;
+}
+.chip-ico{width:32px;height:32px;background:#eee;border:1px solid #ccc;border-radius:var(--wf-r-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.chip-ico svg{stroke:#555;stroke-width:1.8;fill:none}
+.chip-lbl{font-size:9.5px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.4px}
+.chip-num{font-size:14px;font-weight:700;color:#111;margin-top:2px}
+
+/* ════════════════════════════════════════
+   LOGIN SCREEN
+════════════════════════════════════════ */
+.login-body{flex:1;background:#fff;display:flex;flex-direction:column;align-items:center;padding:32px 20px 22px;overflow-y:auto}
+.l-logo{
+  width:50px;height:50px;background:#111;border-radius:var(--wf-r);
+  display:flex;align-items:center;justify-content:center;margin-bottom:14px;
+}
+.l-logo svg{stroke:#fff;stroke-width:2;fill:none}
+.l-h1{font-size:22px;font-weight:700;color:#111;text-align:center;margin-bottom:4px}
+.l-sub{font-size:12.5px;color:#888;text-align:center;margin-bottom:26px}
+.l-box{width:100%;display:flex;flex-direction:column;gap:11px}
+
+.otp-row{display:flex;gap:8px;justify-content:center;margin-top:5px}
+.otp-i{
+  width:54px;height:58px;text-align:center;font-size:22px;font-weight:700;
+  background:#fafafa;border:1.5px solid #ccc;border-radius:var(--wf-r);
+  color:#111;font-family:inherit;outline:none;
+}
+.otp-i:focus{border-color:#333;background:#fff}
+
+.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:5px}
+.r-btn{
+  padding:11px 7px;background:#fafafa;border:1.5px solid #ccc;border-radius:var(--wf-r);
+  display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;
+  transition:border-color .1s,background .1s;
+}
+.r-btn:hover{background:#f5f5f5;border-color:#888}
+.r-btn.active{border-color:#333;border-width:2px;background:#f5f5f5}
+.r-ico{width:32px;height:32px;border-radius:var(--wf-r-sm);background:#f0f0f0;border:1px solid #ddd;display:flex;align-items:center;justify-content:center}
+.r-ico svg{stroke-width:1.6;fill:none;stroke:#444}
+.r-lbl{font-size:11.5px;font-weight:700;color:#444}
+.r-btn.active .r-lbl{color:#111}
+
+/* ════════════════════════════════════════
+   BROKER VIEW — keep dark header (role distinction)
+════════════════════════════════════════ */
+.br-hd{background:#222;padding:18px 18px 20px;flex-shrink:0}
+.br-logo-txt{font-size:10px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px}
+.br-ship-num{font-size:18px;font-weight:700;color:#fff}
+.br-shipper{font-size:12.5px;color:rgba(255,255,255,.5);margin-top:3px}
+.br-badge{margin-top:9px}
+.dl-btn{
+  width:100%;height:48px;background:#fff;color:#111;
+  border:2px solid #fff;border-radius:var(--wf-r);
+  font-size:14px;font-weight:700;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  font-family:inherit;
+}
+.dl-btn:hover{background:#eee}
+.dl-btn svg{stroke:#111;stroke-width:2.2;fill:none}
+.br-disclaimer{font-size:11px;color:#aaa;text-align:center;line-height:1.6;padding:0 4px}
+
+/* ════════════════════════════════════════
+   DRIVER CARDS
+════════════════════════════════════════ */
+.d-card{background:#fff;border-radius:var(--wf-r);padding:12px 16px;border:1px solid #ccc;margin-bottom:12px}
+.d-card.done{border-color:#888;background:#f9f9f9}
+.d-c-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.d-c-num{font-size:14px;font-weight:700;color:#111}
+.d-c-route{font-size:11.5px;color:#999;margin-bottom:9px}
+.btn-upload{
+  width:100%;height:40px;background:#111;color:#fff;border:none;
+  border-radius:var(--wf-r);font-size:13px;font-weight:700;
+  cursor:pointer;font-family:inherit;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.btn-upload svg{stroke:#fff;stroke-width:2;fill:none}
+.done-row{display:flex;align-items:center;gap:6px;color:#333;font-size:12.5px;font-weight:700}
+.done-row svg{stroke:#555;stroke-width:2.5;fill:none}
+
+/* ════════════════════════════════════════
+   TOAST — wireframe: dark banner
+════════════════════════════════════════ */
+.toast{
+  position:absolute;bottom:64px;left:12px;right:12px;
+  background:#111;color:#fff;
+  border-radius:var(--wf-r);border:1px solid #333;
+  padding:10px 13px;font-size:13px;font-weight:600;
+  display:none;align-items:center;gap:8px;z-index:200;
+}
+.toast.show{display:flex}
+.toast.succ{background:#222;border-color:#555}
+.toast.err{background:#111;border-color:#888}
+.toast svg{stroke:#fff;stroke-width:2.5;fill:none;flex-shrink:0}
+
+/* ════════════════════════════════════════
+   TRUCKER CARDS
+════════════════════════════════════════ */
+.tk-card{background:#fff;border-radius:var(--wf-r);padding:12px 16px;border:1px solid #ccc;cursor:pointer}
+.tk-card:active{background:#f9f9f9}
+.tk-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
+.tk-num{font-size:14px;font-weight:700;color:#111}
+.tk-meta{font-size:11.5px;color:#aaa;margin-top:3px}
+
+/* ════════════════════════════════════════
+   RESPONSIVE
+════════════════════════════════════════ */
+@media(max-width:720px){
+  body{flex-direction:column;align-items:center;padding:16px 12px;gap:14px}
+  .guide{width:100%;max-width:390px;position:static}
+}
+@media(max-width:430px){
+  .phone{width:375px;height:812px;border-radius:20px}
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- ═══ DEMO GUIDE ═══ -->
+<aside class="guide">
+  <div class="g-hd">
+    <div class="g-logo"><svg width="13" height="13" viewBox="0 0 14 14"><rect x="1" y="3" width="12" height="9" rx="1.5"/><path d="M1 5.5h12"/><path d="M4 3V1.5M10 3V1.5"/></svg></div>
+    <span class="g-brand">SC <span>R&DT</span> — Wireframe</span>
+  </div>
+
+  <div class="g-card">
+    <div class="g-sec-title">Switch Role</div>
+    <button class="g-role-btn active" data-role="transporter" onclick="switchRole('transporter')">
+      <span class="g-dot"></span>
+      <span class="g-role-name">Transporter</span>
+      <span class="g-tag">Dashboard</span>
+    </button>
+    <button class="g-role-btn" data-role="trucker" onclick="switchRole('trucker')">
+      <span class="g-dot"></span>
+      <span class="g-role-name">Trucker</span>
+      <span class="g-tag">Shipments</span>
+    </button>
+    <button class="g-role-btn" data-role="driver" onclick="switchRole('driver')">
+      <span class="g-dot"></span>
+      <span class="g-role-name">Driver</span>
+      <span class="g-tag">Upload POD</span>
+    </button>
+    <button class="g-role-btn" data-role="broker" onclick="switchRole('broker')">
+      <span class="g-dot"></span>
+      <span class="g-role-name">Broker</span>
+      <span class="g-tag">Public View</span>
+    </button>
+  </div>
+
+  <div class="g-card" id="g-steps-card">
+    <div class="g-sec-title" id="g-steps-title">Transporter Flow</div>
+    <div id="g-steps"></div>
+  </div>
+
+  <div class="g-card">
+    <div class="g-sec-title">Current Screen</div>
+    <div class="g-screen-name">
+      <span class="g-screen-dot" id="g-screen-dot"></span>
+      <span id="g-screen-label">Login</span>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══ PHONE ═══ -->
+<div class="phone-wrap">
+<div class="phone" id="phone">
+  <div class="notch"></div>
+  <div class="sbar">
+    <span class="s-time" id="clock">10:41</span>
+    <div class="s-icons">
+      <svg width="15" height="11" viewBox="0 0 17 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="7" rx="1"/><rect x="9" y="2.5" width="3" height="9.5" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+      <svg width="22" height="11" viewBox="0 0 25 12"><rect x="0" y="1" width="21" height="10" rx="2.5" stroke="#333" stroke-width="1.2" fill="none"/><rect x="1.5" y="2.5" width="15" height="7" rx="1.5" fill="#333"/><path d="M22 4v4a2 2 0 000-4z" fill="#333"/></svg>
+    </div>
+  </div>
+
+  <!-- ── SCREEN STACK ── -->
+  <div class="stk" id="stk">
+
+    <!-- ──── LOGIN ──── -->
+    <div class="screen active" id="scr-login">
+      <div class="login-body">
+        <div class="l-logo"><svg width="20" height="20" viewBox="0 0 22 22"><rect x="2" y="5.5" width="18" height="13" rx="2.5"/><path d="M2 9.5h18"/><path d="M7 5.5V3.5M15 5.5V3.5"/></svg></div>
+        <h1 class="l-h1">POD Tracker</h1>
+        <p class="l-sub">Supply Chain · Research &amp; Design Thinking</p>
+
+        <div class="l-box" id="login-step1">
+          <div class="fg">
+            <label class="fl">Mobile Number</label>
+            <input class="fi" id="ph-inp" type="tel" placeholder="+91 98765 43210" value="+91 98765 43210"/>
+          </div>
+          <button class="btn bp" onclick="showOTP()">Continue →</button>
+        </div>
+
+        <div class="l-box" id="login-step2" style="display:none">
+          <div class="fg">
+            <label class="fl" style="text-align:center;margin-bottom:4px">Enter OTP sent to your number</label>
+            <div class="otp-row">
+              <input class="otp-i" maxlength="1" value="1" oninput="otpNext(this)" type="text"/>
+              <input class="otp-i" maxlength="1" value="2" oninput="otpNext(this)" type="text"/>
+              <input class="otp-i" maxlength="1" value="3" oninput="otpNext(this)" type="text"/>
+              <input class="otp-i" maxlength="1" value="4" oninput="otpNext(this)" type="text"/>
+            </div>
+          </div>
+          <div class="fg">
+            <label class="fl" style="text-align:center">Login As</label>
+            <div class="role-grid" id="role-grid">
+              <div class="r-btn active" data-role="transporter" onclick="pickRole(this,'transporter')">
+                <div class="r-ico"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="#333" stroke-width="1.6" stroke-linecap="round"><rect x="1" y="2.5" width="13" height="10" rx="1.5"/><path d="M1 6h13"/><path d="M4.5 2.5V1M10.5 2.5V1"/></svg></div>
+                <span class="r-lbl">Transporter</span>
+              </div>
+              <div class="r-btn" data-role="trucker" onclick="pickRole(this,'trucker')">
+                <div class="r-ico"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="#333" stroke-width="1.6" stroke-linecap="round"><rect x="1" y="7.5" width="9" height="5.5" rx="1.5"/><path d="M10 9.5h1.5l2.5-3V7.5H10"/><circle cx="3.5" cy="13" r="1.3"/><circle cx="10" cy="13" r="1.3"/></svg></div>
+                <span class="r-lbl">Trucker</span>
+              </div>
+              <div class="r-btn" data-role="driver" onclick="pickRole(this,'driver')">
+                <div class="r-ico"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="#333" stroke-width="1.6" stroke-linecap="round"><circle cx="7.5" cy="5" r="3"/><path d="M1.5 14c0-3.5 12-3.5 12 0"/></svg></div>
+                <span class="r-lbl">Driver</span>
+              </div>
+              <div class="r-btn" data-role="broker" onclick="pickRole(this,'broker')">
+                <div class="r-ico"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="#333" stroke-width="1.6" stroke-linecap="round"><rect x="2" y="1" width="11" height="13" rx="1.5"/><path d="M5 5h5M5 8h5M5 11h3"/></svg></div>
+                <span class="r-lbl">Broker</span>
+              </div>
+            </div>
+          </div>
+          <button class="btn bp" onclick="enterDemo()">Enter Demo →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ──── TRANSPORTER DASHBOARD ──── -->
+    <div class="screen" id="scr-t-dash">
+      <div class="ah" style="justify-content:space-between">
+        <span class="ah-title-lg">Shipments</span>
+        <button class="ico-btn ico-blue" onclick="goto('scr-t-create')">
+          <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><line x1="9" y1="3" x2="9" y2="15"/><line x1="3" y1="9" x2="15" y2="9"/></svg>
+        </button>
+      </div>
+      <div class="sb" id="t-list" style="padding:16px 16px 22px"></div>
+      <div class="hi"><span></span></div>
+    </div>
+
+    <!-- ──── CREATE SHIPMENT ──── -->
+    <div class="screen" id="scr-t-create">
+      <div class="ah">
+        <button class="bk" onclick="goBack()"><svg width="17" height="17" viewBox="0 0 18 18"><polyline points="11,4 6,9 11,14"/></svg></button>
+        <span class="ah-title">Create Shipment</span>
+      </div>
+      <div class="sb" style="padding:16px;display:flex;flex-direction:column;gap:13px">
+        <div class="fg">
+          <label class="fl">Shipment Number <span style="color:#555">*</span></label>
+          <input class="fi" id="new-id" type="text" placeholder="e.g. SHP-2025-00150"/>
+        </div>
+        <div class="fg">
+          <label class="fl">Shipper Name <span style="color:#aaa;font-weight:400">(optional)</span></label>
+          <input class="fi" id="new-shipper" type="text" placeholder="e.g. Infosys Ltd."/>
+        </div>
+        <div style="background:#f7f7f7;border:1px solid #ddd;border-left:3px solid #555;border-radius:var(--wf-r);padding:10px 12px;font-size:12px;color:#555;line-height:1.6">
+          ℹ After creating, assign a trucker from the Shipment Detail screen.
+        </div>
+      </div>
+      <div class="sf">
+        <button class="btn bp" onclick="createShipment()">
+          <svg width="17" height="17" viewBox="0 0 18 18"><rect x="2" y="4" width="14" height="11" rx="2"/><path d="M2 7.5h14"/><path d="M6.5 4V2M11.5 4V2"/></svg>
+          Create Shipment
+        </button>
+      </div>
+    </div>
+
+    <!-- ──── TRANSPORTER DETAIL ──── -->
+    <div class="screen" id="scr-t-detail">
+      <div class="ah" id="t-det-hd">
+        <button class="bk" onclick="goBack()"><svg width="17" height="17" viewBox="0 0 18 18"><polyline points="11,4 6,9 11,14"/></svg></button>
+        <div class="ah-meta">
+          <span class="ah-title" id="t-det-id">—</span>
+          <span id="t-det-badge"></span>
+        </div>
+      </div>
+      <div class="sb sb-pad" id="t-det-body"></div>
+      <div class="sf" id="t-det-sf"></div>
+    </div>
+
+    <!-- ──── TRUCKER DASHBOARD ──── -->
+    <div class="screen" id="scr-tk-dash">
+      <div class="ah" style="justify-content:space-between">
+        <span class="ah-title-lg">My Shipments</span>
+        <span class="role-pill">Trucker</span>
+      </div>
+      <div class="sb" id="tk-list" style="padding:16px 16px 22px"></div>
+      <div class="hi"><span></span></div>
+    </div>
+
+    <!-- ──── TRUCKER DETAIL ──── -->
+    <div class="screen" id="scr-tk-detail">
+      <div class="ah">
+        <button class="bk" onclick="goBack()"><svg width="17" height="17" viewBox="0 0 18 18"><polyline points="11,4 6,9 11,14"/></svg></button>
+        <div class="ah-meta">
+          <span class="ah-title" id="tk-det-id">—</span>
+          <span id="tk-det-badge"></span>
+        </div>
+      </div>
+      <div class="sb sb-pad" id="tk-det-body"></div>
+      <div class="sf" id="tk-det-sf"></div>
+    </div>
+
+    <!-- ──── DRIVER DASHBOARD ──── -->
+    <div class="screen" id="scr-d-dash">
+      <div class="ah" style="justify-content:space-between">
+        <span class="ah-title-lg">My Shipments</span>
+        <span class="role-pill">Driver</span>
+      </div>
+      <div class="sb" id="d-list" style="padding:16px 16px 22px"></div>
+      <div class="hi"><span></span></div>
+    </div>
+
+    <!-- ──── DRIVER CAMERA ──── -->
+    <div class="screen" id="scr-d-cam">
+      <div class="cam-hd">
+        <button class="bk dark" onclick="goBack()"><svg width="17" height="17" viewBox="0 0 18 18"><polyline points="11,4 6,9 11,14"/></svg></button>
+        <span class="cam-title">Capture POD</span>
+        <span id="cam-ship-lbl" style="font-size:11px;color:rgba(255,255,255,.4)"></span>
+      </div>
+      <div class="cam-body">
+        <div class="vf">
+          <div class="vc tl"></div><div class="vc tr"></div>
+          <div class="vc bl"></div><div class="vc br"></div>
+          <div class="vf-inner">
+            <svg viewBox="0 0 38 38"><rect x="3" y="7" width="32" height="24" rx="2.5"/><circle cx="19" cy="19" r="7"/><rect x="14" y="3" width="10" height="4" rx="1.5"/></svg>
+            <span class="vf-hint">Align delivery receipt in frame</span>
+          </div>
+        </div>
+      </div>
+      <div class="cam-footer">
+        <button class="btn-retake" onclick="goBack()">Retake</button>
+        <button class="btn-confirm" onclick="confirmUpload()">Confirm Upload</button>
+      </div>
+    </div>
+
+    <!-- ──── DRIVER SUCCESS ──── -->
+    <div class="screen" id="scr-d-succ">
+      <div class="succ-body">
+        <div class="chk-ring">
+          <svg width="38" height="38" viewBox="0 0 40 40"><polyline points="9,20 17,28 31,12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="succ-h1">POD Uploaded<br>Successfully</div>
+        <div class="succ-sub">Proof of delivery has been recorded.<br>Transporter has been notified.</div>
+        <div class="ship-chip">
+          <div class="chip-ico"><svg width="15" height="15" viewBox="0 0 16 16"><rect x="1" y="3" width="14" height="10" rx="2"/><path d="M1 6.5h14"/><path d="M5 3V1.5M11 3V1.5"/></svg></div>
+          <div><div class="chip-lbl">Shipment</div><div class="chip-num" id="d-succ-id">—</div></div>
+        </div>
+        <button class="btn bp" style="width:100%" onclick="gotoRoot()">
+          <svg width="17" height="17" viewBox="0 0 18 18"><polyline points="3,9 7,13 15,5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Back to Shipments
+        </button>
+      </div>
+      <div class="hi" style="background:#fff"><span></span></div>
+    </div>
+
+    <!-- ──── BROKER LIST ──── -->
+    <div class="screen" id="scr-broker-list">
+      <div class="ah" style="justify-content:space-between">
+        <span class="ah-title-lg">Shared Links</span>
+        <span class="role-pill">Broker</span>
+      </div>
+      <div class="sb" id="broker-list" style="padding:16px 16px 22px"></div>
+      <div class="hi"><span></span></div>
+    </div>
+
+    <!-- ──── BROKER VIEW ──── -->
+    <div class="screen" id="scr-broker">
+      <div class="br-hd">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+          <button class="bk dark" onclick="goBack()"><svg width="17" height="17" viewBox="0 0 18 18" fill="none" stroke="#fff" stroke-width="2"><polyline points="11,4 6,9 11,14"/></svg></button>
+          <div class="br-logo-txt" style="margin-bottom:0">SC R&DT · Secure Share Link</div>
+        </div>
+        <div class="br-ship-num" id="br-id">SHP-2025-00142</div>
+        <div class="br-shipper" id="br-shipper">Infosys Ltd.</div>
+        <div class="br-badge"><span class="badge b-shared" id="br-badge">Shared</span></div>
+      </div>
+      <div class="sb sb-pad" id="br-body"></div>
+      <div class="hi" style="background:#fff"><span></span></div>
+    </div>
+
+  </div><!-- /stk -->
+
+  <!-- ── GLOBAL MODALS ── -->
+
+  <!-- Share Link Modal -->
+  <div class="mo" id="mo-share">
+    <div class="ms">
+      <div class="ms-hdl"><span></span></div>
+      <div class="ms-title">Share Link Generated</div>
+      <div class="share-url-box">
+        <span class="share-url-txt" id="mo-share-url">https://pod.sctrack.in/s/xK9bP2m4</span>
+        <button class="copy-btn" onclick="copyLink()" title="Copy link"><svg width="14" height="14" viewBox="0 0 16 16"><rect x="5" y="3" width="9" height="11" rx="1.5"/><path d="M3 13V2a1 1 0 011-1h7"/></svg></button>
+      </div>
+      <div class="expiry-note">⏱ This link is valid for <strong>30 days</strong>. The broker can view and download the POD with no login required.</div>
+      <div class="mo-acts">
+        <button class="mo-cancel" onclick="closeMo('mo-share')">Close</button>
+        <button class="mo-save" onclick="doShare()">Done – Mark Shared</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Broker Contact Modal -->
+  <div class="mo" id="mo-broker">
+    <div class="ms">
+      <div class="ms-hdl"><span></span></div>
+      <div class="ms-title">Add Broker Contact</div>
+      <div class="mf">
+        <label class="ml">Broker Name <span style="color:#ccc;font-weight:400">(optional)</span></label>
+        <input class="mi" id="bc-name" type="text" placeholder="e.g. Ravi Sharma"/>
+      </div>
+      <div class="mf">
+        <label class="ml">Phone Number <span style="color:#555">*</span></label>
+        <input class="mi" id="bc-phone" type="tel" placeholder="+91 98765 43210"/>
+      </div>
+      <div class="mo-acts">
+        <button class="mo-cancel" onclick="closeMo('mo-broker')">Cancel</button>
+        <button class="mo-save" onclick="saveBrokerContact()">Save Contact</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">
+    <svg width="14" height="14" viewBox="0 0 16 16"><polyline points="2,8 6,12 14,4" stroke-linecap="round"/></svg>
+    <span id="toast-msg">Done</span>
+  </div>
+
+  <div class="hi" id="g-hi"><span></span></div>
+</div><!-- /phone -->
+</div><!-- /phone-wrap -->
+</div><!-- /layout -->
+
+<script>
+/* ═══════════════════════════════════════
+   STATE — identical to demo.html
+═══════════════════════════════════════ */
+const SHIPS_INIT = [
+  {id:'SHP-2025-00142',shipper:'Infosys Ltd.',status:'shared',trucker:'Arjun Transport Co.',driver:'Ramesh Kumar',vehicle:'MH 04 GH 7821',pod:true,broker:{name:'Ravi Sharma',phone:'919876543210'},updated:'2 hours ago',ts:'21 Feb 2025, 08:14 AM'},
+  {id:'SHP-2025-00139',shipper:'TCS Logistics',status:'pod_uploaded',trucker:'Bharat Logistics',driver:'Suresh Yadav',vehicle:'KA 09 AB 3312',pod:true,broker:null,updated:'5 hours ago',ts:'21 Feb 2025, 05:30 AM'},
+  {id:'SHP-2025-00137',shipper:'Wipro Freight',status:'assigned',trucker:'Sai Road Carriers',driver:'Vijay Patil',vehicle:'GJ 01 CX 5549',pod:false,broker:null,updated:'Yesterday',ts:'20 Feb 2025, 06:45 PM'},
+  {id:'SHP-2025-00135',shipper:'HCL Transport',status:'created',trucker:null,driver:null,vehicle:null,pod:false,broker:null,updated:'Yesterday',ts:'20 Feb 2025, 02:10 PM'},
+  {id:'SHP-2025-00130',shipper:'Reliance Freight',status:'shared',trucker:'Hanuman Freight',driver:'Dinesh Sharma',vehicle:'RJ 14 SA 9900',pod:true,broker:null,updated:'2 days ago',ts:'19 Feb 2025, 11:00 AM'},
+  {id:'SHP-2025-00128',shipper:'Adani Logistics',status:'pod_uploaded',trucker:'Shree Ganesh Trans.',driver:'Manoj Tiwari',vehicle:'UP 32 BT 4411',pod:true,broker:null,updated:'3 days ago',ts:'18 Feb 2025, 04:22 PM'},
+];
+const TRUCKERS = ['Arjun Transport Co.','Bharat Logistics','Sai Road Carriers','Hanuman Freight','Shree Ganesh Trans.','Krishna Cargo Pvt.'];
+const DRIVERS = [
+  {name:'Ramesh Kumar',vehicle:'MH 04 GH 7821'},
+  {name:'Suresh Yadav',vehicle:'KA 09 AB 3312'},
+  {name:'Vijay Patil',vehicle:'GJ 01 CX 5549'},
+  {name:'Dinesh Sharma',vehicle:'RJ 14 SA 9900'},
+  {name:'Manoj Tiwari',vehicle:'UP 32 BT 4411'},
+  {name:'Pradeep Singh',vehicle:'DL 01 MN 2233'},
+];
+
+const S = {
+  role: 'transporter',
+  ships: JSON.parse(JSON.stringify(SHIPS_INIT)),
+  current: null,
+  stack: [],
+  screen: 'scr-login',
+  camTarget: null,
+};
+
+/* ═══════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════ */
+let _anim = false;
+const DUR = 240;
+
+function showScreen(id, dir) {
+  if (_anim) return;
+  const from = document.querySelector('.screen.active');
+  const to   = document.getElementById(id);
+  if (!to || from === to) return;
+  _anim = true;
+
+  to.style.display = 'flex';
+  to.style.transform = dir === 'fwd' ? 'translateX(100%)' : 'translateX(-28%)';
+  to.style.transition = 'none';
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      to.style.transition = `transform ${DUR}ms cubic-bezier(.4,0,.2,1)`;
+      if (from) from.style.transition = `transform ${DUR}ms cubic-bezier(.4,0,.2,1)`;
+      to.style.transform = 'translateX(0)';
+      if (from) from.style.transform = dir === 'fwd' ? 'translateX(-28%)' : 'translateX(100%)';
+
+      setTimeout(() => {
+        if (from) { from.classList.remove('active'); from.style.cssText = ''; }
+        to.classList.add('active');
+        to.style.transition = '';
+        to.style.transform = '';
+        _anim = false;
+        const hi = document.getElementById('g-hi');
+        hi.style.background = id === 'scr-d-cam' ? '#1a1a1a' : '#fff';
+      }, DUR + 20);
+    });
+  });
+}
+
+function goto(id, data) {
+  if (data) Object.assign(S, data);
+  S.stack.push(S.screen);
+  S.screen = id;
+  if (RENDERERS[id]) RENDERERS[id]();
+  showScreen(id, 'fwd');
+  updateGuide();
+}
+
+function goBack() {
+  if (S.stack.length === 0) return;
+  const prev = S.stack.pop();
+  S.screen = prev;
+  if (RENDERERS[prev]) RENDERERS[prev]();
+  showScreen(prev, 'back');
+  updateGuide();
+}
+
+function gotoRoot() {
+  const roots = {transporter:'scr-t-dash', trucker:'scr-tk-dash', driver:'scr-d-dash', broker:'scr-broker-list'};
+  const id = roots[S.role];
+  S.stack = [];
+  S.screen = id;
+  if (RENDERERS[id]) RENDERERS[id]();
+  showScreen(id, 'back');
+  updateGuide();
+}
+
+/* ═══════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════ */
+const BADGE_CLASS = {created:'b-created',assigned:'b-assigned',pod_uploaded:'b-pod',shared:'b-shared'};
+const BADGE_LABEL = {created:'Created',assigned:'Assigned',pod_uploaded:'POD Uploaded',shared:'Shared'};
+
+function badge(status) {
+  return `<span class="badge ${BADGE_CLASS[status]||''}">${BADGE_LABEL[status]||status}</span>`;
+}
+
+/* WA icon — wireframe: dark fill */
+function waIcon(sz=16) {
+  return `<svg width="${sz}" height="${sz}" viewBox="0 0 24 24" style="fill:#333"><path d="M12 2C6.477 2 2 6.477 2 12c0 1.82.487 3.53 1.338 5.003L2 22l5.145-1.342A9.956 9.956 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm5 14.003c-.21.588-1.236 1.131-1.694 1.171-.458.04-.47.363-2.962-.617-2.492-.98-4.007-3.528-4.127-3.688-.12-.16-.977-1.298-.977-2.477 0-1.18.617-1.763.836-2.003.22-.24.478-.3.637-.3.16 0 .319 0 .458.008.147.007.345.017.53.502.2.513.674 1.648.734 1.768.06.12.1.26.02.42-.08.16-.12.26-.24.4-.12.14-.252.31-.36.417-.12.117-.245.244-.105.48.14.236.62 1.02 1.33 1.65.913.81 1.683 1.06 1.918 1.18.235.12.37.1.507-.06.136-.16.578-.677.732-.909.154-.232.307-.193.518-.116.21.077 1.333.629 1.562.744.23.116.383.174.44.272.057.1.057.577-.154 1.165z"/></svg>`;
+}
+
+function lockIcon() {
+  return `<svg viewBox="0 0 13 13" fill="none" stroke="#bbb" stroke-width="1.4"><rect x="2" y="5.5" width="9" height="7" rx="1.5"/><path d="M4 5.5V4a2.5 2.5 0 015 0v1.5"/></svg>`;
+}
+
+function getShip(id) { return S.ships.find(s => s.id === id); }
+
+function showToast(msg, type='succ') {
+  const t = document.getElementById('toast');
+  const m = document.getElementById('toast-msg');
+  t.className = 'toast show ' + type;
+  m.textContent = msg;
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.className = 'toast', 2600);
+}
+
+function openMo(id)  { document.getElementById(id).classList.add('open'); }
+function closeMo(id) { document.getElementById(id).classList.remove('open'); }
+
+/* ═══════════════════════════════════════
+   LOGIN
+═══════════════════════════════════════ */
+function showOTP() {
+  document.getElementById('login-step1').style.display = 'none';
+  const s2 = document.getElementById('login-step2');
+  s2.style.display = 'flex';
+  s2.style.flexDirection = 'column';
+  s2.style.gap = '11px';
+}
+
+function otpNext(el) {
+  if (el.value.length >= 1) { const n = el.nextElementSibling; if (n) n.focus(); }
+}
+
+function pickRole(el, role) {
+  document.querySelectorAll('#role-grid .r-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  S.role = role;
+}
+
+function enterDemo() { switchRole(S.role, true); }
+
+/* ═══════════════════════════════════════
+   ROLE SWITCHER
+═══════════════════════════════════════ */
+function switchRole(role, fromLogin) {
+  S.role = role;
+  S.stack = [];
+  document.querySelectorAll('.g-role-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.role === role);
+  });
+  const ROOTS = {transporter:'scr-t-dash', trucker:'scr-tk-dash', driver:'scr-d-dash', broker:'scr-broker-list'};
+  const id = ROOTS[role];
+  S.screen = id;
+  if (RENDERERS[id]) RENDERERS[id]();
+  showScreen(id, 'fwd');
+  updateGuide();
+}
+
+/* ═══════════════════════════════════════
+   RENDER FUNCTIONS
+═══════════════════════════════════════ */
+
+/* ── Transporter Dashboard ── */
+function renderTDash() {
+  const el = document.getElementById('t-list');
+  el.innerHTML = S.ships.map(sh => {
+    const waBtn = sh.broker
+      ? `<a class="wa-cbtn" href="whatsapp://send?phone=${sh.broker.phone}" title="WhatsApp ${sh.broker.name}">${waIcon(13)}</a>`
+      : '';
+    return `<div class="ship-card" onclick="openTDetail('${sh.id}')" style="margin-bottom:12px">
+      <div class="c-top">
+        <span class="c-num">${sh.id}</span>
+        <div class="c-top-r">${badge(sh.status)}${waBtn}</div>
+      </div>
+      <div class="c-divider"></div>
+      <div class="c-rows">
+        <div class="c-row"><div class="c-row-ico"><svg viewBox="0 0 15 15" fill="none" stroke="#bbb" stroke-width="1.4"><rect x="1" y="3" width="13" height="9" rx="1.5"/><path d="M1 6h13"/><path d="M5 3V1M10 3V1"/></svg></div><span class="c-label">Trucker</span><span class="c-value ${sh.trucker?'':'muted'}">${sh.trucker||'Not Assigned'}</span></div>
+        <div class="c-row"><div class="c-row-ico"><svg viewBox="0 0 15 15" fill="none" stroke="#bbb" stroke-width="1.4"><circle cx="7.5" cy="5" r="3"/><path d="M2 14c0-3.5 11-3.5 11 0"/></svg></div><span class="c-label">Driver</span><span class="c-value ${sh.driver?'':'muted'}">${sh.driver||'Not Assigned'}</span></div>
+        <div class="c-row"><div class="c-row-ico"><svg viewBox="0 0 15 15" fill="none" stroke="#bbb" stroke-width="1.4"><rect x="1" y="5" width="13" height="7" rx="1.5"/><path d="M4 5V4a3 3 0 016 0v1"/></svg></div><span class="c-label">Vehicle No.</span><span class="c-value ${sh.vehicle?'':'muted'}">${sh.vehicle||'Not Assigned'}</span></div>
+      </div>
+      <div class="c-ts"><svg viewBox="0 0 13 13" fill="none" stroke="#ccc" stroke-linecap="round"><circle cx="6.5" cy="6.5" r="5.5"/><path d="M6.5 3.5v3l2 1.5"/></svg><span class="c-ts-text">${sh.updated} · ${sh.ts}</span></div>
+    </div>`;
+  }).join('');
+}
+
+function openTDetail(id) { S.current = id; goto('scr-t-detail'); }
+
+/* ── Transporter Detail ── */
+function renderTDetail() {
+  const sh = getShip(S.current);
+  if (!sh) return;
+
+  document.getElementById('t-det-id').textContent = sh.id;
+  document.getElementById('t-det-badge').innerHTML = badge(sh.status);
+
+  const tOpts = TRUCKERS.map(t => `<option value="${t}" ${sh.trucker===t?'selected':''}>${t}</option>`).join('');
+
+  const driverRows = sh.driver ? `
+    <div class="ir"><span class="ir-lbl">Driver Name</span><span class="ir-val">${sh.driver}</span></div>
+    <div class="ir"><span class="ir-lbl">Vehicle No.</span><span class="ir-val">${sh.vehicle}</span></div>
+  ` : `<div style="font-size:12.5px;color:#aaa;font-style:italic">No driver assigned yet.</div>`;
+
+  const podSection = sh.pod ? `
+    <div class="pod-prev">
+      <svg viewBox="0 0 36 36" fill="none" stroke="#bbb" stroke-width="1.6"><rect x="6" y="3" width="18" height="24" rx="2.5"/><path d="M20 3v7h10"/><polyline points="20,3 30,10 30,27 6,27 6,3"/><line x1="10" y1="16" x2="26" y2="16" stroke-width="1.2"/><line x1="10" y1="20" x2="22" y2="20" stroke-width="1.2"/></svg>
+      <span class="pod-fname">pod_delivery_receipt.jpg</span>
+      <span class="pod-meta">1.2 MB · JPEG</span>
+    </div>
+    <div class="pod-ts"><svg viewBox="0 0 13 13" fill="none" stroke="#ccc" stroke-linecap="round"><circle cx="6.5" cy="6.5" r="5.5"/><path d="M6.5 3.5v3l2 1.5"/></svg>Uploaded on ${sh.ts} by ${sh.driver||'Driver'}</div>
+  ` : `<div style="font-size:12.5px;color:#aaa;font-style:italic">No POD uploaded yet. Waiting for driver.</div>`;
+
+  const bcSection = sh.broker ? `
+    <div class="bc-row">
+      <div>
+        <div class="bc-name">${sh.broker.name} (Broker)</div>
+        <div class="bc-phone">+${sh.broker.phone}</div>
+      </div>
+      <a class="wa-btn" href="whatsapp://send?phone=${sh.broker.phone}" title="WhatsApp">${waIcon(20)}</a>
+    </div>
+    <div class="priv-note">${lockIcon()}Visible only to you. Not shared with trucker or broker link.</div>
+  ` : `<button class="btn-add-bc" onclick="openMo('mo-broker')">
+    <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#777" stroke-width="2"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3 12-3 12 0"/><line x1="12" y1="7" x2="12" y2="13"/><line x1="9" y1="10" x2="15" y2="10"/></svg>
+    Add Broker Contact
+  </button>`;
+
+  document.getElementById('t-det-body').innerHTML = `
+    <div class="sc"><div class="sc-hd"><svg viewBox="0 0 16 16" fill="none" stroke="#888" stroke-width="1.4"><rect x="1" y="3" width="14" height="10" rx="2"/><path d="M1 6.5h14"/><path d="M5 3V1.5M11 3V1.5"/></svg><span class="sc-title">Assignment</span></div>
+    <div class="sc-bd">
+      <div class="fg"><label class="fl">Assigned Trucker</label>
+        <select class="fsel" id="t-trucker-sel"><option value="">— Select Trucker —</option>${tOpts}</select>
+      </div>
+      <button class="btn bs" onclick="assignTrucker()">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#333" stroke-width="2"><circle cx="6" cy="5" r="3"/><path d="M1 14c0-3 10-3 10 0"/><line x1="12" y1="6" x2="12" y2="12"/><line x1="9" y1="9" x2="15" y2="9"/></svg>
+        Assign Trucker
+      </button>
+    </div></div>
+
+    <div class="sc"><div class="sc-hd"><svg viewBox="0 0 16 16" fill="none" stroke="#888" stroke-width="1.4"><circle cx="8" cy="5.5" r="3"/><path d="M2 15c0-3.5 12-3.5 12 0"/></svg><span class="sc-title">Driver Info</span></div>
+    <div class="sc-bd">${driverRows}</div></div>
+
+    <div class="sc"><div class="sc-hd"><svg viewBox="0 0 16 16" fill="none" stroke="#888" stroke-width="1.4"><rect x="2" y="1" width="12" height="14" rx="2"/><path d="M5 5h6M5 8h6M5 11h3"/></svg><span class="sc-title">Proof of Delivery</span></div>
+    <div class="sc-bd">${podSection}</div></div>
+
+    <div class="sc"><div class="sc-hd"><svg viewBox="0 0 16 16" fill="none" stroke="#888" stroke-width="1.4"><rect x="3" y="7" width="10" height="8" rx="2"/><path d="M5 7V5a3 3 0 016 0v2"/></svg><span class="sc-title">Broker Contact</span><span class="priv-badge">Private</span></div>
+    <div class="sc-bd">${bcSection}</div></div>
+  `;
+
+  const canShare = sh.status === 'pod_uploaded' || sh.status === 'shared';
+  document.getElementById('t-det-sf').innerHTML = canShare
+    ? `<button class="btn bp" onclick="openShareModal()">
+        <svg width="17" height="17" viewBox="0 0 18 18" fill="none" stroke="#fff" stroke-width="2"><circle cx="14" cy="4" r="2"/><circle cx="14" cy="14" r="2"/><circle cx="4" cy="9" r="2"/><line x1="6" y1="8" x2="12" y2="5"/><line x1="6" y1="10" x2="12" y2="13"/></svg>
+        ${sh.status==='shared'?'View Share Link':'Generate Share Link'}
+      </button>`
+    : `<button class="btn bp dis" disabled>
+        <svg width="17" height="17" viewBox="0 0 18 18" fill="none" stroke="#aaa" stroke-width="2"><circle cx="14" cy="4" r="2"/><circle cx="14" cy="14" r="2"/><circle cx="4" cy="9" r="2"/><line x1="6" y1="8" x2="12" y2="5"/><line x1="6" y1="10" x2="12" y2="13"/></svg>
+        Share Link (needs POD first)
+      </button>`;
+}
+
+/* ── Trucker Dashboard ── */
+function renderTkDash() {
+  const ships = S.ships.filter(s => s.trucker);
+  document.getElementById('tk-list').innerHTML = ships.length === 0
+    ? `<div style="padding:36px 16px;text-align:center;color:#aaa;font-size:13.5px">No shipments assigned yet.</div>`
+    : ships.map(sh => `
+      <div class="tk-card" onclick="openTkDetail('${sh.id}')" style="margin-bottom:12px">
+        <div class="tk-top"><span class="tk-num">${sh.id}</span>${badge(sh.status)}</div>
+        <div style="font-size:11.5px;color:#aaa;margin-bottom:8px">Trucker: ${sh.trucker}</div>
+        <div class="c-rows">
+          <div class="c-row"><span class="c-label" style="min-width:56px">Driver</span><span class="c-value ${sh.driver?'':'muted'}">${sh.driver||'Not Assigned'}</span></div>
+          <div class="c-row"><span class="c-label" style="min-width:56px">Vehicle</span><span class="c-value ${sh.vehicle?'':'muted'}">${sh.vehicle||'Not Assigned'}</span></div>
+        </div>
+        <div class="c-ts" style="margin-top:7px"><svg viewBox="0 0 13 13" fill="none" stroke="#ccc" stroke-linecap="round"><circle cx="6.5" cy="6.5" r="5.5"/><path d="M6.5 3.5v3l2 1.5"/></svg><span class="c-ts-text">${sh.updated}</span></div>
+      </div>`).join('');
+}
+
+function openTkDetail(id) { S.current = id; goto('scr-tk-detail'); }
+
+/* ── Trucker Detail ── */
+function renderTkDetail() {
+  const sh = getShip(S.current);
+  if (!sh) return;
+
+  document.getElementById('tk-det-id').textContent = sh.id;
+  document.getElementById('tk-det-badge').innerHTML = badge(sh.status);
+
+  const dOpts = DRIVERS.map(d => `<option value="${d.name}" ${sh.driver===d.name?'selected':''}>${d.name}</option>`).join('');
+
+  const podSection = sh.pod ? `
+    <div class="pod-prev">
+      <svg viewBox="0 0 36 36" fill="none" stroke="#bbb" stroke-width="1.6"><rect x="6" y="3" width="18" height="24" rx="2.5"/><path d="M20 3v7h10"/><polyline points="20,3 30,10 30,27 6,27 6,3"/></svg>
+      <span class="pod-fname">pod_delivery_receipt.jpg</span>
+      <span class="pod-meta">1.2 MB · JPEG</span>
+    </div>
+    <div class="pod-ts"><svg viewBox="0 0 13 13" fill="none" stroke="#ccc" stroke-linecap="round"><circle cx="6.5" cy="6.5" r="5.5"/><path d="M6.5 3.5v3l2 1.5"/></svg>Uploaded ${sh.ts}</div>
+  ` : `<div style="font-size:12.5px;color:#aaa;font-style:italic">Waiting for driver to upload POD.</div>`;
+
+  document.getElementById('tk-det-body').innerHTML = `
+    <div class="sc"><div class="sc-hd"><svg viewBox="0 0 16 16" fill="none" stroke="#888" stroke-width="1.4"><rect x="1" y="3" width="14" height="10" rx="2"/><path d="M1 6.5h14"/></svg><span class="sc-title">Shipment Info</span></div>
+    <div class="sc-bd">
+      <div class="ir"><span class="ir-lbl">Transporter</span><span class="ir-val">Arjun Group</span></div>
+      <div class="ir"><span class="ir-lbl">Shipper</span><span class="ir-val">${sh.shipper||'—'}</span></div>
+      <div class="ir"><span class="ir-lbl">Status</span><span class="ir-val">${BADGE_LABEL[sh.status]}</span></div>
+    </div></div>
+
+    <div class="sc"><div class="sc-hd"><svg viewBox="0 0 16 16" fill="none" stroke="#888" stroke-width="1.4"><circle cx="8" cy="5.5" r="3"/><path d="M2 15c0-3.5 12-3.5 12 0"/></svg><span class="sc-title">Assign Driver</span></div>
+    <div class="sc-bd">
+      <div class="fg"><label class="fl">Driver</label>
+        <select class="fsel" id="tk-driver-sel" onchange="tkDriverChange(this)"><option value="">— Select Driver —</option>${dOpts}</select>
+      </div>
+      <div class="fg"><label class="fl">Vehicle Number</label>
+        <input class="fi" id="tk-vehicle-inp" type="text" placeholder="e.g. KA 09 AB 3312" value="${sh.vehicle||''}"/>
+      </div>
+      <button class="btn bs" onclick="assignDriver()">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#333" stroke-width="2"><circle cx="6" cy="5" r="3"/><path d="M1 14c0-3 10-3 10 0"/><line x1="12" y1="6" x2="12" y2="12"/><line x1="9" y1="9" x2="15" y2="9"/></svg>
+        Assign Driver
+      </button>
+    </div></div>
+
+    <div class="sc"><div class="sc-hd"><svg viewBox="0 0 16 16" fill="none" stroke="#888" stroke-width="1.4"><rect x="2" y="1" width="12" height="14" rx="2"/><path d="M5 5h6M5 8h6M5 11h3"/></svg><span class="sc-title">Proof of Delivery</span></div>
+    <div class="sc-bd">${podSection}</div></div>
+  `;
+
+  document.getElementById('tk-det-sf').innerHTML = `<div style="font-size:11.5px;color:#aaa;text-align:center">Truckers cannot generate share links. Contact transporter.</div>`;
+}
+
+function tkDriverChange(sel) {
+  const d = DRIVERS.find(x => x.name === sel.value);
+  if (d) document.getElementById('tk-vehicle-inp').value = d.vehicle;
+}
+
+/* ── Driver Dashboard ── */
+function renderDDash() {
+  const el = document.getElementById('d-list');
+  const ships = S.ships.filter(s => s.driver);
+  el.innerHTML = ships.length === 0
+    ? `<div style="padding:36px 16px;text-align:center;color:#aaa;font-size:13.5px">No shipments assigned to you yet.</div>`
+    : ships.map(sh => `
+      <div class="d-card ${sh.pod?'done':''}">
+        <div class="d-c-top"><span class="d-c-num">${sh.id}</span>${badge(sh.status)}</div>
+        <div class="d-c-route">Driver: ${sh.driver} · ${sh.vehicle}</div>
+        ${sh.pod
+          ? `<div class="done-row"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#555" stroke-width="2.5"><polyline points="2,8 6,12 14,4" stroke-linecap="round"/></svg>POD Submitted · ${sh.ts}</div>`
+          : `<button class="btn-upload" onclick="openCamera('${sh.id}')">
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2"><rect x="2" y="4" width="12" height="10" rx="2"/><circle cx="8" cy="9" r="2.5"/><path d="M6 4V3a1 1 0 011-1h2a1 1 0 011 1v1"/></svg>
+              Upload POD
+            </button>`
+        }
+      </div>`).join('');
+}
+
+function openCamera(id) {
+  S.camTarget = id;
+  document.getElementById('cam-ship-lbl').textContent = id;
+  goto('scr-d-cam');
+}
+
+/* ── Broker List ── */
+function renderBrokerList() {
+  const ships = S.ships.filter(s => s.status === 'shared' || s.status === 'pod_uploaded');
+  document.getElementById('broker-list').innerHTML = ships.length === 0
+    ? `<div style="padding:36px 16px;text-align:center;color:#aaa;font-size:13px">No shared links available yet.<br><span style="font-size:11px">Ask the transporter to generate a share link.</span></div>`
+    : ships.map(sh => `
+      <div class="tk-card" onclick="openBrokerDetail('${sh.id}')" style="margin-bottom:12px">
+        <div class="tk-top"><span class="tk-num">${sh.id}</span>${badge(sh.status)}</div>
+        <div style="font-size:12px;color:#aaa;margin-bottom:8px">Shipper: ${sh.shipper||'—'}</div>
+        <div class="c-rows">
+          <div class="c-row"><span class="c-label" style="min-width:60px">Driver</span><span class="c-value ${sh.driver?'':'muted'}">${sh.driver||'Not Assigned'}</span></div>
+          <div class="c-row"><span class="c-label" style="min-width:60px">Vehicle</span><span class="c-value ${sh.vehicle?'':'muted'}">${sh.vehicle||'Not Assigned'}</span></div>
+        </div>
+        <div class="c-ts" style="margin-top:7px"><svg viewBox="0 0 13 13" fill="none" stroke="#ccc" stroke-linecap="round"><circle cx="6.5" cy="6.5" r="5.5"/><path d="M6.5 3.5v3l2 1.5"/></svg><span class="c-ts-text">${sh.updated}</span></div>
+      </div>`).join('');
+}
+
+function openBrokerDetail(id) { S.current = id; goto('scr-broker'); }
+
+/* ── Broker View ── */
+function renderBroker() {
+  const sh = (S.current ? getShip(S.current) : null) || S.ships.find(s => s.status === 'shared') || S.ships[0];
+  document.getElementById('br-id').textContent = sh.id;
+  document.getElementById('br-shipper').textContent = sh.shipper || '—';
+  document.getElementById('br-badge').innerHTML = badge(sh.status);
+
+  document.getElementById('br-body').innerHTML = `
+    <div class="sc"><div class="sc-hd"><svg viewBox="0 0 16 16" fill="none" stroke="#888" stroke-width="1.4"><rect x="1" y="3" width="14" height="10" rx="2"/><path d="M1 6.5h14"/><path d="M5 3V1.5M11 3V1.5"/></svg><span class="sc-title">Shipment Details</span></div>
+    <div class="sc-bd">
+      <div class="ir"><span class="ir-lbl">Shipment No.</span><span class="ir-val">${sh.id}</span></div>
+      <div class="ir"><span class="ir-lbl">Shipper</span><span class="ir-val">${sh.shipper||'—'}</span></div>
+      <div class="ir"><span class="ir-lbl">Driver</span><span class="ir-val">${sh.driver||'—'}</span></div>
+      <div class="ir"><span class="ir-lbl">Vehicle</span><span class="ir-val">${sh.vehicle||'—'}</span></div>
+      <div class="ir"><span class="ir-lbl">Status</span><span class="ir-val">${badge(sh.status)}</span></div>
+    </div></div>
+
+    <div class="sc"><div class="sc-hd"><svg viewBox="0 0 16 16" fill="none" stroke="#888" stroke-width="1.4"><rect x="2" y="1" width="12" height="14" rx="2"/><path d="M5 5h6M5 8h6M5 11h3"/></svg><span class="sc-title">Proof of Delivery</span></div>
+    <div class="sc-bd">
+      <div class="pod-prev">
+        <svg viewBox="0 0 36 36" fill="none" stroke="#bbb" stroke-width="1.6"><rect x="6" y="3" width="18" height="24" rx="2.5"/><path d="M20 3v7h10"/><polyline points="20,3 30,10 30,27 6,27 6,3"/><line x1="10" y1="16" x2="26" y2="16" stroke-width="1.2"/><line x1="10" y1="20" x2="22" y2="20" stroke-width="1.2"/></svg>
+        <span class="pod-fname">pod_delivery_receipt.jpg</span>
+        <span class="pod-meta">1.2 MB · JPEG</span>
+      </div>
+      <div class="pod-ts"><svg viewBox="0 0 13 13" fill="none" stroke="#ccc" stroke-linecap="round"><circle cx="6.5" cy="6.5" r="5.5"/><path d="M6.5 3.5v3l2 1.5"/></svg>Uploaded ${sh.ts||'—'}</div>
+      <button class="dl-btn" onclick="showToast('POD downloaded (demo)','succ')">
+        <svg width="17" height="17" viewBox="0 0 18 18" fill="none" stroke="#111" stroke-width="2.2"><path d="M9 3v9M5 9l4 4 4-4"/><path d="M3 15h12" stroke-linecap="round"/></svg>
+        Download POD
+      </button>
+    </div></div>
+
+    <div class="br-disclaimer">This link was generated by the transporter and expires in 30 days. Read-only access.</div>
+  `;
+}
+
+/* ═══════════════════════════════════════
+   RENDERER MAP
+═══════════════════════════════════════ */
+const RENDERERS = {
+  'scr-t-dash':       renderTDash,
+  'scr-t-detail':     renderTDetail,
+  'scr-tk-dash':      renderTkDash,
+  'scr-tk-detail':    renderTkDetail,
+  'scr-d-dash':       renderDDash,
+  'scr-broker-list':  renderBrokerList,
+  'scr-broker':       renderBroker,
+};
+
+/* ═══════════════════════════════════════
+   ACTION HANDLERS — identical logic
+═══════════════════════════════════════ */
+function createShipment() {
+  const id = document.getElementById('new-id').value.trim();
+  const sh = document.getElementById('new-shipper').value.trim();
+  if (!id) { showToast('Shipment number is required','err'); return; }
+  if (S.ships.find(s => s.id === id)) { showToast('Shipment number already exists','err'); return; }
+  S.ships.unshift({id, shipper:sh||'—', status:'created', trucker:null, driver:null, vehicle:null, pod:false, broker:null, updated:'Just now', ts:new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})});
+  document.getElementById('new-id').value = '';
+  document.getElementById('new-shipper').value = '';
+  showToast(`Shipment ${id} created`);
+  goBack();
+}
+
+function assignTrucker() {
+  const sel = document.getElementById('t-trucker-sel').value;
+  if (!sel) { showToast('Please select a trucker','err'); return; }
+  const sh = getShip(S.current);
+  sh.trucker = sel;
+  if (sh.status === 'created') sh.status = 'assigned';
+  sh.updated = 'Just now';
+  showToast(`Trucker assigned: ${sel}`);
+  renderTDetail();
+}
+
+function assignDriver() {
+  const name = document.getElementById('tk-driver-sel').value;
+  const veh  = document.getElementById('tk-vehicle-inp').value.trim();
+  if (!name) { showToast('Please select a driver','err'); return; }
+  if (!veh)  { showToast('Vehicle number is required','err'); return; }
+  const sh = getShip(S.current);
+  sh.driver = name; sh.vehicle = veh; sh.updated = 'Just now';
+  showToast(`Driver ${name} assigned`);
+  renderTkDetail();
+}
+
+function confirmUpload() {
+  if (!S.camTarget) return;
+  const sh = getShip(S.camTarget);
+  if (sh) {
+    sh.pod = true; sh.status = 'pod_uploaded'; sh.updated = 'Just now';
+    sh.ts = new Date().toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  }
+  document.getElementById('d-succ-id').textContent = S.camTarget;
+  S.camTarget = null; S.stack = []; S.screen = 'scr-d-succ';
+  showScreen('scr-d-succ','fwd');
+  updateGuide();
+}
+
+function openShareModal() {
+  const sh = getShip(S.current);
+  if (!sh) return;
+  const token = sh.shareToken || (sh.shareToken = Math.random().toString(36).slice(2,10));
+  document.getElementById('mo-share-url').textContent = `https://pod.sctrack.in/s/${token}`;
+  openMo('mo-share');
+}
+
+function doShare() {
+  const sh = getShip(S.current);
+  if (sh) { sh.status = 'shared'; sh.updated = 'Just now'; }
+  closeMo('mo-share');
+  showToast('Share link generated · Status → Shared');
+  renderTDetail(); renderTDash();
+}
+
+function copyLink() {
+  const url = document.getElementById('mo-share-url').textContent;
+  if (navigator.clipboard) navigator.clipboard.writeText(url).catch(()=>{});
+  showToast('Link copied to clipboard');
+}
+
+function saveBrokerContact() {
+  const phone = document.getElementById('bc-phone').value.trim();
+  const name  = document.getElementById('bc-name').value.trim();
+  if (!phone) { showToast('Phone number is required','err'); return; }
+  const sh = getShip(S.current);
+  sh.broker = { name: name || 'Broker', phone: phone.replace(/[^0-9]/g,'') };
+  closeMo('mo-broker');
+  document.getElementById('bc-name').value = '';
+  document.getElementById('bc-phone').value = '';
+  showToast('Broker contact saved');
+  renderTDetail();
+}
+
+/* ═══════════════════════════════════════
+   GUIDE UPDATER
+═══════════════════════════════════════ */
+const SCREEN_NAMES = {
+  'scr-login':'Login','scr-t-dash':'Shipments Dashboard','scr-t-create':'Create Shipment',
+  'scr-t-detail':'Shipment Detail','scr-tk-dash':'My Shipments','scr-tk-detail':'Shipment Detail',
+  'scr-d-dash':'My Shipments','scr-d-cam':'Capture POD','scr-d-succ':'Upload Success',
+  'scr-broker-list':'Shared Links','scr-broker':'Shipment Detail',
+};
+const GUIDE_STEPS = {
+  transporter:[
+    {n:'1',t:'<strong>Dashboard</strong> — tap any card to open detail'},
+    {n:'2',t:'<strong>Assign Trucker</strong> via the dropdown in Detail'},
+    {n:'3',t:'<strong>Tap +</strong> to create a new shipment'},
+    {n:'4',t:'<strong>Generate Share Link</strong> after POD is uploaded'},
+    {n:'5',t:'<strong>Add Broker Contact</strong> for WhatsApp shortcut'},
+  ],
+  trucker:[
+    {n:'1',t:'<strong>My Shipments</strong> — only assigned shipments shown'},
+    {n:'2',t:'<strong>Tap a card</strong> to assign a driver + vehicle'},
+    {n:'3',t:'<strong>POD preview</strong> shown once driver uploads'},
+  ],
+  driver:[
+    {n:'1',t:'<strong>My Shipments</strong> — cards with Upload POD button'},
+    {n:'2',t:'<strong>Tap Upload POD</strong> on a pending shipment'},
+    {n:'3',t:'<strong>Confirm Upload</strong> on the camera screen'},
+    {n:'4',t:'<strong>Success screen</strong> confirms status change'},
+  ],
+  broker:[
+    {n:'1',t:'<strong>Shared Links</strong> — shipments shared by transporter'},
+    {n:'2',t:'<strong>Tap a card</strong> to view shipment detail &amp; POD'},
+    {n:'3',t:'<strong>Download POD</strong> — read-only, no login needed'},
+  ],
+};
+
+function updateGuide() {
+  const steps = GUIDE_STEPS[S.role] || [];
+  document.getElementById('g-steps-title').textContent = S.role.charAt(0).toUpperCase()+S.role.slice(1)+' Flow';
+  document.getElementById('g-steps').innerHTML = steps.map(s =>
+    `<div class="g-step"><div class="g-step-n">${s.n}</div><div class="g-step-t">${s.t}</div></div>`
+  ).join('');
+  document.getElementById('g-screen-label').textContent = SCREEN_NAMES[S.screen] || S.screen;
+}
+
+/* ═══════════════════════════════════════
+   CLOCK + INIT
+═══════════════════════════════════════ */
+function updateClock() {
+  document.getElementById('clock').textContent = new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:false});
+}
+updateClock();
+setInterval(updateClock, 30000);
+updateGuide();
+</script>
+</body>
+</html>

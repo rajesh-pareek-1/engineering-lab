@@ -1,0 +1,53 @@
+{
+  "files": [
+    {
+      "filename": "architecture-hld.pdf",
+      "name": "Architecture — High-Level Design",
+      "type": "pdf",
+      "size": "151 KB",
+      "description": "System topology, component diagram, state machine, tech stack"
+    },
+    {
+      "filename": "architecture-hld.md",
+      "name": "Architecture HLD (Markdown)",
+      "type": "md",
+      "size": "12 KB",
+      "description": "Source markdown for HLD document"
+    },
+    {
+      "filename": "architecture-db.pdf",
+      "name": "Architecture — Database Schema",
+      "type": "pdf",
+      "size": "172 KB",
+      "description": "ER diagram, all table definitions, indexes, migration strategy"
+    },
+    {
+      "filename": "architecture-db.md",
+      "name": "Architecture DB Schema (Markdown)",
+      "type": "md",
+      "size": "16 KB",
+      "description": "Source markdown for DB schema document"
+    },
+    {
+      "filename": "architecture-api.pdf",
+      "name": "Architecture — API & ABAC Policies",
+      "type": "pdf",
+      "size": "176 KB",
+      "description": "Full endpoint table, auth flow, ABAC policy engine, request/response shapes"
+    },
+    {
+      "filename": "architecture-api.md",
+      "name": "Architecture API (Markdown)",
+      "type": "md",
+      "size": "14 KB",
+      "description": "Source markdown for API document"
+    },
+    {
+      "filename": "questionBank.md",
+      "name": "Architecture Decision Log",
+      "type": "md",
+      "size": "37 KB",
+      "description": "23-question decision bank with finalized answers"
+    }
+  ]
+}

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Driver – Upload Success</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #f0f2f5;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 16px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    /* ── Phone Frame ── */
+    .phone {
+      width: 390px;
+      min-height: 844px;
+      background: #ffffff;
+      border-radius: 44px;
+      border: 10px solid #1a1a2e;
+      box-shadow:
+        0 0 0 2px #2e2e4a,
+        0 30px 80px rgba(0,0,0,0.35),
+        inset 0 0 0 1px rgba(255,255,255,0.08);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Notch */
+    .notch {
+      width: 120px;
+      height: 30px;
+      background: #1a1a2e;
+      border-radius: 0 0 20px 20px;
+      margin: 0 auto;
+      flex-shrink: 0;
+    }
+
+    /* Status Bar */
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 24px 4px;
+      background: #ffffff;
+      flex-shrink: 0;
+    }
+    .status-bar .time { font-size: 13px; font-weight: 600; color: #111; }
+    .status-bar .icons { display: flex; gap: 6px; align-items: center; }
+    .status-bar .icons svg { fill: #111; }
+
+    /* ── Body – vertically centered ── */
+    .body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 32px 60px;
+      gap: 0;
+    }
+
+    /* Success Icon */
+    .icon-wrap {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: #f0fdf4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 32px;
+      box-shadow:
+        0 0 0 12px rgba(34,197,94,0.08),
+        0 0 0 24px rgba(34,197,94,0.04);
+    }
+    .icon-wrap svg {
+      stroke: #16a34a;
+      stroke-width: 2.8;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* Text */
+    .success-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #111827;
+      letter-spacing: -0.5px;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .success-sub {
+      font-size: 14.5px;
+      color: #6b7280;
+      font-weight: 400;
+      text-align: center;
+      line-height: 1.6;
+      margin-bottom: 48px;
+    }
+    .success-sub strong {
+      color: #374151;
+      font-weight: 600;
+    }
+
+    /* Button */
+    .btn-back {
+      width: 100%;
+      height: 54px;
+      background: #111827;
+      color: #ffffff;
+      border: none;
+      border-radius: 16px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      font-family: inherit;
+      letter-spacing: -0.2px;
+    }
+    .btn-back svg { stroke: #fff; stroke-width: 2.2; fill: none; }
+
+    /* Home Indicator */
+    .home-indicator {
+      height: 28px;
+      background: #ffffff;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .home-indicator span {
+      width: 120px; height: 4px;
+      background: #1a1a2e; border-radius: 4px; opacity: 0.2;
+    }
+  </style>
+</head>
+<body>
+
+<div class="phone">
+
+  <!-- Notch -->
+  <div class="notch"></div>
+
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span class="time">10:41</span>
+    <div class="icons">
+      <svg width="17" height="12" viewBox="0 0 17 12">
+        <rect x="0"  y="8"  width="3" height="4" rx="1"/>
+        <rect x="4.5" y="5" width="3" height="7" rx="1"/>
+        <rect x="9" y="2.5" width="3" height="9.5" rx="1"/>
+        <rect x="13.5" y="0" width="3" height="12" rx="1"/>
+      </svg>
+      <svg width="16" height="12" viewBox="0 0 16 12">
+        <path d="M8 9.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3z"/>
+        <path d="M3.5 6.5a6.5 6.5 0 019 0" fill="none" stroke="#111" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M1 3.5a10 10 0 0114 0" fill="none" stroke="#111" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <svg width="25" height="12" viewBox="0 0 25 12">
+        <rect x="0" y="1" width="21" height="10" rx="2.5" stroke="#111" stroke-width="1.2" fill="none"/>
+        <rect x="1.5" y="2.5" width="15" height="7" rx="1.5" fill="#111"/>
+        <path d="M22 4v4a2 2 0 000-4z"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="body">
+
+    <!-- Icon -->
+    <div class="icon-wrap">
+      <svg width="46" height="46" viewBox="0 0 46 46">
+        <polyline points="10,24 19,33 36,14"/>
+      </svg>
+    </div>
+
+    <!-- Title + Subtitle -->
+    <p class="success-title">POD Uploaded Successfully</p>
+    <p class="success-sub">
+      Your proof of delivery for<br/>
+      <strong>SHP-2025-00142</strong> has been<br/>
+      submitted to the transporter.
+    </p>
+
+    <!-- CTA -->
+    <button class="btn-back">
+      <svg width="17" height="17" viewBox="0 0 17 17">
+        <polyline points="10,3 5,8.5 10,14"/>
+        <line x1="5" y1="8.5" x2="15" y2="8.5"/>
+      </svg>
+      Back to Shipments
+    </button>
+
+  </div>
+
+  <!-- Home Indicator -->
+  <div class="home-indicator"><span></span></div>
+
+</div><!-- /phone -->
+
+</body>
+</html>

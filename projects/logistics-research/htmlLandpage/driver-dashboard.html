@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Driver – My Shipments</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #f0f2f5;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 16px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    /* ── Phone Frame ── */
+    .phone {
+      width: 390px;
+      min-height: 844px;
+      background: #f2f3f7;
+      border-radius: 44px;
+      border: 10px solid #1a1a2e;
+      box-shadow:
+        0 0 0 2px #2e2e4a,
+        0 30px 80px rgba(0,0,0,0.35),
+        inset 0 0 0 1px rgba(255,255,255,0.08);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Notch */
+    .notch {
+      width: 120px;
+      height: 30px;
+      background: #1a1a2e;
+      border-radius: 0 0 20px 20px;
+      margin: 0 auto;
+      flex-shrink: 0;
+    }
+
+    /* Status Bar */
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 24px 4px;
+      background: #ffffff;
+      flex-shrink: 0;
+    }
+    .status-bar .time { font-size: 13px; font-weight: 600; color: #111; }
+    .status-bar .icons { display: flex; gap: 6px; align-items: center; }
+    .status-bar .icons svg { fill: #111; }
+
+    /* ── App Header ── */
+    .app-header {
+      background: #ffffff;
+      padding: 18px 20px 16px;
+      border-bottom: 1px solid #ebebf0;
+      flex-shrink: 0;
+    }
+    .app-header .title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #111827;
+      letter-spacing: -0.5px;
+    }
+    .app-header .subtitle {
+      font-size: 13.5px;
+      color: #9ca3af;
+      font-weight: 400;
+      margin-top: 3px;
+    }
+
+    /* ── Scrollable Body ── */
+    .body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 14px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      scrollbar-width: none;
+    }
+    .body::-webkit-scrollbar { display: none; }
+
+    /* ── Card ── */
+    .card {
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 18px 18px 14px;
+      box-shadow:
+        0 1px 3px rgba(0,0,0,0.06),
+        0 6px 20px rgba(0,0,0,0.07);
+      border: 1px solid #f0f0f5;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* Card Top Row */
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .card-info { display: flex; flex-direction: column; gap: 5px; }
+
+    .shipment-num {
+      font-size: 17px;
+      font-weight: 800;
+      color: #111827;
+      letter-spacing: -0.3px;
+    }
+    .vehicle-num {
+      font-size: 13px;
+      color: #6b7280;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .vehicle-num svg {
+      width: 13px; height: 13px;
+      stroke: #9ca3af; stroke-width: 1.5; fill: none;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 5px 11px; border-radius: 20px;
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.2px;
+      white-space: nowrap;
+    }
+    .badge::before {
+      content: ''; width: 6px; height: 6px;
+      border-radius: 50%; flex-shrink: 0;
+    }
+    .badge-assigned { background: #fff7ed; color: #c2410c; }
+    .badge-assigned::before { background: #f97316; }
+    .badge-pod      { background: #f0fdf4; color: #15803d; }
+    .badge-pod::before      { background: #22c55e; }
+
+    /* ── Upload POD Button ── */
+    .btn-upload {
+      width: 100%;
+      height: 52px;
+      background: #111827;
+      color: #ffffff;
+      border: none;
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      font-family: inherit;
+      letter-spacing: -0.1px;
+    }
+    .btn-upload svg { stroke: #fff; stroke-width: 2.2; fill: none; }
+
+    /* ── POD Done Row ── */
+    .pod-done {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 12px;
+      padding: 11px 14px;
+    }
+    .pod-done svg { stroke: #16a34a; fill: none; stroke-width: 2.2; flex-shrink: 0; }
+    .pod-done span {
+      font-size: 13px;
+      font-weight: 600;
+      color: #15803d;
+    }
+
+    /* Home Indicator */
+    .home-indicator {
+      height: 24px;
+      background: #f2f3f7;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .home-indicator span {
+      width: 120px; height: 4px;
+      background: #1a1a2e; border-radius: 4px; opacity: 0.2;
+    }
+  </style>
+</head>
+<body>
+
+<div class="phone">
+
+  <!-- Notch -->
+  <div class="notch"></div>
+
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span class="time">10:41</span>
+    <div class="icons">
+      <svg width="17" height="12" viewBox="0 0 17 12">
+        <rect x="0"  y="8"  width="3" height="4" rx="1"/>
+        <rect x="4.5" y="5" width="3" height="7" rx="1"/>
+        <rect x="9" y="2.5" width="3" height="9.5" rx="1"/>
+        <rect x="13.5" y="0" width="3" height="12" rx="1"/>
+      </svg>
+      <svg width="16" height="12" viewBox="0 0 16 12">
+        <path d="M8 9.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3z"/>
+        <path d="M3.5 6.5a6.5 6.5 0 019 0" fill="none" stroke="#111" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M1 3.5a10 10 0 0114 0" fill="none" stroke="#111" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <svg width="25" height="12" viewBox="0 0 25 12">
+        <rect x="0" y="1" width="21" height="10" rx="2.5" stroke="#111" stroke-width="1.2" fill="none"/>
+        <rect x="1.5" y="2.5" width="15" height="7" rx="1.5" fill="#111"/>
+        <path d="M22 4v4a2 2 0 000-4z"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- App Header -->
+  <div class="app-header">
+    <div class="title">My Shipments</div>
+    <div class="subtitle">Vijay Patil · 5 assigned</div>
+  </div>
+
+  <!-- Body -->
+  <div class="body">
+
+    <!-- Card 1 · needs upload -->
+    <div class="card">
+      <div class="card-top">
+        <div class="card-info">
+          <span class="shipment-num">SHP-2025-00142</span>
+          <span class="vehicle-num">
+            <svg viewBox="0 0 13 13">
+              <rect x="0.5" y="4" width="12" height="6" rx="1.5"/>
+              <path d="M3 4V3a2.5 2.5 0 015 0v1"/>
+              <circle cx="3.5" cy="9.5" r="1" fill="#9ca3af" stroke="none"/>
+              <circle cx="9.5" cy="9.5" r="1" fill="#9ca3af" stroke="none"/>
+            </svg>
+            GJ 01 CX 5549
+          </span>
+        </div>
+        <span class="badge badge-assigned">Assigned</span>
+      </div>
+      <button class="btn-upload">
+        <svg width="18" height="18" viewBox="0 0 18 18">
+          <rect x="2" y="11" width="14" height="5" rx="1.5"/>
+          <path d="M9 2v9M6 5l3-3 3 3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Upload POD
+      </button>
+    </div>
+
+    <!-- Card 2 · needs upload -->
+    <div class="card">
+      <div class="card-top">
+        <div class="card-info">
+          <span class="shipment-num">SHP-2025-00139</span>
+          <span class="vehicle-num">
+            <svg viewBox="0 0 13 13">
+              <rect x="0.5" y="4" width="12" height="6" rx="1.5"/>
+              <path d="M3 4V3a2.5 2.5 0 015 0v1"/>
+              <circle cx="3.5" cy="9.5" r="1" fill="#9ca3af" stroke="none"/>
+              <circle cx="9.5" cy="9.5" r="1" fill="#9ca3af" stroke="none"/>
+            </svg>
+            MH 04 GH 7821
+          </span>
+        </div>
+        <span class="badge badge-assigned">Assigned</span>
+      </div>
+      <button class="btn-upload">
+        <svg width="18" height="18" viewBox="0 0 18 18">
+          <rect x="2" y="11" width="14" height="5" rx="1.5"/>
+          <path d="M9 2v9M6 5l3-3 3 3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Upload POD
+      </button>
+    </div>
+
+    <!-- Card 3 · POD done -->
+    <div class="card">
+      <div class="card-top">
+        <div class="card-info">
+          <span class="shipment-num">SHP-2025-00137</span>
+          <span class="vehicle-num">
+            <svg viewBox="0 0 13 13">
+              <rect x="0.5" y="4" width="12" height="6" rx="1.5"/>
+              <path d="M3 4V3a2.5 2.5 0 015 0v1"/>
+              <circle cx="3.5" cy="9.5" r="1" fill="#9ca3af" stroke="none"/>
+              <circle cx="9.5" cy="9.5" r="1" fill="#9ca3af" stroke="none"/>
+            </svg>
+            KA 09 AB 3312
+          </span>
+        </div>
+        <span class="badge badge-pod">POD Uploaded</span>
+      </div>
+      <div class="pod-done">
+        <svg width="16" height="16" viewBox="0 0 16 16">
+          <circle cx="8" cy="8" r="6.5"/>
+          <polyline points="5,8.5 7,10.5 11,6"/>
+        </svg>
+        <span>POD submitted · 20 Feb 2025</span>
+      </div>
+    </div>
+
+    <!-- Card 4 · needs upload -->
+    <div class="card">
+      <div class="card-top">
+        <div class="card-info">
+          <span class="shipment-num">SHP-2025-00135</span>
+          <span class="vehicle-num">
+            <svg viewBox="0 0 13 13">
+              <rect x="0.5" y="4" width="12" height="6" rx="1.5"/>
+              <path d="M3 4V3a2.5 2.5 0 015 0v1"/>
+              <circle cx="3.5" cy="9.5" r="1" fill="#9ca3af" stroke="none"/>
+              <circle cx="9.5" cy="9.5" r="1" fill="#9ca3af" stroke="none"/>
+            </svg>
+            RJ 14 SA 9900
+          </span>
+        </div>
+        <span class="badge badge-assigned">Assigned</span>
+      </div>
+      <button class="btn-upload">
+        <svg width="18" height="18" viewBox="0 0 18 18">
+          <rect x="2" y="11" width="14" height="5" rx="1.5"/>
+          <path d="M9 2v9M6 5l3-3 3 3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Upload POD
+      </button>
+    </div>
+
+    <!-- Card 5 · POD done -->
+    <div class="card">
+      <div class="card-top">
+        <div class="card-info">
+          <span class="shipment-num">SHP-2025-00128</span>
+          <span class="vehicle-num">
+            <svg viewBox="0 0 13 13">
+              <rect x="0.5" y="4" width="12" height="6" rx="1.5"/>
+              <path d="M3 4V3a2.5 2.5 0 015 0v1"/>
+              <circle cx="3.5" cy="9.5" r="1" fill="#9ca3af" stroke="none"/>
+              <circle cx="9.5" cy="9.5" r="1" fill="#9ca3af" stroke="none"/>
+            </svg>
+            UP 32 BT 4411
+          </span>
+        </div>
+        <span class="badge badge-pod">POD Uploaded</span>
+      </div>
+      <div class="pod-done">
+        <svg width="16" height="16" viewBox="0 0 16 16">
+          <circle cx="8" cy="8" r="6.5"/>
+          <polyline points="5,8.5 7,10.5 11,6"/>
+        </svg>
+        <span>POD submitted · 18 Feb 2025</span>
+      </div>
+    </div>
+
+  </div><!-- /body -->
+
+  <!-- Home Indicator -->
+  <div class="home-indicator"><span></span></div>
+
+</div><!-- /phone -->
+
+</body>
+</html>
