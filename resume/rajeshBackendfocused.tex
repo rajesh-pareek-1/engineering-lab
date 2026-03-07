@@ -1,0 +1,130 @@
+
+\documentclass[a4paper,10pt]{article}
+
+% ------------------ Packages ------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[a4paper,margin=0.6in]{geometry}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{multicol}
+\usepackage{lmodern}
+\usepackage{fontawesome5} % for icons
+\usepackage{fancyhdr}
+
+% ------------------ Layout ------------------
+\renewcommand{\familydefault}{\sfdefault}
+\setlist[itemize]{noitemsep, topsep=0pt, partopsep=0pt, leftmargin=*}
+\titleformat{\section}{\large\bfseries}{}{0em}{}
+\titlespacing*{\section}{0pt}{4pt}{2pt} % less space before and after sections
+\renewcommand{\baselinestretch}{0.9}  % slight line spacing reduction
+\hypersetup{colorlinks=true,urlcolor=blue}
+
+% Custom item for bullets
+\newcommand{\resumeItem}[1]{\item #1}
+\hypersetup{
+    colorlinks=true,   % enables colored links
+    linkcolor=black,   % section links
+    urlcolor=black,    % URLs
+    citecolor=black    % citations
+}
+\begin{document}
+
+% ------------------ Header ------------------
+
+\begin{center}
+    {\Huge \textbf{Rajesh Pareek}} \\[2pt]
+    \small
+    \faEnvelope\ \href{mailto:rajeshpareekdevo@gmail.com}{rajeshpareekdevo@gmail.com} \quad
+    \faPhone\ \href{tel:+917665386328}{+91 76653 86328} \quad
+    \faLinkedin\ \href{https://www.linkedin.com/in/rajeshpareek}{linkedin.com/in/rajeshpareek} \quad
+    \faGithub\ \href{https://github.com/rajesh-pareek}{github.com/rajesh-pareek}
+\end{center}
+
+\vspace{1mm}
+
+% ------------------ Summary ------------------
+\section*{Professional Summary}
+Backend-focused .NET Developer with 2+ years of experience building \textbf{high-availability, multi-tenant SaaS platforms} using ASP.NET Core, EF Core, and Azure. Skilled in designing scalable REST APIs, optimizing database performance (~30\% faster queries), implementing secure JWT/OAuth authentication, and maintaining production systems for 500+ active users. Strong in async programming, clean architecture, CI/CD automation, caching strategies, background processing, and observability. Seeking backend/product engineering roles in India (12–15 LPA+).
+
+\vspace{2mm}
+
+% ------------------ Experience ------------------
+\section*{Experience}
+
+\textbf{Software Developer} \hfill \textit{Jan 2024 -- Present} \\
+\textit{In Time Tec, Jaipur} \\
+\textbf{Tech Stack:} ASP.NET Core, EF Core, SQL Server, Azure, Docker, Hangfire
+
+\begin{itemize}
+    \resumeItem{Owned backend services for \textbf{multi-tenant transportation \& feedlot management platforms}, serving 500+ active users with high reliability.}
+    \resumeItem{Designed and implemented \textbf{15+ REST APIs} with \textbf{JWT authentication}, role-based access control, pagination, filtering, and structured error handling.}
+    \resumeItem{Optimized \textbf{SQL queries, indexing, and EF Core execution plans}, improving response times by ~30\% under production load.}
+    \resumeItem{Built \textbf{background job pipelines} using Hangfire for retries, notifications, and scheduled workflows while maintaining tenant isolation.}
+    \resumeItem{Implemented \textbf{unit and integration tests} using xUnit/NUnit, covering core backend workflows for reliability.}
+    \resumeItem{Exposed to \textbf{microservices concepts, API versioning, and inter-service communication patterns} in modular monolith architecture.}
+    \resumeItem{Handled \textbf{async workflows and concurrency challenges}, ensuring safe background job execution and non-blocking API responses.}
+    \resumeItem{Integrated \textbf{structured logging (Serilog)} and monitoring (\textbf{Azure Application Insights}) for proactive issue detection and resolution.}
+    \resumeItem{Implemented caching strategies with awareness of \textbf{distributed caching} to reduce repetitive database load.}
+    \resumeItem{Followed \textbf{Clean Architecture and SOLID principles}, contributing to modular and maintainable backend services.}
+    \resumeItem{Managed \textbf{Dockerized deployments} and CI/CD pipelines for automated testing and controlled production releases.}
+\end{itemize}
+
+\vspace{2mm}
+
+% ------------------ Projects ------------------
+%-----------------------------
+% Selected Projects
+%-----------------------------
+\section*{Selected Projects}
+
+\noindent\textbf{FeedlotManager – Agricultural SaaS Platform} \hfill \textit{ASP.NET Core, EF Core, PostgreSQL, Azure}
+\vspace{2pt}
+\begin{itemize}
+    \item Architected \textbf{multi-tenant backend} with database-per-tenant isolation and zero-touch tenant provisioning using Azure Functions.
+    \item Developed \textbf{versioned domain models} (v1 → v2) to maintain backward compatibility while supporting advanced ration scheduling.
+    \item Implemented \textbf{polymorphic strategy patterns} for lifecycle reconciliation (mortalities, moves, receipts) to ensure data integrity.
+    \item Enabled proactive \textbf{production monitoring} with Azure metric alerts, improving reliability in low-connectivity environments.
+    \item Gained exposure to \textbf{event-driven architecture patterns} using background jobs and async triggers.
+\end{itemize}
+
+\medskip
+
+\noindent\textbf{Roll On Dispatch – Logistics Platform} \hfill \textit{ASP.NET Core, SQL Server, React Native}
+\vspace{2pt}
+\begin{itemize}
+    \item Designed backend APIs handling \textbf{1000+ shipments/month} with offline synchronization and transactional consistency.
+    \item Implemented secure \textbf{authentication \& hybrid authorization}
+    \item Standardized CRUD operations using a \textbf{generic controller-service-repository hierarchy}, reducing boilerplate by 40\%.
+    \item Contributed to \textbf{CI/CD automation} with Azure DevOps pipelines, including staging/production deployment validation.
+\end{itemize}
+
+\vspace{2mm}
+
+% ------------------ Skills ------------------
+\section*{Technical Skills}
+
+\begin{multicols}{2}
+\begin{itemize}
+    \resumeItem{\textbf{Languages:} C\#, SQL, JavaScript}
+    \resumeItem{\textbf{Backend:} ASP.NET Core, Web API, EF Core, LINQ, Async/Await, Hangfire}
+    \resumeItem{\textbf{Database:} PostgreSQL, SQL Server, Query Optimization, Indexing, Stored Procedures}
+    \resumeItem{\textbf{Architecture:} Clean Architecture, SOLID, Dependency Injection, Modular Monolith}
+    \resumeItem{\textbf{Security:} JWT, OAuth, Role-Based Authorization}
+    \resumeItem{\textbf{Testing:} xUnit, NUnit, Unit \& Integration Testing, Test-Driven Exposure}
+    \resumeItem{\textbf{Microservices:} Modular Monolith, API Versioning, Inter-Service Communication Concepts}
+    \resumeItem{\textbf{Caching \& Concurrency:} Redis, Cache Invalidation Patterns, Async/Await Patterns, Background Job Scaling}
+    \resumeItem{\textbf{Observability \& Eventing:} Serilog, Azure Application Insights, Event-driven Architecture Exposure}
+\end{itemize}
+\end{multicols}
+
+\vspace{2mm}
+
+% ------------------ Education ------------------
+\section*{Education}
+\textbf{B.Tech, Computer Science} \hfill \textit{2020 -- 2024} \\
+Rajasthan Technical University, Jaipur \hfill CGPA: 9.6/10
+
+\end{document}
