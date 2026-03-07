@@ -1,0 +1,60 @@
+# Build folders
+bin/
+obj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider / JetBrains
+.idea/
+
+# VS Code
+.vscode/
+
+# Logs
+*.log
+
+# # ASP.NET runtime files
+# *.db
+# *.db-shm
+# *.db-wal
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+
+# Environment variables
+.env
+.env.*
+
+# Local secrets
+secrets.json
+
+# Publish output
+publish/
+
+# Node modules (if frontend added later)
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test results
+TestResults/
+
+# Coverage
+coverage/
+*.coverage
+*.coveragexml
+
+# Docker
+docker-compose.override.yml
+
+# Aspire temporary files
+*.aspire/
