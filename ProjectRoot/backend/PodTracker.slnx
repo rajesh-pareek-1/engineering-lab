@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="PodTracker.Api/PodTracker.Api.csproj" />
+  <Project Path="PodTracker.AppHost/PodTracker.AppHost.csproj" />
+  <Project Path="PodTracker.BusinessLogic/PodTracker.BusinessLogic.csproj" />
+  <Project Path="PodTracker.Db/PodTracker.Db.csproj" />
+  <Project Path="PodTracker.Entities/PodTracker.Entities.csproj" />
+  <Project Path="PodTracker.Repository/PodTracker.Repository.csproj" />
+</Solution>
