@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Supply chain – Research and Design Thinking</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: #f3f4f8;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #111827;
+      line-height: 1.5;
+    }
+
+    /* ── STICKY NAV ── */
+    .top-nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.97);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid #e5e7eb;
+      display: flex; align-items: center;
+      padding: 0 28px; height: 52px; gap: 0;
+    }
+    .nav-brand { display: flex; align-items: center; gap: 9px; margin-right: 24px; flex-shrink: 0; }
+    .nav-logo { width: 28px; height: 28px; background: #2563eb; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+    .nav-logo svg { stroke: #fff; stroke-width: 2; fill: none; }
+    .nav-brand-name { font-size: 14px; font-weight: 800; color: #111827; letter-spacing: -0.3px; }
+    .nav-brand-name span { color: #2563eb; }
+    .nav-links { display: flex; align-items: center; gap: 2px; overflow-x: auto; scrollbar-width: none; }
+    .nav-links::-webkit-scrollbar { display: none; }
+    .nav-links a { padding: 6px 11px; font-size: 12.5px; font-weight: 600; color: #6b7280; text-decoration: none; border-radius: 7px; white-space: nowrap; transition: background 0.12s, color 0.12s; }
+    .nav-links a:hover { background: #f3f4f6; color: #111827; }
+    .nav-links a.nt { color: #2563eb; } .nav-links a.ntk { color: #ea580c; }
+    .nav-links a.nd { color: #16a34a; } .nav-links a.nb { color: #6b7280; }
+    .nav-github { flex-shrink: 0; display: flex; align-items: center; gap: 6px; padding: 6px 12px; background: #111827; color: #f9fafb; border-radius: 8px; font-size: 12px; font-weight: 700; text-decoration: none; letter-spacing: -0.1px; transition: background 0.12s; white-space: nowrap; }
+    .nav-github:hover { background: #1f2937; }
+    .nav-github svg { stroke: #f9fafb; stroke-width: 2; fill: none; flex-shrink: 0; }
+
+    /* ── LAYOUT ── */
+    .page { max-width: 960px; margin: 0 auto; padding: 48px 24px 80px; }
+
+    /* ── PAGE HEADER ── */
+    .page-header { margin-bottom: 48px; display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; flex-wrap: wrap; }
+    .page-header-left { flex: 1; min-width: 240px; }
+    .eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #2563eb; display: block; margin-bottom: 6px; }
+    .page-header h1 { font-size: 30px; font-weight: 800; color: #111827; letter-spacing: -0.8px; margin-bottom: 8px; }
+    .page-header p { font-size: 14.5px; color: #6b7280; max-width: 560px; }
+    /* Credits column */
+    .credits-col { display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; width: 268px; }
+    /* Field research banner (amber) */
+    .field-credit-banner { background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border: 1.5px solid #fde68a; border-radius: 16px; padding: 14px 18px; display: flex; align-items: flex-start; gap: 12px; }
+    .fcb-icon { width: 36px; height: 36px; border-radius: 10px; background: #f59e0b; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .fcb-icon svg { stroke: #fff; stroke-width: 2; fill: none; }
+    .fcb-content { display: flex; flex-direction: column; gap: 3px; }
+    .fcb-tag { font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: #d97706; }
+    .fcb-name { font-size: 13px; font-weight: 700; color: #111827; letter-spacing: -0.2px; }
+    .fcb-role { font-size: 11.5px; color: #92400e; font-weight: 500; }
+    /* Engineering team banner (indigo) */
+    .eng-banner { background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%); border: 1.5px solid #c7d2fe; border-radius: 16px; padding: 14px 18px; display: flex; align-items: flex-start; gap: 12px; }
+    .eng-icon { width: 36px; height: 36px; border-radius: 10px; background: #6366f1; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .eng-icon svg { stroke: #fff; stroke-width: 2; fill: none; }
+    .eng-content { display: flex; flex-direction: column; gap: 5px; }
+    .eng-tag { font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: #6366f1; }
+    .eng-chips { display: flex; gap: 5px; flex-wrap: wrap; }
+    .eng-chip { font-size: 12px; font-weight: 700; color: #4338ca; background: #c7d2fe; padding: 2px 9px; border-radius: 20px; letter-spacing: -0.1px; }
+    .eng-role { font-size: 11px; color: #4338ca; font-weight: 500; }
+
+    /* ── SECTION ── */
+    .section { margin-bottom: 56px; }
+    .section-head { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+    .section-head h2 { font-size: 16px; font-weight: 800; color: #111827; letter-spacing: -0.3px; }
+    .section-head::after { content: ''; flex: 1; height: 1px; background: #e5e7eb; }
+    .stag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 3px 9px; border-radius: 20px; }
+    .stag-blue   { background: #eff6ff; color: #2563eb; }
+    .stag-orange { background: #fff7ed; color: #ea580c; }
+    .stag-green  { background: #f0fdf4; color: #16a34a; }
+    .stag-gray   { background: #f3f4f6; color: #6b7280; }
+    .stag-purple { background: #f5f3ff; color: #7c3aed; }
+
+    /* ── CARD ── */
+    .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 16px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 4px 16px rgba(0,0,0,0.05); }
+
+    /* ── PERMISSION TABLE ── */
+    .perm-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .perm-table th { background: #f9fafb; padding: 11px 16px; text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #6b7280; border-bottom: 1px solid #f0f0f5; }
+    .perm-table th:not(:first-child) { text-align: center; }
+    .perm-table td { padding: 10px 16px; border-bottom: 1px solid #f5f6fa; color: #374151; font-weight: 500; }
+    .perm-table td:not(:first-child) { text-align: center; }
+    .perm-table tr:last-child td { border-bottom: none; }
+    .perm-table tr:hover td { background: #fafafa; }
+    .yes { color: #16a34a; font-weight: 800; font-size: 14px; }
+    .no  { color: #d1d5db; font-weight: 700; font-size: 14px; }
+
+    /* ── LIFECYCLE ── */
+    .lifecycle { display: flex; align-items: stretch; border-radius: 14px; border: 1px solid #e5e7eb; overflow: hidden; }
+    .lc-step { flex: 1; padding: 18px 14px; background: #fff; display: flex; flex-direction: column; gap: 6px; }
+    .lc-step + .lc-step { border-left: 1px solid #f0f0f5; }
+    .lc-step-num { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #d1d5db; }
+    .lc-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; width: fit-content; text-transform: uppercase; }
+    .lc-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .lc-created  { background: #eff6ff; color: #1d4ed8; } .lc-created::before  { background: #3b82f6; }
+    .lc-assigned { background: #fff7ed; color: #c2410c; } .lc-assigned::before { background: #f97316; }
+    .lc-pod      { background: #f5f3ff; color: #6d28d9; } .lc-pod::before      { background: #8b5cf6; }
+    .lc-shared   { background: #f0fdf4; color: #15803d; } .lc-shared::before   { background: #22c55e; }
+    .lc-role { font-size: 12px; color: #6b7280; font-weight: 500; }
+    .lc-role strong { color: #374151; font-weight: 700; }
+    .lc-action { font-size: 11px; color: #9ca3af; }
+    .lc-arrow { display: flex; align-items: center; justify-content: center; padding: 0 6px; background: #f9fafb; border-left: 1px solid #f0f0f5; border-right: 1px solid #f0f0f5; color: #d1d5db; font-size: 18px; }
+
+    /* ── INVALID ACTIONS ── */
+    .invalid-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+    .invalid-card { background: #fff; border: 1px solid #f0f0f5; border-radius: 12px; padding: 13px 14px; display: flex; gap: 10px; align-items: flex-start; }
+    .inv-x { width: 22px; height: 22px; border-radius: 50%; background: #fef2f2; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+    .inv-x svg { stroke: #ef4444; stroke-width: 2.5; fill: none; }
+    .inv-text { font-size: 12.5px; color: #374151; font-weight: 500; line-height: 1.5; }
+    .inv-text strong { color: #111827; display: block; margin-bottom: 1px; font-size: 13px; }
+
+    /* ── ROLE SECTION HEADER ── */
+    .rsh { display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-radius: 14px; margin-bottom: 20px; }
+    .rsh.blue   { background: #eff6ff; border: 1px solid #bfdbfe; }
+    .rsh.orange { background: #fff7ed; border: 1px solid #fed7aa; }
+    .rsh.green  { background: #f0fdf4; border: 1px solid #bbf7d0; }
+    .rsh.gray   { background: #f9fafb; border: 1px solid #e5e7eb; }
+    .rsh-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .rsh-icon svg { stroke-width: 2; fill: none; }
+    .blue   .rsh-icon { background: #2563eb; } .blue   .rsh-icon svg { stroke: #fff; }
+    .orange .rsh-icon { background: #ea580c; } .orange .rsh-icon svg { stroke: #fff; }
+    .green  .rsh-icon { background: #16a34a; } .green  .rsh-icon svg { stroke: #fff; }
+    .gray   .rsh-icon { background: #6b7280; } .gray   .rsh-icon svg { stroke: #fff; }
+    .rsh-info h3 { font-size: 15px; font-weight: 800; letter-spacing: -0.3px; }
+    .blue   .rsh-info h3 { color: #1d4ed8; }
+    .orange .rsh-info h3 { color: #c2410c; }
+    .green  .rsh-info h3 { color: #15803d; }
+    .gray   .rsh-info h3 { color: #374151; }
+    .rsh-info p { font-size: 12.5px; color: #6b7280; margin-top: 2px; }
+
+    /* ── SCREEN BLOCK ── */
+    .screen-block { margin-bottom: 20px; }
+
+    /* System panel */
+    .sys-panel { border-radius: 14px 14px 0 0; border: 1px solid #e5e7eb; border-bottom: none; overflow: hidden; }
+    .sph { display: flex; align-items: center; gap: 10px; padding: 11px 16px; border-bottom: 1px solid #f0f0f5; background: #fff; }
+    .spnum { font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 6px; flex-shrink: 0; }
+    .spnum-b { background: #eff6ff; color: #2563eb; }
+    .spnum-o { background: #fff7ed; color: #ea580c; }
+    .spnum-g { background: #f0fdf4; color: #16a34a; }
+    .spnum-gr { background: #f3f4f6; color: #6b7280; }
+    .spname { font-size: 14px; font-weight: 700; color: #111827; }
+    .sys-grid { display: grid; grid-template-columns: 1fr 1fr; background: #f9fafb; }
+    .sys-row { padding: 9px 16px; border-right: 1px solid #f0f0f5; border-bottom: 1px solid #f0f0f5; display: flex; flex-direction: column; gap: 3px; }
+    .sys-row:nth-child(even) { border-right: none; }
+    .sys-row:nth-last-child(-n+2) { border-bottom: none; }
+    .sys-key { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #9ca3af; }
+    .sys-val { font-size: 12.5px; font-weight: 500; color: #374151; }
+    .sys-val a { color: #2563eb; text-decoration: none; font-weight: 600; }
+    .sys-val a:hover { text-decoration: underline; }
+    .sv-red  { color: #ef4444; }
+    .sv-purp { color: #7c3aed; font-weight: 700; }
+    .sv-mute { color: #d1d5db; }
+
+    /* Tile link below panel */
+    .tile-link { display: flex; align-items: center; justify-content: space-between; padding: 13px 18px; background: #fff; border: 1px solid #e5e7eb; border-radius: 0 0 14px 14px; text-decoration: none; transition: background 0.12s; gap: 12px; }
+    .tile-link:hover { background: #fafbff; }
+    .tl-left { display: flex; align-items: center; gap: 12px; }
+    .tthumb { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .tthumb svg { stroke-width: 1.8; fill: none; }
+    .tth-b  { background: #eff6ff; } .tth-b svg  { stroke: #2563eb; }
+    .tth-o  { background: #fff7ed; } .tth-o svg  { stroke: #ea580c; }
+    .tth-g  { background: #f0fdf4; } .tth-g svg  { stroke: #16a34a; }
+    .tth-gr { background: #f3f4f6; } .tth-gr svg { stroke: #6b7280; }
+    .tname { font-size: 13px; font-weight: 700; color: #111827; }
+    .tdesc { font-size: 12px; color: #9ca3af; margin-top: 1px; }
+    .open-link { font-size: 12px; font-weight: 600; color: #9ca3af; display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+    .open-link svg { stroke: #9ca3af; stroke-width: 2; fill: none; }
+    .tile-link:hover .open-link { color: #6b7280; }
+
+    /* ── EDGE CASES ── */
+    .edge-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+    .edge-card { background: #fff; border: 1px solid #fee2e2; border-left: 4px solid #ef4444; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 10px; }
+    .edge-card.warn   { border-color: #fde68a;  border-left-color: #f59e0b; }
+    .edge-card.info   { border-color: #e0e7ff;  border-left-color: #6366f1; }
+    .edge-header { display: flex; align-items: center; gap: 8px; }
+    .edge-ico { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .edge-ico svg { stroke-width: 2; fill: none; width: 15px; height: 15px; }
+    .edge-ico.red    { background: #fef2f2; } .edge-ico.red svg    { stroke: #ef4444; }
+    .edge-ico.amber  { background: #fffbeb; } .edge-ico.amber svg  { stroke: #f59e0b; }
+    .edge-ico.indigo { background: #eef2ff; } .edge-ico.indigo svg { stroke: #6366f1; }
+    .edge-title { font-size: 13px; font-weight: 700; color: #111827; }
+    .edge-body  { font-size: 12.5px; color: #6b7280; line-height: 1.6; }
+    .edge-rule  { font-size: 11.5px; font-weight: 600; padding: 7px 10px; border-radius: 7px; }
+    .edge-rule.red    { background: #fef2f2; color: #b91c1c; }
+    .edge-rule.amber  { background: #fffbeb; color: #92400e; }
+    .edge-rule.indigo { background: #eef2ff; color: #4338ca; }
+
+    /* ── SCHEMA ── */
+    .schema-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .schema-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 14px; overflow: hidden; }
+    .schema-head { background: #111827; padding: 11px 16px; display: flex; align-items: center; gap: 8px; }
+    .schema-head svg { stroke: #6b7280; stroke-width: 1.5; fill: none; }
+    .schema-ename { font-size: 13px; font-weight: 700; color: #f9fafb; }
+    .schema-elabel { font-size: 10px; color: #6b7280; margin-left: auto; text-transform: uppercase; letter-spacing: 0.5px; }
+    .schema-field { display: flex; align-items: center; padding: 8px 16px; border-bottom: 1px solid #f5f6fa; gap: 8px; }
+    .schema-field:last-child { border-bottom: none; }
+    .fname { font-size: 12.5px; font-weight: 600; color: #374151; min-width: 130px; }
+    .ftype { font-size: 11.5px; color: #9ca3af; font-family: 'Menlo','Monaco',monospace; flex: 1; }
+    .fpk { font-size: 10px; font-weight: 700; color: #f59e0b; background: #fffbeb; padding: 1px 6px; border-radius: 4px; }
+    .ffk { font-size: 10px; font-weight: 700; color: #6366f1; background: #eef2ff; padding: 1px 6px; border-radius: 4px; }
+
+    /* ── FOOTER ── */
+    .page-footer { max-width: 960px; margin: 0 auto; padding: 20px 24px 48px; font-size: 12px; color: #9ca3af; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e5e7eb; }
+
+    /* ══════════════════════════════════════════
+       RESPONSIVE — TABLET (≤ 768px)
+    ══════════════════════════════════════════ */
+    @media (max-width: 768px) {
+      .schema-grid { grid-template-columns: 1fr; }
+      .lifecycle { flex-wrap: wrap; }
+      .lc-step { flex: 1 1 calc(50% - 1px); min-width: 0; }
+      .lc-arrow { display: none; }
+      .lc-step + .lc-step { border-left: none; border-top: 1px solid #f0f0f5; }
+    }
+
+    /* ══════════════════════════════════════════
+       RESPONSIVE — MOBILE (≤ 540px)
+    ══════════════════════════════════════════ */
+    @media (max-width: 540px) {
+      /* Nav */
+      .top-nav { padding: 0 12px; gap: 0; }
+      .nav-brand { margin-right: 10px; }
+    .nav-brand-name { display: none; }
+      .nav-github span { display: none; }
+      .nav-github { padding: 6px 10px; }
+      .nav-links a { padding: 6px 9px; font-size: 11.5px; }
+
+      /* Page */
+      .page { padding: 28px 14px 60px; }
+      .page-header { margin-bottom: 32px; }
+      .page-header h1 { font-size: 22px; }
+      .page-header p { font-size: 13px; }
+      .section { margin-bottom: 40px; }
+
+      /* Permission table — horizontal scroll */
+      .card { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .perm-table { min-width: 420px; font-size: 12px; }
+      .perm-table th, .perm-table td { padding: 9px 10px; }
+
+      /* Lifecycle — single column */
+      .lifecycle { flex-direction: column; }
+      .lc-step { flex: none; width: 100%; }
+      .lc-step + .lc-step { border-left: none; border-top: 1px solid #f0f0f5; }
+
+      /* Invalid actions — single column */
+      .invalid-grid { grid-template-columns: 1fr; }
+
+      /* Role section header */
+      .rsh { padding: 12px 14px; gap: 10px; }
+      .rsh-icon { width: 34px; height: 34px; border-radius: 10px; }
+      .rsh-info h3 { font-size: 14px; }
+      .rsh-info p { font-size: 12px; }
+      .rsh .stag { display: none; }
+
+      /* System panel grid — single column */
+      .sys-grid { grid-template-columns: 1fr; }
+      .sys-row { border-right: none !important; }
+      .sys-row:nth-last-child(-n+2) { border-bottom: 1px solid #f0f0f5; }
+      .sys-row:last-child { border-bottom: none; }
+
+      /* Tile link */
+      .tile-link { padding: 12px 14px; }
+      .tdesc { display: none; }
+
+      /* Edge cases — single column */
+      .edge-grid { grid-template-columns: 1fr; }
+
+      /* Schema — single column (already 1fr from 768 rule) */
+      .fname { min-width: 100px; }
+      .ftype { font-size: 11px; }
+
+      /* Footer */
+      .page-footer { flex-direction: column; gap: 6px; text-align: center; padding: 16px 16px 40px; }
+      /* Credits column + banners — full width on mobile */
+      .credits-col { width: 100%; }
+      .field-credit-banner, .eng-banner { max-width: 100%; min-width: 0; }
+    }
+
+    /* ── DEMO LAUNCH BAR ── */
+    .demo-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 48px; }
+    .demo-card { display: flex; align-items: center; gap: 14px; padding: 18px 20px; border-radius: 16px; text-decoration: none; transition: box-shadow 0.15s, transform 0.15s; border: 1.5px solid; }
+    .demo-card:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.1); }
+    .demo-card.blue  { background: linear-gradient(135deg,#eff6ff,#dbeafe); border-color: #bfdbfe; }
+    .demo-card.slate { background: linear-gradient(135deg,#f8fafc,#f1f5f9); border-color: #e2e8f0; }
+    .demo-ico { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .demo-card.blue  .demo-ico { background: #2563eb; }
+    .demo-card.slate .demo-ico { background: #334155; }
+    .demo-ico svg { stroke: #fff; stroke-width: 1.8; fill: none; }
+    .demo-lbl { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; }
+    .demo-card.blue  .demo-lbl { color: #2563eb; }
+    .demo-card.slate .demo-lbl { color: #64748b; }
+    .demo-title { font-size: 14px; font-weight: 800; letter-spacing: -0.3px; color: #111827; margin-top: 2px; }
+    .demo-sub { font-size: 11.5px; margin-top: 2px; }
+    .demo-card.blue  .demo-sub { color: #60a5fa; }
+    .demo-card.slate .demo-sub { color: #94a3b8; }
+    .demo-arr { margin-left: auto; flex-shrink: 0; }
+    .demo-card.blue  .demo-arr svg { stroke: #93c5fd; }
+    .demo-card.slate .demo-arr svg { stroke: #cbd5e1; }
+
+    /* ── NAV RIGHT CLUSTER ── */
+    .nav-right { margin-left: auto; display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .nav-docs-btn { display: flex; align-items: center; gap: 6px; padding: 6px 12px; background: #f3f4f6; color: #374151; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; transition: background 0.12s; white-space: nowrap; letter-spacing: -0.1px; }
+    .nav-docs-btn:hover { background: #e5e7eb; }
+    .nav-docs-btn svg { stroke: #374151; stroke-width: 1.8; fill: none; }
+
+    /* ── FILE EXPLORER MODAL ── */
+    .fe-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.42); backdrop-filter: blur(4px); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 24px; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+    .fe-overlay.open { opacity: 1; pointer-events: all; }
+    .fe-modal { background: #fff; border-radius: 20px; width: 100%; max-width: 520px; max-height: 76vh; display: flex; flex-direction: column; box-shadow: 0 24px 64px rgba(0,0,0,0.2); overflow: hidden; transform: scale(0.95) translateY(16px); transition: transform 0.2s; }
+    .fe-overlay.open .fe-modal { transform: scale(1) translateY(0); }
+    .fe-mhead { display: flex; align-items: center; gap: 12px; padding: 18px 20px; border-bottom: 1px solid #f0f0f5; }
+    .fe-mhead-ico { width: 38px; height: 38px; border-radius: 10px; background: #f3f4f6; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .fe-mhead-ico svg { stroke: #374151; stroke-width: 1.8; fill: none; }
+    .fe-mhead-info { display: flex; flex-direction: column; gap: 2px; }
+    .fe-mhead-title { font-size: 15px; font-weight: 800; color: #111827; letter-spacing: -0.3px; }
+    .fe-mhead-sub { font-size: 12px; color: #9ca3af; }
+    .fe-mclose { margin-left: auto; width: 30px; height: 30px; border-radius: 8px; background: #f3f4f6; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.12s; }
+    .fe-mclose:hover { background: #e5e7eb; }
+    .fe-mclose svg { stroke: #6b7280; stroke-width: 2.5; fill: none; }
+    .fe-mbody { flex: 1; overflow-y: auto; padding: 14px; }
+    .fe-empty { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 40px 20px; }
+    .fe-empty-ico { width: 56px; height: 56px; border-radius: 16px; background: #f3f4f6; display: flex; align-items: center; justify-content: center; }
+    .fe-empty-ico svg { stroke: #d1d5db; stroke-width: 1.5; fill: none; }
+    .fe-empty-title { font-size: 14px; font-weight: 700; color: #9ca3af; }
+    .fe-empty-hint { font-size: 12px; color: #d1d5db; text-align: center; line-height: 1.6; }
+    .fe-list { display: flex; flex-direction: column; gap: 8px; }
+    .fe-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid #f0f0f5; border-radius: 12px; background: #fafafa; }
+    .fe-item:hover { background: #f5f5f5; }
+    .fe-ficon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 9.5px; font-weight: 800; }
+    .fe-ficon.pdf  { background: #fef2f2; color: #dc2626; }
+    .fe-ficon.md   { background: #eff6ff; color: #2563eb; }
+    .fe-ficon.docx { background: #eff6ff; color: #1d4ed8; }
+    .fe-ficon.xlsx { background: #f0fdf4; color: #16a34a; }
+    .fe-ficon.other{ background: #f3f4f6; color: #6b7280; }
+    .fe-fname { font-size: 13px; font-weight: 700; color: #111827; }
+    .fe-fmeta { font-size: 11.5px; color: #9ca3af; margin-top: 2px; }
+    .fe-dl { margin-left: auto; display: flex; align-items: center; gap: 5px; padding: 7px 13px; background: #111827; color: #f9fafb; border-radius: 8px; font-size: 11.5px; font-weight: 700; text-decoration: none; transition: background 0.12s; flex-shrink: 0; white-space: nowrap; }
+    .fe-dl:hover { background: #1f2937; }
+    .fe-dl svg { stroke: #f9fafb; stroke-width: 2; fill: none; }
+    .fe-mfoot { padding: 12px 20px; border-top: 1px solid #f0f0f5; font-size: 11px; color: #d1d5db; text-align: center; }
+
+    @media (max-width: 540px) {
+      .demo-bar { grid-template-columns: 1fr; gap: 10px; margin-bottom: 32px; }
+      .nav-docs-btn span { display: none; }
+      .nav-docs-btn { padding: 6px 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ STICKY NAV ═══ -->
+<nav class="top-nav">
+  <div class="nav-brand">
+    <div class="nav-logo">
+      <svg width="16" height="16" viewBox="0 0 16 16"><rect x="1" y="4" width="14" height="10" rx="2"/><path d="M1 7.5h14"/><path d="M5.5 4V2M10.5 4V2"/></svg>
+    </div>
+    <span class="nav-brand-name">SC <span>R&amp;DT</span></span>
+  </div>
+  <div class="nav-links">
+    <a href="#overview">Overview</a>
+    <a href="#lifecycle">Lifecycle</a>
+    <a href="#transporter" class="nt">Transporter</a>
+    <a href="#trucker" class="ntk">Trucker</a>
+    <a href="#driver" class="nd">Driver</a>
+    <a href="#broker" class="nb">Broker</a>
+    <a href="#share-flow" class="nt">Native Share</a>
+    <a href="#edge-cases">Edge Cases</a>
+    <a href="#schema">Schema</a>
+  </div>
+  <div class="nav-right">
+    <button class="nav-docs-btn" onclick="openDocsExplorer()">
+      <svg width="14" height="14" viewBox="0 0 14 14"><path d="M1 3.5A1.5 1.5 0 012.5 2H6l1.5 1.5H12A1.5 1.5 0 0113.5 5v6A1.5 1.5 0 0112 12.5H2.5A1.5 1.5 0 011 11V3.5z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Docs</span>
+    </button>
+    <a class="nav-github" href="https://github.com/rajesh-pareek-1/engineering-lab/pull/2/changes" target="_blank" rel="noopener">
+      <svg width="14" height="14" viewBox="0 0 14 14"><path d="M7 1C3.69 1 1 3.69 1 7c0 2.65 1.72 4.9 4.1 5.69.3.05.41-.13.41-.29v-1.02c-1.67.36-2.02-.8-2.02-.8-.27-.69-.67-.87-.67-.87-.55-.37.04-.37.04-.37.6.04.92.62.92.62.54.92 1.41.65 1.75.5.06-.39.21-.65.38-.8-1.33-.15-2.73-.67-2.73-2.96 0-.65.23-1.19.62-1.6-.06-.15-.27-.76.06-1.58 0 0 .5-.16 1.65.62A5.75 5.75 0 017 4.37c.51 0 1.02.07 1.5.2 1.14-.78 1.64-.62 1.64-.62.33.82.12 1.43.06 1.58.39.41.62.95.62 1.6 0 2.3-1.4 2.8-2.74 2.95.22.19.41.55.41 1.11v1.65c0 .16.11.34.42.28C11.28 11.9 13 9.65 13 7c0-3.31-2.69-6-6-6z"/></svg>
+      <span>View on GitHub</span>
+    </a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- ═══ PAGE HEADER ═══ -->
+  <div class="page-header">
+    <div class="page-header-left">
+      <span class="eyebrow">Product Walkthrough · MVP SRS</span>
+      <h1>Supply chain –<br>Research and Design Thinking</h1>
+      <p>POD Tracking System — role-by-role screen flow, status lifecycle, permission matrix, and edge-case reference for stakeholder review.</p>
+    </div>
+    <div class="credits-col">
+      <!-- Field Research Credit -->
+      <div class="field-credit-banner">
+        <div class="fcb-icon">
+          <svg width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="9" r="7"/><path d="M9 6v3l2 2" stroke-linecap="round"/><path d="M5.5 14.5l7-11" stroke-linecap="round" opacity="0.4"/></svg>
+        </div>
+        <div class="fcb-content">
+          <span class="fcb-tag">Field Research</span>
+          <span class="fcb-name">Anil Pareek</span>
+          <span class="fcb-role">Co-Founder, Bharat Logistics</span>
+        </div>
+      </div>
+      <!-- Engineering Team Credit -->
+      <div class="eng-banner">
+        <div class="eng-icon">
+          <svg width="18" height="18" viewBox="0 0 18 18"><circle cx="6" cy="7" r="2.5"/><circle cx="12" cy="7" r="2.5"/><path d="M2 16c0-3 4-4 4-4s4 1 4 4" stroke-linecap="round"/><path d="M12 12c1 0 4 .8 4 4" stroke-linecap="round"/></svg>
+        </div>
+        <div class="eng-content">
+          <span class="eng-tag">Active Engineers</span>
+          <div class="eng-chips">
+            <span class="eng-chip">Rajesh</span>
+            <span class="eng-chip">Shivesh</span>
+            <span class="eng-chip">Aditya</span>
+          </div>
+          <span class="eng-role">Research &amp; Design Thinking</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ QUICK LAUNCH ═══ -->
+  <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#9ca3af;margin-bottom:12px;">Quick Launch</p>
+  <div class="demo-bar">
+    <a class="demo-card blue" href="demo.html" target="_blank">
+      <div class="demo-ico">
+        <svg width="22" height="22" viewBox="0 0 22 22"><rect x="2" y="3" width="18" height="14" rx="2.5"/><path d="M2 8h18"/><path d="M8 3V1M14 3V1"/><path d="M7.5 13.5l2.5-2 2.5 2 2.5-3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div>
+        <div class="demo-lbl">Interactive Demo</div>
+        <div class="demo-title">Live UI Prototype</div>
+        <div class="demo-sub">Colour fidelity · All 13 screens</div>
+      </div>
+      <div class="demo-arr"><svg width="18" height="18" viewBox="0 0 18 18"><line x1="3" y1="9" x2="15" y2="9"/><polyline points="10,4 15,9 10,14"/></svg></div>
+    </a>
+    <a class="demo-card slate" href="wireframe-demo.html" target="_blank">
+      <div class="demo-ico">
+        <svg width="22" height="22" viewBox="0 0 22 22"><rect x="2" y="2" width="18" height="18" rx="2.5"/><rect x="5" y="5" width="5" height="5" rx="1"/><rect x="12" y="5" width="5" height="5" rx="1"/><rect x="5" y="12" width="5" height="5" rx="1"/><rect x="12" y="12" width="5" height="5" rx="1"/></svg>
+      </div>
+      <div>
+        <div class="demo-lbl">Wireframe Demo</div>
+        <div class="demo-title">Greyscale Flow</div>
+        <div class="demo-sub">Structure-only · All roles</div>
+      </div>
+      <div class="demo-arr"><svg width="18" height="18" viewBox="0 0 18 18"><line x1="3" y1="9" x2="15" y2="9"/><polyline points="10,4 15,9 10,14"/></svg></div>
+    </a>
+  </div>
+
+  <!-- ═══ 1. MVP SYSTEM OVERVIEW ═══ -->
+  <div class="section" id="overview">
+    <div class="section-head"><h2>MVP System Overview</h2><span class="stag stag-purple">SRS Reference</span></div>
+
+    <!-- Permission Table -->
+    <div class="card" style="margin-bottom:16px;">
+      <table class="perm-table">
+        <thead>
+          <tr>
+            <th>Capability</th>
+            <th style="color:#2563eb">Transporter</th>
+            <th style="color:#ea580c">Trucker</th>
+            <th style="color:#16a34a">Driver</th>
+            <th style="color:#6b7280">Broker</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Create Shipment</td>          <td><span class="yes">✓</span></td><td><span class="no">✗</span></td><td><span class="no">✗</span></td><td><span class="no">✗</span></td></tr>
+          <tr><td>Assign Trucker</td>            <td><span class="yes">✓</span></td><td><span class="no">✗</span></td><td><span class="no">✗</span></td><td><span class="no">✗</span></td></tr>
+          <tr><td>Assign Driver + Vehicle</td>   <td><span class="no">✗</span></td><td><span class="yes">✓</span></td><td><span class="no">✗</span></td><td><span class="no">✗</span></td></tr>
+          <tr><td>Upload POD</td>                <td><span class="no">✗</span></td><td><span class="no">✗</span></td><td><span class="yes">✓</span></td><td><span class="no">✗</span></td></tr>
+          <tr><td>Generate Share Link</td>       <td><span class="yes">✓</span></td><td><span class="no">✗</span></td><td><span class="no">✗</span></td><td><span class="no">✗</span></td></tr>
+          <tr><td>View Assigned Shipments</td>   <td><span class="yes">✓</span></td><td><span class="yes">✓</span></td><td><span class="yes">✓</span></td><td><span class="no">✗</span></td></tr>
+          <tr><td>Download POD (via link)</td>   <td><span class="no">✗</span></td><td><span class="no">✗</span></td><td><span class="no">✗</span></td><td><span class="yes">✓</span></td></tr>
+          <tr><td>Re-assign after POD upload</td><td><span class="no">✗</span></td><td><span class="no">✗</span></td><td><span class="no">✗</span></td><td><span class="no">✗</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Invalid Actions -->
+    <p style="font-size:11px;color:#9ca3af;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">Invalid Actions — MVP Constraints</p>
+    <div class="invalid-grid">
+      <div class="invalid-card">
+        <div class="inv-x"><svg width="10" height="10" viewBox="0 0 10 10"><line x1="2" y1="2" x2="8" y2="8"/><line x1="8" y1="2" x2="2" y2="8"/></svg></div>
+        <div class="inv-text"><strong>Driver uploads without assignment</strong>Upload blocked until Trucker assigns the Driver.</div>
+      </div>
+      <div class="invalid-card">
+        <div class="inv-x"><svg width="10" height="10" viewBox="0 0 10 10"><line x1="2" y1="2" x2="8" y2="8"/><line x1="8" y1="2" x2="2" y2="8"/></svg></div>
+        <div class="inv-text"><strong>Trucker creates a shipment</strong>Only Transporters can create. Truckers are read-only.</div>
+      </div>
+      <div class="invalid-card">
+        <div class="inv-x"><svg width="10" height="10" viewBox="0 0 10 10"><line x1="2" y1="2" x2="8" y2="8"/><line x1="8" y1="2" x2="2" y2="8"/></svg></div>
+        <div class="inv-text"><strong>Share link before POD exists</strong>Generate Share Link disabled until status = POD Uploaded.</div>
+      </div>
+      <div class="invalid-card">
+        <div class="inv-x"><svg width="10" height="10" viewBox="0 0 10 10"><line x1="2" y1="2" x2="8" y2="8"/><line x1="8" y1="2" x2="2" y2="8"/></svg></div>
+        <div class="inv-text"><strong>Driver generates share link</strong>Share link generation is Transporter-only.</div>
+      </div>
+      <div class="invalid-card">
+        <div class="inv-x"><svg width="10" height="10" viewBox="0 0 10 10"><line x1="2" y1="2" x2="8" y2="8"/><line x1="8" y1="2" x2="2" y2="8"/></svg></div>
+        <div class="inv-text"><strong>Re-assign driver after POD</strong>Locked once status reaches POD Uploaded in MVP.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ 2. LIFECYCLE ═══ -->
+  <div class="section" id="lifecycle">
+    <div class="section-head"><h2>Shipment Status Lifecycle</h2><span class="stag stag-purple">4 Stages</span></div>
+    <div class="lifecycle">
+      <div class="lc-step">
+        <span class="lc-step-num">Stage 1</span>
+        <span class="lc-badge lc-created">Created</span>
+        <span class="lc-role">By <strong>Transporter</strong></span>
+        <span class="lc-action">Submits Create Shipment form</span>
+      </div>
+      <div class="lc-arrow">›</div>
+      <div class="lc-step">
+        <span class="lc-step-num">Stage 2</span>
+        <span class="lc-badge lc-assigned">Assigned</span>
+        <span class="lc-role">By <strong>Transporter</strong> + <strong>Trucker</strong></span>
+        <span class="lc-action">Transporter assigns Trucker · Trucker assigns Driver + Vehicle</span>
+      </div>
+      <div class="lc-arrow">›</div>
+      <div class="lc-step">
+        <span class="lc-step-num">Stage 3</span>
+        <span class="lc-badge lc-pod">POD Uploaded</span>
+        <span class="lc-role">By <strong>Driver</strong></span>
+        <span class="lc-action">Captures photo · Taps Confirm Upload</span>
+      </div>
+      <div class="lc-arrow">›</div>
+      <div class="lc-step">
+        <span class="lc-step-num">Stage 4</span>
+        <span class="lc-badge lc-shared">Shared</span>
+        <span class="lc-role">By <strong>Transporter</strong></span>
+        <span class="lc-action">Taps Generate Share Link · Link valid 30 days</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ 3. TRANSPORTER SCREENS ═══ -->
+  <div class="section" id="transporter">
+    <div class="rsh blue">
+      <div class="rsh-icon"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="2" y="5" width="16" height="12" rx="2.5"/><path d="M2 8.5h16"/><path d="M7 5V3M13 5V3"/></svg></div>
+      <div class="rsh-info"><h3>Transporter</h3><p>Creates shipments · Assigns truckers · Generates share links · Full visibility across all screens</p></div>
+      <span class="stag stag-blue" style="margin-left:auto;flex-shrink:0">5 Screens</span>
+    </div>
+
+    <!-- Screen 01 -->
+    <div class="screen-block" id="screen-01">
+      <div class="sys-panel">
+        <div class="sph"><span class="spnum spnum-b">01</span><span class="spname">Shipments Dashboard</span></div>
+        <div class="sys-grid">
+          <div class="sys-row"><span class="sys-key">Role</span><span class="sys-val">Transporter</span></div>
+          <div class="sys-row"><span class="sys-key">Accessible After</span><span class="sys-val">Login as Transporter</span></div>
+          <div class="sys-row"><span class="sys-key">Primary Action</span><span class="sys-val">View all shipments · Tap + to create</span></div>
+          <div class="sys-row"><span class="sys-key">Status Change</span><span class="sys-val sv-mute">— read only</span></div>
+          <div class="sys-row"><span class="sys-key">Blocked If</span><span class="sys-val sv-mute">—</span></div>
+          <div class="sys-row"><span class="sys-key">Next Screen</span><span class="sys-val"><a href="#screen-02">→ Create (02)</a> · <a href="#screen-03">→ Detail (03)</a></span></div>
+        </div>
+      </div>
+      <a class="tile-link" href="transporter-dashboard.html" target="_blank">
+        <div class="tl-left">
+          <div class="tthumb tth-b"><svg width="17" height="17" viewBox="0 0 17 17"><rect x="2" y="3" width="13" height="11" rx="2"/><path d="M2 6.5h13"/><path d="M5.5 3V1M11.5 3V1"/></svg></div>
+          <div><div class="tname">Shipments Dashboard</div><div class="tdesc">Scrollable cards · Status badges · WhatsApp icon on broker-linked cards</div></div>
+        </div>
+        <span class="open-link">Open <svg width="12" height="12" viewBox="0 0 12 12"><line x1="2" y1="6" x2="10" y2="6"/><polyline points="7,3 10,6 7,9"/></svg></span>
+      </a>
+    </div>
+
+    <!-- Screen 02 -->
+    <div class="screen-block" id="screen-02">
+      <div class="sys-panel">
+        <div class="sph"><span class="spnum spnum-b">02</span><span class="spname">Create Shipment</span></div>
+        <div class="sys-grid">
+          <div class="sys-row"><span class="sys-key">Role</span><span class="sys-val">Transporter</span></div>
+          <div class="sys-row"><span class="sys-key">Accessible After</span><span class="sys-val">Tap + button on dashboard</span></div>
+          <div class="sys-row"><span class="sys-key">Primary Action</span><span class="sys-val">Enter Shipment Number · Submit</span></div>
+          <div class="sys-row"><span class="sys-key">Status Change</span><span class="sys-val sv-purp">→ Created</span></div>
+          <div class="sys-row"><span class="sys-key">Blocked If</span><span class="sys-val sv-red">Duplicate shipment number</span></div>
+          <div class="sys-row"><span class="sys-key">Next Screen</span><span class="sys-val"><a href="#screen-03">→ Shipment Detail (03)</a></span></div>
+        </div>
+      </div>
+      <a class="tile-link" href="transporter-create.html" target="_blank">
+        <div class="tl-left">
+          <div class="tthumb tth-b"><svg width="17" height="17" viewBox="0 0 17 17"><rect x="2" y="2" width="13" height="13" rx="3"/><line x1="8.5" y1="5.5" x2="8.5" y2="11.5"/><line x1="5.5" y1="8.5" x2="11.5" y2="8.5"/></svg></div>
+          <div><div class="tname">Create Shipment</div><div class="tdesc">Shipment Number (required) · Shipper Name (optional) · Sticky CTA</div></div>
+        </div>
+        <span class="open-link">Open <svg width="12" height="12" viewBox="0 0 12 12"><line x1="2" y1="6" x2="10" y2="6"/><polyline points="7,3 10,6 7,9"/></svg></span>
+      </a>
+    </div>
+
+    <!-- Screen 03 -->
+    <div class="screen-block" id="screen-03">
+      <div class="sys-panel">
+        <div class="sph"><span class="spnum spnum-b">03</span><span class="spname">Shipment Detail</span></div>
+        <div class="sys-grid">
+          <div class="sys-row"><span class="sys-key">Role</span><span class="sys-val">Transporter</span></div>
+          <div class="sys-row"><span class="sys-key">Accessible After</span><span class="sys-val">Shipment exists (any status)</span></div>
+          <div class="sys-row"><span class="sys-key">Primary Action</span><span class="sys-val">Assign Trucker · View Driver + POD · Manage Broker Contact · Generate Share Link</span></div>
+          <div class="sys-row"><span class="sys-key">Status Change</span><span class="sys-val sv-purp">→ Assigned · → Shared</span></div>
+          <div class="sys-row"><span class="sys-key">Blocked If</span><span class="sys-val sv-red">Share Link blocked until POD exists</span></div>
+          <div class="sys-row"><span class="sys-key">Next Screen</span><span class="sys-val"><a href="#screen-04">→ Share Modal (04)</a> · <a href="#screen-11">→ Contact Modal (11)</a></span></div>
+        </div>
+      </div>
+      <a class="tile-link" href="transporter-detail.html" target="_blank">
+        <div class="tl-left">
+          <div class="tthumb tth-b"><svg width="17" height="17" viewBox="0 0 17 17"><rect x="2" y="1.5" width="13" height="14" rx="2"/><path d="M5.5 6h6M5.5 9h6M5.5 12h3.5" stroke-linecap="round"/></svg></div>
+          <div><div class="tname">Shipment Detail</div><div class="tdesc">Assignment section · Driver Info · POD preview · Broker Contact (private) · Share Link</div></div>
+        </div>
+        <span class="open-link">Open <svg width="12" height="12" viewBox="0 0 12 12"><line x1="2" y1="6" x2="10" y2="6"/><polyline points="7,3 10,6 7,9"/></svg></span>
+      </a>
+    </div>
+
+    <!-- Screen 04 -->
+    <div class="screen-block" id="screen-04">
+      <div class="sys-panel">
+        <div class="sph"><span class="spnum spnum-b">04</span><span class="spname">Share Link Modal</span></div>
+        <div class="sys-grid">
+          <div class="sys-row"><span class="sys-key">Role</span><span class="sys-val">Transporter</span></div>
+          <div class="sys-row"><span class="sys-key">Accessible After</span><span class="sys-val">Status = POD Uploaded · Tap Generate Share Link</span></div>
+          <div class="sys-row"><span class="sys-key">Primary Action</span><span class="sys-val">Copy link · Share with broker</span></div>
+          <div class="sys-row"><span class="sys-key">Status Change</span><span class="sys-val sv-purp">→ Shared</span></div>
+          <div class="sys-row"><span class="sys-key">Blocked If</span><span class="sys-val sv-red">No POD (status &lt; POD Uploaded)</span></div>
+          <div class="sys-row"><span class="sys-key">Next Screen</span><span class="sys-val"><a href="#screen-03">← Detail (03)</a> · Broker → <a href="#screen-10">Broker View (10)</a></span></div>
+        </div>
+      </div>
+      <a class="tile-link" href="share-modal.html" target="_blank">
+        <div class="tl-left">
+          <div class="tthumb tth-b"><svg width="17" height="17" viewBox="0 0 17 17"><circle cx="13" cy="3.5" r="2"/><circle cx="13" cy="13.5" r="2"/><circle cx="4" cy="8.5" r="2"/><line x1="6" y1="7.5" x2="11" y2="4.5"/><line x1="6" y1="9.5" x2="11" y2="12.5"/></svg></div>
+          <div><div class="tname">Share Link Modal</div><div class="tdesc">Generated URL · Copy button · 30-day expiry amber notice · Done</div></div>
+        </div>
+        <span class="open-link">Open <svg width="12" height="12" viewBox="0 0 12 12"><line x1="2" y1="6" x2="10" y2="6"/><polyline points="7,3 10,6 7,9"/></svg></span>
+      </a>
+    </div>
+
+    <!-- Screen 11 -->
+    <div class="screen-block" id="screen-11">
+      <div class="sys-panel">
+        <div class="sph"><span class="spnum spnum-b">11</span><span class="spname">Add Broker Contact Modal</span></div>
+        <div class="sys-grid">
+          <div class="sys-row"><span class="sys-key">Role</span><span class="sys-val">Transporter</span></div>
+          <div class="sys-row"><span class="sys-key">Accessible After</span><span class="sys-val">Tap “Add Broker Contact” on Shipment Detail</span></div>
+          <div class="sys-row"><span class="sys-key">Primary Action</span><span class="sys-val">Enter broker name (optional) + phone · Save</span></div>
+          <div class="sys-row"><span class="sys-key">Status Change</span><span class="sys-val sv-mute">— local only · not shared</span></div>
+          <div class="sys-row"><span class="sys-key">Blocked If</span><span class="sys-val sv-red">Phone number field is empty</span></div>
+          <div class="sys-row"><span class="sys-key">Next Screen</span><span class="sys-val"><a href="#screen-03">← Back to Detail (03)</a></span></div>
+        </div>
+      </div>
+      <a class="tile-link" href="transporter-detail.html" target="_blank">
+        <div class="tl-left">
+          <div class="tthumb tth-b">
+            <svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linecap="round">
+              <circle cx="8.5" cy="6" r="3"/>
+              <path d="M3 15.5c0-4 11-4 11 0"/>
+              <line x1="13" y1="6" x2="13" y2="12"/>
+              <line x1="10" y1="9" x2="16" y2="9"/>
+            </svg>
+          </div>
+          <div><div class="tname">Add Broker Contact Modal</div><div class="tdesc">Bottom-sheet modal · Name + Phone fields · Save / Cancel · Private to transporter</div></div>
+        </div>
+        <span class="open-link">Open <svg width="12" height="12" viewBox="0 0 12 12"><line x1="2" y1="6" x2="10" y2="6"/><polyline points="7,3 10,6 7,9"/></svg></span>
+      </a>
+    </div>
+  </div>
+
+  <!-- ═══ 4. TRUCKER SCREENS ═══ -->
+  <div class="section" id="trucker">
+    <div class="rsh orange">
+      <div class="rsh-icon"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="1" y="9" width="13" height="8" rx="2"/><path d="M14 13h2l2-4V9h-4"/><circle cx="5" cy="17" r="1.8"/><circle cx="13" cy="17" r="1.8"/></svg></div>
+      <div class="rsh-info"><h3>Trucker</h3><p>Views assigned shipments · Assigns driver and vehicle · Cannot create, share, or upload POD</p></div>
+      <span class="stag stag-orange" style="margin-left:auto;flex-shrink:0">2 Screens</span>
+    </div>
+
+    <!-- Screen 05 -->
+    <div class="screen-block" id="screen-05">
+      <div class="sys-panel">
+        <div class="sph"><span class="spnum spnum-o">05</span><span class="spname">My Shipments (Trucker)</span></div>
+        <div class="sys-grid">
+          <div class="sys-row"><span class="sys-key">Role</span><span class="sys-val">Trucker</span></div>
+          <div class="sys-row"><span class="sys-key">Accessible After</span><span class="sys-val">Transporter assigns Trucker to shipment</span></div>
+          <div class="sys-row"><span class="sys-key">Primary Action</span><span class="sys-val">View assigned shipments · Tap card to manage</span></div>
+          <div class="sys-row"><span class="sys-key">Status Change</span><span class="sys-val sv-mute">— read only</span></div>
+          <div class="sys-row"><span class="sys-key">Blocked If</span><span class="sys-val sv-red">No shipments assigned by Transporter</span></div>
+          <div class="sys-row"><span class="sys-key">Next Screen</span><span class="sys-val"><a href="#screen-06">→ Assign Driver (06)</a></span></div>
+        </div>
+      </div>
+      <a class="tile-link" href="trucker-dashboard.html" target="_blank">
+        <div class="tl-left">
+          <div class="tthumb tth-o"><svg width="17" height="17" viewBox="0 0 17 17"><rect x="2" y="3" width="13" height="11" rx="2"/><path d="M2 6.5h13"/><path d="M5.5 3V1M11.5 3V1"/></svg></div>
+          <div><div class="tname">My Shipments</div><div class="tdesc">Minimal cards · Transporter · Driver · Status badge · Company subtitle</div></div>
+        </div>
+        <span class="open-link">Open <svg width="12" height="12" viewBox="0 0 12 12"><line x1="2" y1="6" x2="10" y2="6"/><polyline points="7,3 10,6 7,9"/></svg></span>
+      </a>
+    </div>
+
+    <!-- Screen 06 -->
+    <div class="screen-block" id="screen-06">
+      <div class="sys-panel">
+        <div class="sph"><span class="spnum spnum-o">06</span><span class="spname">Assign Driver</span></div>
+        <div class="sys-grid">
+          <div class="sys-row"><span class="sys-key">Role</span><span class="sys-val">Trucker</span></div>
+          <div class="sys-row"><span class="sys-key">Accessible After</span><span class="sys-val">Shipment assigned to Trucker (Status: Assigned)</span></div>
+          <div class="sys-row"><span class="sys-key">Primary Action</span><span class="sys-val">Select driver · Enter vehicle number · Tap Assign Driver</span></div>
+          <div class="sys-row"><span class="sys-key">Status Change</span><span class="sys-val sv-mute">— driver recorded, no status change</span></div>
+          <div class="sys-row"><span class="sys-key">Blocked If</span><span class="sys-val sv-red">Re-assign blocked after POD uploaded</span></div>
+          <div class="sys-row"><span class="sys-key">Next Screen</span><span class="sys-val"><a href="#screen-05">← Back to My Shipments (05)</a></span></div>
+        </div>
+      </div>
+      <a class="tile-link" href="trucker-detail.html" target="_blank">
+        <div class="tl-left">
+          <div class="tthumb tth-o"><svg width="17" height="17" viewBox="0 0 17 17"><circle cx="8.5" cy="6" r="3.5"/><path d="M2 16.5c0-4 13-4 13 0"/></svg></div>
+          <div><div class="tname">Assign Driver</div><div class="tdesc">Driver dropdown · Vehicle number input · POD preview if already uploaded</div></div>
+        </div>
+        <span class="open-link">Open <svg width="12" height="12" viewBox="0 0 12 12"><line x1="2" y1="6" x2="10" y2="6"/><polyline points="7,3 10,6 7,9"/></svg></span>
+      </a>
+    </div>
+  </div>
+
+  <!-- ═══ 5. DRIVER SCREENS ═══ -->
+  <div class="section" id="driver">
+    <div class="rsh green">
+      <div class="rsh-icon"><svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="7" r="3.5"/><path d="M3 18c0-4.5 14-4.5 14 0"/></svg></div>
+      <div class="rsh-info"><h3>Driver</h3><p>Views assigned shipments · Captures and uploads POD · Cannot create, assign, or generate share links</p></div>
+      <span class="stag stag-green" style="margin-left:auto;flex-shrink:0">3 Screens</span>
+    </div>
+
+    <!-- Screen 07 -->
+    <div class="screen-block" id="screen-07">
+      <div class="sys-panel">
+        <div class="sph"><span class="spnum spnum-g">07</span><span class="spname">My Shipments (Driver)</span></div>
+        <div class="sys-grid">
+          <div class="sys-row"><span class="sys-key">Role</span><span class="sys-val">Driver</span></div>
+          <div class="sys-row"><span class="sys-key">Accessible After</span><span class="sys-val">Trucker assigns Driver to shipment</span></div>
+          <div class="sys-row"><span class="sys-key">Primary Action</span><span class="sys-val">Tap Upload POD on pending cards</span></div>
+          <div class="sys-row"><span class="sys-key">Status Change</span><span class="sys-val sv-mute">— triggers on camera screen</span></div>
+          <div class="sys-row"><span class="sys-key">Blocked If</span><span class="sys-val sv-red">Driver not assigned — no cards shown</span></div>
+          <div class="sys-row"><span class="sys-key">Next Screen</span><span class="sys-val"><a href="#screen-08">→ Camera Capture (08)</a></span></div>
+        </div>
+      </div>
+      <a class="tile-link" href="driver-dashboard.html" target="_blank">
+        <div class="tl-left">
+          <div class="tthumb tth-g"><svg width="17" height="17" viewBox="0 0 17 17"><rect x="2" y="3" width="13" height="11" rx="2"/><path d="M2 6.5h13"/><path d="M5.5 3V1M11.5 3V1"/></svg></div>
+          <div><div class="tname">My Shipments</div><div class="tdesc">Ultra-simple cards · Large Upload POD button · Green success row when submitted</div></div>
+        </div>
+        <span class="open-link">Open <svg width="12" height="12" viewBox="0 0 12 12"><line x1="2" y1="6" x2="10" y2="6"/><polyline points="7,3 10,6 7,9"/></svg></span>
+      </a>
+    </div>
+
+    <!-- Screen 08 -->
+    <div class="screen-block" id="screen-08">
+      <div class="sys-panel">
+        <div class="sph"><span class="spnum spnum-g">08</span><span class="spname">Camera Capture</span></div>
+        <div class="sys-grid">
+          <div class="sys-row"><span class="sys-key">Role</span><span class="sys-val">Driver</span></div>
+          <div class="sys-row"><span class="sys-key">Accessible After</span><span class="sys-val">Driver assigned · Tap Upload POD</span></div>
+          <div class="sys-row"><span class="sys-key">Primary Action</span><span class="sys-val">Align receipt in frame · Tap Confirm Upload</span></div>
+          <div class="sys-row"><span class="sys-key">Status Change</span><span class="sys-val sv-purp">→ POD Uploaded</span></div>
+          <div class="sys-row"><span class="sys-key">Blocked If</span><span class="sys-val sv-red">Driver not assigned to any shipment</span></div>
+          <div class="sys-row"><span class="sys-key">Next Screen</span><span class="sys-val"><a href="#screen-07">Retake → back to (07)</a> · <a href="#screen-09">Confirm → Success (09)</a></span></div>
+        </div>
+      </div>
+      <a class="tile-link" href="driver-upload.html" target="_blank">
+        <div class="tl-left">
+          <div class="tthumb tth-g"><svg width="17" height="17" viewBox="0 0 17 17"><rect x="2" y="2" width="13" height="13" rx="3"/><circle cx="8.5" cy="8" r="2.5"/><path d="M5 14a3.5 3.5 0 017 0"/></svg></div>
+          <div><div class="tname">Camera Capture</div><div class="tdesc">Full dark viewfinder · Corner bracket guide · Retake + Confirm Upload</div></div>
+        </div>
+        <span class="open-link">Open <svg width="12" height="12" viewBox="0 0 12 12"><line x1="2" y1="6" x2="10" y2="6"/><polyline points="7,3 10,6 7,9"/></svg></span>
+      </a>
+    </div>
+
+    <!-- Screen 09 -->
+    <div class="screen-block" id="screen-09">
+      <div class="sys-panel">
+        <div class="sph"><span class="spnum spnum-g">09</span><span class="spname">Upload Success</span></div>
+        <div class="sys-grid">
+          <div class="sys-row"><span class="sys-key">Role</span><span class="sys-val">Driver</span></div>
+          <div class="sys-row"><span class="sys-key">Accessible After</span><span class="sys-val">Confirm Upload tapped on camera screen</span></div>
+          <div class="sys-row"><span class="sys-key">Primary Action</span><span class="sys-val">Tap Back to Shipments</span></div>
+          <div class="sys-row"><span class="sys-key">Status Change</span><span class="sys-val sv-mute">— already changed to POD Uploaded</span></div>
+          <div class="sys-row"><span class="sys-key">Blocked If</span><span class="sys-val sv-mute">—</span></div>
+          <div class="sys-row"><span class="sys-key">Next Screen</span><span class="sys-val"><a href="#screen-07">← Back to My Shipments (07)</a></span></div>
+        </div>
+      </div>
+      <a class="tile-link" href="driver-success.html" target="_blank">
+        <div class="tl-left">
+          <div class="tthumb tth-g"><svg width="17" height="17" viewBox="0 0 17 17"><circle cx="8.5" cy="8.5" r="6.5"/><polyline points="5.5,8.5 7.5,10.5 11.5,6"/></svg></div>
+          <div><div class="tname">Upload Success</div><div class="tdesc">Large green checkmark · Confirmation with shipment ref · Back to Shipments CTA</div></div>
+        </div>
+        <span class="open-link">Open <svg width="12" height="12" viewBox="0 0 12 12"><line x1="2" y1="6" x2="10" y2="6"/><polyline points="7,3 10,6 7,9"/></svg></span>
+      </a>
+    </div>
+  </div>
+
+  <!-- ═══ 6. BROKER SCREEN ═══ -->
+  <div class="section" id="broker">
+    <div class="rsh gray">
+      <div class="rsh-icon"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="3" y="2" width="14" height="16" rx="2"/><path d="M7 7h6M7 10h6M7 13h4" stroke-linecap="round"/></svg></div>
+      <div class="rsh-info"><h3>Broker (Public)</h3><p>No login required · Accesses shipment via share link · View and download POD only</p></div>
+      <span class="stag stag-gray" style="margin-left:auto;flex-shrink:0">1 Screen</span>
+    </div>
+
+    <!-- Screen 10 -->
+    <div class="screen-block" id="screen-10">
+      <div class="sys-panel">
+        <div class="sph"><span class="spnum spnum-gr">10</span><span class="spname">Broker / Public Share View</span></div>
+        <div class="sys-grid">
+          <div class="sys-row"><span class="sys-key">Role</span><span class="sys-val">Broker — Public (no login)</span></div>
+          <div class="sys-row"><span class="sys-key">Accessible After</span><span class="sys-val">Transporter shares link · Status = Shared</span></div>
+          <div class="sys-row"><span class="sys-key">Primary Action</span><span class="sys-val">View shipment details · Download POD</span></div>
+          <div class="sys-row"><span class="sys-key">Status Change</span><span class="sys-val sv-mute">— read only, no auth</span></div>
+          <div class="sys-row"><span class="sys-key">Blocked If</span><span class="sys-val sv-red">Link expired (30 days) · Link not yet generated</span></div>
+          <div class="sys-row"><span class="sys-key">Next Screen</span><span class="sys-val sv-mute">— terminal public page</span></div>
+        </div>
+      </div>
+      <a class="tile-link" href="broker-view.html" target="_blank">
+        <div class="tl-left">
+          <div class="tthumb tth-gr"><svg width="17" height="17" viewBox="0 0 17 17"><rect x="2" y="1.5" width="13" height="14" rx="2"/><path d="M5.5 6h6M5.5 9h6M5.5 12h3.5" stroke-linecap="round"/></svg></div>
+          <div><div class="tname">Broker View</div><div class="tdesc">Centered web page · Shipment header · POD display · Download POD · Expiry footer</div></div>
+        </div>
+        <span class="open-link">Open <svg width="12" height="12" viewBox="0 0 12 12"><line x1="2" y1="6" x2="10" y2="6"/><polyline points="7,3 10,6 7,9"/></svg></span>
+      </a>
+    </div>
+  </div>
+
+  <!-- ═══ 6b. NATIVE SHARE FLOW ═══ -->
+  <div class="section" id="share-flow">
+    <div class="rsh blue">
+      <div class="rsh-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
+          <circle cx="15" cy="4" r="2"/>
+          <circle cx="15" cy="16" r="2"/>
+          <circle cx="5" cy="10" r="2"/>
+          <line x1="7" y1="9" x2="13" y2="5"/>
+          <line x1="7" y1="11" x2="13" y2="15"/>
+        </svg>
+      </div>
+      <div class="rsh-info"><h3>Native Share Flow</h3><p>OS share-target simulation · Attach incoming documents to shipments · Transporter role</p></div>
+      <span class="stag stag-blue" style="margin-left:auto;flex-shrink:0">2 Screens</span>
+    </div>
+
+    <!-- Screen 12 -->
+    <div class="screen-block" id="screen-12">
+      <div class="sys-panel">
+        <div class="sph"><span class="spnum spnum-b">12</span><span class="spname">Attach to Shipment</span></div>
+        <div class="sys-grid">
+          <div class="sys-row"><span class="sys-key">Role</span><span class="sys-val">Transporter</span></div>
+          <div class="sys-row"><span class="sys-key">Accessible After</span><span class="sys-val">Share image or doc to app via OS share sheet</span></div>
+          <div class="sys-row"><span class="sys-key">Primary Action</span><span class="sys-val">Select shipment from list · Tap Attach</span></div>
+          <div class="sys-row"><span class="sys-key">Status Change</span><span class="sys-val sv-mute">— document linked, no status change</span></div>
+          <div class="sys-row"><span class="sys-key">Blocked If</span><span class="sys-val sv-red">No shipment selected — button stays disabled</span></div>
+          <div class="sys-row"><span class="sys-key">Next Screen</span><span class="sys-val"><a href="#screen-13">→ Attach Success (13)</a></span></div>
+        </div>
+      </div>
+      <a class="tile-link" href="share-assign.html" target="_blank">
+        <div class="tl-left">
+          <div class="tthumb tth-b">
+            <svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linecap="round">
+              <circle cx="13" cy="3" r="2"/>
+              <circle cx="13" cy="14" r="2"/>
+              <circle cx="4" cy="8.5" r="2"/>
+              <line x1="6" y1="7.5" x2="11" y2="4"/>
+              <line x1="6" y1="9.5" x2="11" y2="13"/>
+            </svg>
+          </div>
+          <div><div class="tname">Attach to Shipment</div><div class="tdesc">OS share-sheet chrome · Document preview · Selectable shipment list · Sticky Attach CTA</div></div>
+        </div>
+        <span class="open-link">Open <svg width="12" height="12" viewBox="0 0 12 12"><line x1="2" y1="6" x2="10" y2="6"/><polyline points="7,3 10,6 7,9"/></svg></span>
+      </a>
+    </div>
+
+    <!-- Screen 13 -->
+    <div class="screen-block" id="screen-13">
+      <div class="sys-panel">
+        <div class="sph"><span class="spnum spnum-b">13</span><span class="spname">Attach Success</span></div>
+        <div class="sys-grid">
+          <div class="sys-row"><span class="sys-key">Role</span><span class="sys-val">Transporter</span></div>
+          <div class="sys-row"><span class="sys-key">Accessible After</span><span class="sys-val">Tap “Attach to Selected Shipment” on screen 12</span></div>
+          <div class="sys-row"><span class="sys-key">Primary Action</span><span class="sys-val">Tap Done to dismiss</span></div>
+          <div class="sys-row"><span class="sys-key">Status Change</span><span class="sys-val sv-mute">—</span></div>
+          <div class="sys-row"><span class="sys-key">Blocked If</span><span class="sys-val sv-mute">—</span></div>
+          <div class="sys-row"><span class="sys-key">Next Screen</span><span class="sys-val"><a href="#screen-01">← Dashboard (01)</a></span></div>
+        </div>
+      </div>
+      <a class="tile-link" href="share-assign-success.html" target="_blank">
+        <div class="tl-left">
+          <div class="tthumb tth-b">
+            <svg width="17" height="17" viewBox="0 0 17 17" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linecap="round">
+              <circle cx="8.5" cy="8.5" r="6.5"/>
+              <polyline points="5.5,8.5 7.5,10.5 11.5,6"/>
+            </svg>
+          </div>
+          <div><div class="tname">Attach Success</div><div class="tdesc">Green check · Document attached confirmation · Shipment ref · Done CTA</div></div>
+        </div>
+        <span class="open-link">Open <svg width="12" height="12" viewBox="0 0 12 12"><line x1="2" y1="6" x2="10" y2="6"/><polyline points="7,3 10,6 7,9"/></svg></span>
+      </a>
+    </div>
+  </div>
+
+  <!-- ═══ 7. EDGE CASES ═══ -->
+  <div class="section" id="edge-cases">
+    <div class="section-head"><h2>Edge Case Simulation</h2><span class="stag stag-purple">3 Scenarios</span></div>
+    <div class="edge-grid">
+
+      <div class="edge-card">
+        <div class="edge-header">
+          <div class="edge-ico red"><svg viewBox="0 0 15 15"><circle cx="7.5" cy="7.5" r="6"/><line x1="7.5" y1="4.5" x2="7.5" y2="8.5" stroke-linecap="round"/><circle cx="7.5" cy="11" r="0.8" fill="#ef4444" stroke="none"/></svg></div>
+          <span class="edge-title">Upload Without Assignment</span>
+        </div>
+        <p class="edge-body">Driver opens the app before Trucker has assigned them. The Upload POD button must not appear. The shipment list shows empty or a "waiting for assignment" prompt.</p>
+        <div class="edge-rule red">⛔ Block: <code>driver_id IS NULL</code> on Shipment row</div>
+      </div>
+
+      <div class="edge-card warn">
+        <div class="edge-header">
+          <div class="edge-ico amber"><svg viewBox="0 0 15 15"><path d="M7.5 2L14 13H1Z" stroke-linecap="round" stroke-linejoin="round"/><line x1="7.5" y1="5.5" x2="7.5" y2="9" stroke-linecap="round"/><circle cx="7.5" cy="11.5" r="0.8" fill="#f59e0b" stroke="none"/></svg></div>
+          <span class="edge-title">Regenerating Share Link</span>
+        </div>
+        <p class="edge-body">If Transporter generates a new share link, the old token is immediately invalidated. Any broker using the previous link will see an "Invalid Link" screen.</p>
+        <div class="edge-rule amber">⚠ Old <code>share_token</code> overwritten · 30-day expiry resets</div>
+      </div>
+
+      <div class="edge-card info">
+        <div class="edge-header">
+          <div class="edge-ico indigo"><svg viewBox="0 0 15 15"><circle cx="7.5" cy="7.5" r="6"/><line x1="7.5" y1="5" x2="7.5" y2="8" stroke-linecap="round"/><circle cx="7.5" cy="10.5" r="0.8" fill="#6366f1" stroke="none"/></svg></div>
+          <span class="edge-title">Expired Share Link Access</span>
+        </div>
+        <p class="edge-body">Broker opens a share link after 30 days. The public page shows "Link Expired" — no POD data is exposed. Transporter must generate a new link if needed.</p>
+        <div class="edge-rule indigo">ℹ Check: <code>share_expiry &lt; NOW()</code> → show expired state</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ 8. DATABASE SCHEMA ═══ -->
+  <div class="section" id="schema">
+    <div class="section-head"><h2>Database Reference</h2><span class="stag stag-gray">Visual Reference Only</span></div>
+    <div class="schema-grid">
+
+      <div class="schema-card">
+        <div class="schema-head">
+          <svg width="14" height="14" viewBox="0 0 14 14"><rect x="1" y="3" width="12" height="8" rx="1.5"/><line x1="1" y1="6" x2="13" y2="6"/><line x1="1" y1="9" x2="13" y2="9"/></svg>
+          <span class="schema-ename">User</span>
+          <span class="schema-elabel">entity</span>
+        </div>
+        <div>
+          <div class="schema-field"><span class="fname">id</span><span class="ftype">uuid</span><span class="fpk">PK</span></div>
+          <div class="schema-field"><span class="fname">name</span><span class="ftype">varchar(100)</span></div>
+          <div class="schema-field"><span class="fname">email</span><span class="ftype">varchar(150)</span></div>
+          <div class="schema-field"><span class="fname">role</span><span class="ftype">enum (transporter, trucker, driver)</span></div>
+          <div class="schema-field"><span class="fname">created_at</span><span class="ftype">timestamp</span></div>
+        </div>
+      </div>
+
+      <div class="schema-card">
+        <div class="schema-head">
+          <svg width="14" height="14" viewBox="0 0 14 14"><rect x="1" y="3" width="12" height="8" rx="1.5"/><line x1="1" y1="6" x2="13" y2="6"/><line x1="1" y1="9" x2="13" y2="9"/></svg>
+          <span class="schema-ename">Shipment</span>
+          <span class="schema-elabel">entity</span>
+        </div>
+        <div>
+          <div class="schema-field"><span class="fname">id</span><span class="ftype">uuid</span><span class="fpk">PK</span></div>
+          <div class="schema-field"><span class="fname">shipment_number</span><span class="ftype">varchar(60) unique</span></div>
+          <div class="schema-field"><span class="fname">transporter_id</span><span class="ftype">uuid → User</span><span class="ffk">FK</span></div>
+          <div class="schema-field"><span class="fname">trucker_id</span><span class="ftype">uuid → User (nullable)</span><span class="ffk">FK</span></div>
+          <div class="schema-field"><span class="fname">driver_id</span><span class="ftype">uuid → User (nullable)</span><span class="ffk">FK</span></div>
+          <div class="schema-field"><span class="fname">vehicle_number</span><span class="ftype">varchar(20)</span></div>
+          <div class="schema-field"><span class="fname">status</span><span class="ftype">enum (created, assigned, pod_uploaded, shared)</span></div>
+          <div class="schema-field"><span class="fname">pod_url</span><span class="ftype">text (nullable)</span></div>
+          <div class="schema-field"><span class="fname">share_token</span><span class="ftype">varchar(64) (nullable)</span></div>
+          <div class="schema-field"><span class="fname">share_expiry</span><span class="ftype">timestamp (nullable)</span></div>
+          <div class="schema-field"><span class="fname">created_at</span><span class="ftype">timestamp</span></div>
+          <div class="schema-field"><span class="fname">updated_at</span><span class="ftype">timestamp</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<div class="page-footer">
+  <span>Supply chain – Research &amp; Design Thinking · MVP · 13 Screens</span>
+  <a href="https://github.com/rajesh-pareek-1/engineering-lab/pull/2/changes" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:6px;color:#6b7280;text-decoration:none;font-weight:600;font-size:12px;">
+    <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="#6b7280" stroke-width="2"><path d="M7 1C3.69 1 1 3.69 1 7c0 2.65 1.72 4.9 4.1 5.69.3.05.41-.13.41-.29v-1.02c-1.67.36-2.02-.8-2.02-.8-.27-.69-.67-.87-.67-.87-.55-.37.04-.37.04-.37.6.04.92.62.92.62.54.92 1.41.65 1.75.5.06-.39.21-.65.38-.8-1.33-.15-2.73-.67-2.73-2.96 0-.65.23-1.19.62-1.6-.06-.15-.27-.76.06-1.58 0 0 .5-.16 1.65.62A5.75 5.75 0 017 4.37c.51 0 1.02.07 1.5.2 1.14-.78 1.64-.62 1.64-.62.33.82.12 1.43.06 1.58.39.41.62.95.62 1.6 0 2.3-1.4 2.8-2.74 2.95.22.19.41.55.41 1.11v1.65c0 .16.11.34.42.28C11.28 11.9 13 9.65 13 7c0-3.31-2.69-6-6-6z"/></svg>
+    engineering-lab / PR #2
+  </a>
+</div>
+
+<!-- ═══ FILE EXPLORER MODAL ═══ -->
+<div class="fe-overlay" id="fe-overlay" onclick="if(event.target===this)closeDocsExplorer()">
+  <div class="fe-modal">
+    <div class="fe-mhead">
+      <div class="fe-mhead-ico">
+        <svg width="18" height="18" viewBox="0 0 18 18"><path d="M1.5 4.5A1.5 1.5 0 013 3h4l1.5 1.5H15a1.5 1.5 0 011.5 1.5V13.5A1.5 1.5 0 0115 15H3a1.5 1.5 0 01-1.5-1.5V4.5z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="fe-mhead-info">
+        <span class="fe-mhead-title">Project Documents</span>
+        <span class="fe-mhead-sub" id="fe-sub">Browsing /docs</span>
+      </div>
+      <button class="fe-mclose" onclick="closeDocsExplorer()">
+        <svg width="12" height="12" viewBox="0 0 12 12"><line x1="2" y1="2" x2="10" y2="10"/><line x1="10" y1="2" x2="2" y2="10"/></svg>
+      </button>
+    </div>
+    <div class="fe-mbody" id="fe-body"></div>
+    <div class="fe-mfoot">Place files in <code style="background:#f3f4f6;padding:1px 6px;border-radius:4px">/docs</code> and add entries to <code style="background:#f3f4f6;padding:1px 6px;border-radius:4px">docs/manifest.json</code> to list them here.</div>
+  </div>
+</div>
+
+<script>
+  // Highlight active nav section on scroll
+  const sections = document.querySelectorAll('[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 72) current = s.id; });
+    navLinks.forEach(a => {
+      const active = a.getAttribute('href') === '#' + current;
+      a.style.background = active ? '#f0f4ff' : '';
+    });
+  }, { passive: true });
+
+  // ── FILE EXPLORER ──
+  function openDocsExplorer() {
+    document.getElementById('fe-overlay').classList.add('open');
+    document.getElementById('fe-sub').textContent = 'Loading…';
+    document.getElementById('fe-body').innerHTML = '<div style="padding:32px;text-align:center;color:#d1d5db;font-size:13px;font-weight:600;">Loading…</div>';
+    fetch('docs/manifest.json')
+      .then(r => r.json())
+      .then(data => renderFileList(data.files || []))
+      .catch(() => renderFileList([]));
+  }
+
+  function closeDocsExplorer() {
+    document.getElementById('fe-overlay').classList.remove('open');
+  }
+
+  function fileIconClass(type) {
+    const t = (type || '').toLowerCase();
+    if (t === 'pdf')  return 'pdf';
+    if (t === 'md')   return 'md';
+    if (t === 'docx' || t === 'doc') return 'docx';
+    if (t === 'xlsx' || t === 'xls') return 'xlsx';
+    return 'other';
+  }
+
+  function renderFileList(files) {
+    const sub  = document.getElementById('fe-sub');
+    const body = document.getElementById('fe-body');
+    sub.textContent = files.length + ' file' + (files.length !== 1 ? 's' : '') + ' in /docs';
+    if (!files.length) {
+      body.innerHTML = `
+        <div class="fe-empty">
+          <div class="fe-empty-ico">
+            <svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="#d1d5db" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 6.5A2 2 0 015 4.5h5l2 2h9a2 2 0 012 2V19a2 2 0 01-2 2H5a2 2 0 01-2-2V6.5z"/>
+            </svg>
+          </div>
+          <span class="fe-empty-title">No documents yet</span>
+          <span class="fe-empty-hint">Place files in the <code style="background:#f3f4f6;padding:1px 6px;border-radius:4px;font-size:11px">/docs</code> folder<br>and add entries to <code style="background:#f3f4f6;padding:1px 6px;border-radius:4px;font-size:11px">docs/manifest.json</code></span>
+        </div>`;
+      return;
+    }
+    body.innerHTML = '<div class="fe-list">' + files.map(f => {
+      const cls  = fileIconClass(f.type);
+      const ext  = (f.type || 'FILE').toUpperCase();
+      const meta = [f.size, f.description].filter(Boolean).join(' · ');
+      return `
+        <div class="fe-item">
+          <div class="fe-ficon ${cls}">${ext}</div>
+          <div style="min-width:0;flex:1">
+            <div class="fe-fname">${f.name || f.filename}</div>
+            ${meta ? `<div class="fe-fmeta">${meta}</div>` : ''}
+          </div>
+          <a class="fe-dl" href="docs/${f.filename}" download>
+            <svg width="12" height="12" viewBox="0 0 12 12"><line x1="6" y1="1" x2="6" y2="8"/><polyline points="3,6 6,9 9,6"/><line x1="1" y1="11" x2="11" y2="11"/></svg>
+            Download
+          </a>
+        </div>`;
+    }).join('') + '</div>';
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDocsExplorer(); });
+</script>
+
+</body>
+</html>

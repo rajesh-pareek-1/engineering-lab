@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Transporter Dashboard – Shipments</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #f0f2f5;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 16px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    /* ── Phone Frame ── */
+    .phone {
+      width: 390px;
+      min-height: 844px;
+      background: #f5f6fa;
+      border-radius: 44px;
+      border: 10px solid #1a1a2e;
+      box-shadow:
+        0 0 0 2px #2e2e4a,
+        0 30px 80px rgba(0,0,0,0.35),
+        inset 0 0 0 1px rgba(255,255,255,0.08);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Notch */
+    .notch {
+      width: 120px;
+      height: 30px;
+      background: #1a1a2e;
+      border-radius: 0 0 20px 20px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 10;
+      flex-shrink: 0;
+    }
+
+    /* Status bar */
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 24px 4px;
+      background: #ffffff;
+      flex-shrink: 0;
+    }
+    .status-bar .time {
+      font-size: 13px;
+      font-weight: 600;
+      color: #111;
+    }
+    .status-bar .icons {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .status-bar .icons svg {
+      fill: #111;
+    }
+
+    /* ── App Header ── */
+    .app-header {
+      background: #ffffff;
+      padding: 16px 20px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #ebebf0;
+      flex-shrink: 0;
+    }
+    .app-header .title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #111827;
+      letter-spacing: -0.4px;
+    }
+    .add-btn {
+      width: 38px;
+      height: 38px;
+      background: #2563eb;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(37,99,235,0.35);
+    }
+    .add-btn svg {
+      stroke: #fff;
+      stroke-width: 2.5;
+    }
+
+    /* ── Scrollable Body ── */
+    .body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 14px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      scrollbar-width: none;
+    }
+    .body::-webkit-scrollbar { display: none; }
+
+    /* ── Shipment Card ── */
+    .card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow:
+        0 1px 3px rgba(0,0,0,0.06),
+        0 4px 16px rgba(0,0,0,0.07);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      border: 1px solid #f0f0f5;
+    }
+
+    /* Card top row */
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .shipment-num {
+      font-size: 16px;
+      font-weight: 700;
+      color: #111827;
+      letter-spacing: -0.2px;
+    }
+
+    /* Status badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+      letter-spacing: 0.2px;
+      text-transform: uppercase;
+    }
+    .badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .badge-created     { background: #eff6ff; color: #1d4ed8; }
+    .badge-created::before { background: #3b82f6; }
+
+    .badge-assigned    { background: #fff7ed; color: #c2410c; }
+    .badge-assigned::before { background: #f97316; }
+
+    .badge-pod         { background: #f5f3ff; color: #6d28d9; }
+    .badge-pod::before { background: #8b5cf6; }
+
+    .badge-shared      { background: #f0fdf4; color: #15803d; }
+    .badge-shared::before { background: #22c55e; }
+
+    /* Card details grid */
+    .card-details {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .detail-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .detail-icon {
+      width: 18px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .detail-icon svg {
+      width: 15px;
+      height: 15px;
+    }
+    .detail-label {
+      font-size: 11.5px;
+      color: #9ca3af;
+      font-weight: 500;
+      min-width: 90px;
+    }
+    .detail-value {
+      font-size: 13px;
+      color: #374151;
+      font-weight: 500;
+    }
+    .detail-value.unassigned {
+      color: #d1d5db;
+      font-style: italic;
+    }
+
+    /* Divider */
+    .card-divider {
+      height: 1px;
+      background: #f3f4f6;
+    }
+
+    /* Timestamp */
+    .card-footer {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .card-footer svg {
+      width: 13px;
+      height: 13px;
+      stroke: #9ca3af;
+      flex-shrink: 0;
+    }
+    .timestamp {
+      font-size: 11.5px;
+      color: #9ca3af;
+      font-weight: 400;
+    }
+
+    /* ── Home Indicator ── */
+    .home-indicator {
+      height: 24px;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .home-indicator span {
+      width: 120px;
+      height: 4px;
+      background: #1a1a2e;
+      border-radius: 4px;
+      opacity: 0.25;
+    }
+
+    /* ── WhatsApp card indicator ── */
+    .card-top-right {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex-shrink: 0;
+    }
+    .wa-card-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 9px;
+      background: #dcfce7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .wa-card-btn svg { fill: #16a34a; }
+  </style>
+</head>
+<body>
+
+<div class="phone">
+
+  <!-- Notch -->
+  <div class="notch"></div>
+
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span class="time">10:41</span>
+    <div class="icons">
+      <!-- Signal -->
+      <svg width="17" height="12" viewBox="0 0 17 12">
+        <rect x="0"  y="8"  width="3" height="4" rx="1"/>
+        <rect x="4.5" y="5" width="3" height="7" rx="1"/>
+        <rect x="9" y="2.5" width="3" height="9.5" rx="1"/>
+        <rect x="13.5" y="0" width="3" height="12" rx="1"/>
+      </svg>
+      <!-- Wifi -->
+      <svg width="16" height="12" viewBox="0 0 16 12">
+        <path d="M8 9.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3z"/>
+        <path d="M3.5 6.5a6.5 6.5 0 019 0" fill="none" stroke="#111" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M1 3.5a10 10 0 0114 0" fill="none" stroke="#111" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <!-- Battery -->
+      <svg width="25" height="12" viewBox="0 0 25 12">
+        <rect x="0" y="1" width="21" height="10" rx="2.5" stroke="#111" stroke-width="1.2" fill="none"/>
+        <rect x="1.5" y="2.5" width="15" height="7" rx="1.5" fill="#111"/>
+        <path d="M22 4v4a2 2 0 000-4z"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- App Header -->
+  <div class="app-header">
+    <span class="title">Shipments</span>
+    <div class="add-btn">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <line x1="9" y1="3" x2="9" y2="15"/>
+        <line x1="3" y1="9" x2="15" y2="9"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="body">
+
+    <!-- Card 1 -->
+    <div class="card">
+      <div class="card-top">
+        <span class="shipment-num">SHP-2025-00142</span>
+        <div class="card-top-right">
+          <span class="badge badge-shared">Shared</span>
+          <a class="wa-card-btn" href="whatsapp://send?phone=919876543210" title="WhatsApp broker">
+            <svg width="16" height="16" viewBox="0 0 24 24">
+              <path d="M12 2C6.477 2 2 6.477 2 12c0 1.821.487 3.53 1.338 5.003L2 22l5.145-1.342A9.956 9.956 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm5 14.003c-.21.588-1.236 1.131-1.694 1.171-.458.04-.47.363-2.962-.617-2.492-.98-4.007-3.528-4.127-3.688-.12-.16-.977-1.298-.977-2.477 0-1.18.617-1.763.836-2.003.22-.24.478-.3.637-.3.16 0 .319 0 .458.008.147.007.345.017.53.502.2.513.674 1.648.734 1.768.06.12.1.26.02.42-.08.16-.12.26-.24.4-.12.14-.252.31-.36.417-.12.117-.245.244-.105.48.14.236.62 1.02 1.33 1.65.913.81 1.683 1.06 1.918 1.18.235.12.37.1.507-.06.136-.16.578-.677.732-.909.154-.232.307-.193.518-.116.21.077 1.333.629 1.562.744.23.116.383.174.44.272.057.1.057.577-.154 1.165z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-details">
+        <div class="detail-row">
+          <div class="detail-icon">
+            <svg viewBox="0 0 15 15" fill="none" stroke="#6b7280" stroke-width="1.4" stroke-linecap="round">
+              <rect x="1" y="3" width="13" height="10" rx="2"/>
+              <path d="M1 6h13"/>
+              <path d="M5 3V1M10 3V1"/>
+            </svg>
+          </div>
+          <span class="detail-label">Trucker</span>
+          <span class="detail-value">Arjun Transport Co.</span>
+        </div>
+        <div class="detail-row">
+          <div class="detail-icon">
+            <svg viewBox="0 0 15 15" fill="none" stroke="#6b7280" stroke-width="1.4" stroke-linecap="round">
+              <circle cx="7.5" cy="5" r="3"/>
+              <path d="M2 14c0-3.5 11-3.5 11 0"/>
+            </svg>
+          </div>
+          <span class="detail-label">Driver</span>
+          <span class="detail-value">Ramesh Kumar</span>
+        </div>
+        <div class="detail-row">
+          <div class="detail-icon">
+            <svg viewBox="0 0 15 15" fill="none" stroke="#6b7280" stroke-width="1.4" stroke-linecap="round">
+              <rect x="1" y="5" width="13" height="7" rx="1.5"/>
+              <path d="M4 5V4a3 3 0 016 0v1"/>
+              <circle cx="4.5" cy="11" r="1.5" fill="#6b7280" stroke="none"/>
+              <circle cx="10.5" cy="11" r="1.5" fill="#6b7280" stroke="none"/>
+            </svg>
+          </div>
+          <span class="detail-label">Vehicle No.</span>
+          <span class="detail-value">MH 04 GH 7821</span>
+        </div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-footer">
+        <svg viewBox="0 0 13 13" fill="none" stroke-linecap="round">
+          <circle cx="6.5" cy="6.5" r="5.5"/>
+          <path d="M6.5 3.5v3l2 1.5"/>
+        </svg>
+        <span class="timestamp">Updated 2 hours ago · 21 Feb 2025, 08:14 AM</span>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="card">
+      <div class="card-top">
+        <span class="shipment-num">SHP-2025-00139</span>
+        <span class="badge badge-pod">POD Uploaded</span>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-details">
+        <div class="detail-row">
+          <div class="detail-icon">
+            <svg viewBox="0 0 15 15" fill="none" stroke="#6b7280" stroke-width="1.4" stroke-linecap="round">
+              <rect x="1" y="3" width="13" height="10" rx="2"/>
+              <path d="M1 6h13"/>
+              <path d="M5 3V1M10 3V1"/>
+            </svg>
+          </div>
+          <span class="detail-label">Trucker</span>
+          <span class="detail-value">Bharat Logistics</span>
+        </div>
+        <div class="detail-row">
+          <div class="detail-icon">
+            <svg viewBox="0 0 15 15" fill="none" stroke="#6b7280" stroke-width="1.4" stroke-linecap="round">
+              <circle cx="7.5" cy="5" r="3"/>
+              <path d="M2 14c0-3.5 11-3.5 11 0"/>
+            </svg>
+          </div>
+          <span class="detail-label">Driver</span>
+          <span class="detail-value">Suresh Yadav</span>
+        </div>
+        <div class="detail-row">
+          <div class="detail-icon">
+            <svg viewBox="0 0 15 15" fill="none" stroke="#6b7280" stroke-width="1.4" stroke-linecap="round">
+              <rect x="1" y="5" width="13" height="7" rx="1.5"/>
+              <path d="M4 5V4a3 3 0 016 0v1"/>
+              <circle cx="4.5" cy="11" r="1.5" fill="#6b7280" stroke="none"/>
+              <circle cx="10.5" cy="11" r="1.5" fill="#6b7280" stroke="none"/>
+            </svg>
+          </div>
+          <span class="detail-label">Vehicle No.</span>
+          <span class="detail-value">KA 09 AB 3312</span>
+        </div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-footer">
+        <svg viewBox="0 0 13 13" fill="none" stroke-linecap="round">
+          <circle cx="6.5" cy="6.5" r="5.5"/>
+          <path d="M6.5 3.5v3l2 1.5"/>
+        </svg>
+        <span class="timestamp">Updated 5 hours ago · 21 Feb 2025, 05:30 AM</span>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="card">
+      <div class="card-top">
+        <span class="shipment-num">SHP-2025-00137</span>
+        <span class="badge badge-assigned">Assigned</span>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-details">
+        <div class="detail-row">
+          <div class="detail-icon">
+            <svg viewBox="0 0 15 15" fill="none" stroke="#6b7280" stroke-width="1.4" stroke-linecap="round">
+              <rect x="1" y="3" width="13" height="10" rx="2"/>
+              <path d="M1 6h13"/>
+              <path d="M5 3V1M10 3V1"/>
+            </svg>
+          </div>
+          <span class="detail-label">Trucker</span>
+          <span class="detail-value">Sai Road Carriers</span>
+        </div>
+        <div class="detail-row">
+          <div class="detail-icon">
+            <svg viewBox="0 0 15 15" fill="none" stroke="#6b7280" stroke-width="1.4" stroke-linecap="round">
+              <circle cx="7.5" cy="5" r="3"/>
+              <path d="M2 14c0-3.5 11-3.5 11 0"/>
+            </svg>
+          </div>
+          <span class="detail-label">Driver</span>
+          <span class="detail-value">Vijay Patil</span>
+        </div>
+        <div class="detail-row">
+          <div class="detail-icon">
+            <svg viewBox="0 0 15 15" fill="none" stroke="#6b7280" stroke-width="1.4" stroke-linecap="round">
+              <rect x="1" y="5" width="13" height="7" rx="1.5"/>
+              <path d="M4 5V4a3 3 0 016 0v1"/>
+              <circle cx="4.5" cy="11" r="1.5" fill="#6b7280" stroke="none"/>
+              <circle cx="10.5" cy="11" r="1.5" fill="#6b7280" stroke="none"/>
+            </svg>
+          </div>
+          <span class="detail-label">Vehicle No.</span>
+          <span class="detail-value">GJ 01 CX 5549</span>
+        </div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-footer">
+        <svg viewBox="0 0 13 13" fill="none" stroke-linecap="round">
+          <circle cx="6.5" cy="6.5" r="5.5"/>
+          <path d="M6.5 3.5v3l2 1.5"/>
+        </svg>
+        <span class="timestamp">Updated yesterday · 20 Feb 2025, 06:45 PM</span>
+      </div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="card">
+      <div class="card-top">
+        <span class="shipment-num">SHP-2025-00135</span>
+        <span class="badge badge-created">Created</span>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-details">
+        <div class="detail-row">
+          <div class="detail-icon">
+            <svg viewBox="0 0 15 15" fill="none" stroke="#6b7280" stroke-width="1.4" stroke-linecap="round">
+              <rect x="1" y="3" width="13" height="10" rx="2"/>
+              <path d="M1 6h13"/>
+              <path d="M5 3V1M10 3V1"/>
+            </svg>
+          </div>
+          <span class="detail-label">Trucker</span>
+          <span class="detail-value unassigned">Not Assigned</span>
+        </div>
+        <div class="detail-row">
+          <div class="detail-icon">
+            <svg viewBox="0 0 15 15" fill="none" stroke="#6b7280" stroke-width="1.4" stroke-linecap="round">
+              <circle cx="7.5" cy="5" r="3"/>
+              <path d="M2 14c0-3.5 11-3.5 11 0"/>
+            </svg>
+          </div>
+          <span class="detail-label">Driver</span>
+          <span class="detail-value unassigned">Not Assigned</span>
+        </div>
+        <div class="detail-row">
+          <div class="detail-icon">
+            <svg viewBox="0 0 15 15" fill="none" stroke="#6b7280" stroke-width="1.4" stroke-linecap="round">
+              <rect x="1" y="5" width="13" height="7" rx="1.5"/>
+              <path d="M4 5V4a3 3 0 016 0v1"/>
+              <circle cx="4.5" cy="11" r="1.5" fill="#6b7280" stroke="none"/>
+              <circle cx="10.5" cy="11" r="1.5" fill="#6b7280" stroke="none"/>
+            </svg>
+          </div>
+          <span class="detail-label">Vehicle No.</span>
+          <span class="detail-value unassigned">Not Assigned</span>
+        </div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-footer">
+        <svg viewBox="0 0 13 13" fill="none" stroke-linecap="round">
+          <circle cx="6.5" cy="6.5" r="5.5"/>
+          <path d="M6.5 3.5v3l2 1.5"/>
+        </svg>
+        <span class="timestamp">Updated yesterday · 20 Feb 2025, 02:10 PM</span>
+      </div>
+    </div>
+
+    <!-- Card 5 -->
+    <div class="card">
+      <div class="card-top">
+        <span class="shipment-num">SHP-2025-00130</span>
+        <span class="badge badge-shared">Shared</span>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-details">
+        <div class="detail-row">
+          <div class="detail-icon">
+            <svg viewBox="0 0 15 15" fill="none" stroke="#6b7280" stroke-width="1.4" stroke-linecap="round">
+              <rect x="1" y="3" width="13" height="10" rx="2"/>
+              <path d="M1 6h13"/>
+              <path d="M5 3V1M10 3V1"/>
+            </svg>
+          </div>
+          <span class="detail-label">Trucker</span>
+          <span class="detail-value">Hanuman Freight</span>
+        </div>
+        <div class="detail-row">
+          <div class="detail-icon">
+            <svg viewBox="0 0 15 15" fill="none" stroke="#6b7280" stroke-width="1.4" stroke-linecap="round">
+              <circle cx="7.5" cy="5" r="3"/>
+              <path d="M2 14c0-3.5 11-3.5 11 0"/>
+            </svg>
+          </div>
+          <span class="detail-label">Driver</span>
+          <span class="detail-value">Dinesh Sharma</span>
+        </div>
+        <div class="detail-row">
+          <div class="detail-icon">
+            <svg viewBox="0 0 15 15" fill="none" stroke="#6b7280" stroke-width="1.4" stroke-linecap="round">
+              <rect x="1" y="5" width="13" height="7" rx="1.5"/>
+              <path d="M4 5V4a3 3 0 016 0v1"/>
+              <circle cx="4.5" cy="11" r="1.5" fill="#6b7280" stroke="none"/>
+              <circle cx="10.5" cy="11" r="1.5" fill="#6b7280" stroke="none"/>
+            </svg>
+          </div>
+          <span class="detail-label">Vehicle No.</span>
+          <span class="detail-value">RJ 14 SA 9900</span>
+        </div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-footer">
+        <svg viewBox="0 0 13 13" fill="none" stroke-linecap="round">
+          <circle cx="6.5" cy="6.5" r="5.5"/>
+          <path d="M6.5 3.5v3l2 1.5"/>
+        </svg>
+        <span class="timestamp">Updated 2 days ago · 19 Feb 2025, 11:00 AM</span>
+      </div>
+    </div>
+
+    <!-- Card 6 -->
+    <div class="card">
+      <div class="card-top">
+        <span class="shipment-num">SHP-2025-00128</span>
+        <span class="badge badge-pod">POD Uploaded</span>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-details">
+        <div class="detail-row">
+          <div class="detail-icon">
+            <svg viewBox="0 0 15 15" fill="none" stroke="#6b7280" stroke-width="1.4" stroke-linecap="round">
+              <rect x="1" y="3" width="13" height="10" rx="2"/>
+              <path d="M1 6h13"/>
+              <path d="M5 3V1M10 3V1"/>
+            </svg>
+          </div>
+          <span class="detail-label">Trucker</span>
+          <span class="detail-value">Shree Ganesh Trans.</span>
+        </div>
+        <div class="detail-row">
+          <div class="detail-icon">
+            <svg viewBox="0 0 15 15" fill="none" stroke="#6b7280" stroke-width="1.4" stroke-linecap="round">
+              <circle cx="7.5" cy="5" r="3"/>
+              <path d="M2 14c0-3.5 11-3.5 11 0"/>
+            </svg>
+          </div>
+          <span class="detail-label">Driver</span>
+          <span class="detail-value">Manoj Tiwari</span>
+        </div>
+        <div class="detail-row">
+          <div class="detail-icon">
+            <svg viewBox="0 0 15 15" fill="none" stroke="#6b7280" stroke-width="1.4" stroke-linecap="round">
+              <rect x="1" y="5" width="13" height="7" rx="1.5"/>
+              <path d="M4 5V4a3 3 0 016 0v1"/>
+              <circle cx="4.5" cy="11" r="1.5" fill="#6b7280" stroke="none"/>
+              <circle cx="10.5" cy="11" r="1.5" fill="#6b7280" stroke="none"/>
+            </svg>
+          </div>
+          <span class="detail-label">Vehicle No.</span>
+          <span class="detail-value">UP 32 BT 4411</span>
+        </div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-footer">
+        <svg viewBox="0 0 13 13" fill="none" stroke-linecap="round">
+          <circle cx="6.5" cy="6.5" r="5.5"/>
+          <path d="M6.5 3.5v3l2 1.5"/>
+        </svg>
+        <span class="timestamp">Updated 3 days ago · 18 Feb 2025, 04:22 PM</span>
+      </div>
+    </div>
+
+  </div><!-- /body -->
+
+  <!-- Home Indicator -->
+  <div class="home-indicator"><span></span></div>
+
+</div><!-- /phone -->
+
+</body>
+</html>
