@@ -42,6 +42,62 @@ PodTracker.Db (DbContext / Database)
 ↓
 PodTracker.Entities (Domain Models)
 
+# Clone the Repository
+
+Clone the project:
+
+git clone <repository-url>
+
+Navigate into backend folder:
+
+cd backend
+
+---
+
+# Restore Dependencies
+
+Restore NuGet packages:
+
+dotnet restore
+
+---
+
+# Build the Solution
+
+Build the project:
+
+dotnet build
+
+---
+
+# Open Project in Visual Studio
+
+1. Open **Visual Studio**
+2. Click **Open a project or solution**
+3. Navigate to the backend folder
+4. Select:
+
+PodTracker.slnx
+
+5. Click **Open**
+
+---
+
+# Run the Project
+
+Set the startup project:
+
+PodTracker.AppHost
+
+Then run the application:
+
+F5
+
+or click **Start Debugging**.
+
+---
+
+
 ## Running the Project
 
 Run the Aspire host:
