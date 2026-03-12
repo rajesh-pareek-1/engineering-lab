@@ -21,46 +21,85 @@ _Focus: Syntax basics and introductory OOP concepts._
 
 These questions distinguish a **Systems Engineer** from a "feature coder" by testing their understanding of **resource taxes and trade-offs** .
 
-1. **Reflection (5):** Tests understanding of runtime metadata and performance overhead.
-2. **IEnumerable vs. IEnumerator (47):** Shows if the dev understands state management during iteration.
-3. **Throw vs. Throw ex (56/25):** A classic differentiator; using `throw ex` destroys the diagnostic trail.
-4. **Generics Performance (57):** Differentiates those who know about boxing taxes.
-5. **IEnumerable vs. IQueryable (64/133):** Critical for preventing the **N+1 problem** by moving filtering to the DB.
-6. **Private Constructors (72):** Tests knowledge of the **Singleton Pattern** and inheritance prevention.
-7. **Destructors (74):** Differentiates between managed and unmanaged cleanup.
-8. **Boxing/Unboxing Performance (77):** Tests "Heap-allocation tax" awareness.
-9. **GC Generations (80):** Shows if the dev understands how to minimize "Stop-the-World" pauses.
-10. **Dispose vs. Finalize (81):** Essential for preventing **production socket/connection exhaustion** .
-11. **Circular Reference (85):** Tests knowledge of memory leaks in complex object graphs.
-12. **ConfigureServices vs. Configure (92/93):** Differentiates between **DI registration** and **Middleware pipeline** setup.
-13. **Request Processing Pipeline (94):** Shows a holistic view of how a request survives the server.
-14. **Custom Middleware (104):** Testing the ability to handle **cross-cutting concerns** like auth or logging.
-15. **Request Delegate (106):** Tests low-level understanding of the ASP.NET pipeline.
-16. **DI Lifetimes (AddSingleton, etc.) (120/121):** Critical to prevent **Captive Dependencies** that crash production apps.
-17. **Connected vs. Disconnected Architecture (172):** Tests data-at-rest vs. data-in-flight strategy.
-18. **ORM Approcahes (180):** Tests the ROI of Code-First vs. DB-First in a CI/CD environment.
-19. **Web API vs. MVC Controller (189):** Tests understanding of content negotiation and statelessness.
-20. **Basic vs. API Key vs. JWT Auth (191/195):** Tests the ability to choose the right security layer for N tenants.
-21. **Content Negotiation (201):** Differentiates those who understand API flexibility.
-22. **In-Memory vs. Distributed Caching (231):** Tests scalability awareness for **Web Farms** .
-23. **Global Exception Handling (232):** Tests "Production Paranoia" and consistent error responses.
-24. **SOLID: Single Responsibility (235):** Tests ability to keep logic pure and testable.
-25. **SOLID: Open-Closed (236):** Testing if they use **Polymorphic Strategies** over deep `if-else` blocks.
-26. **SOLID: Liskov Substitution (237):** The primary reason "clean" architectures fail in edge cases.
-27. **SOLID: Dependency Inversion (239):** Tests understanding of **Domain Purity** vs. Infrastructure.
-28. **Singleton Thread Safety (247):** Tests awareness of race conditions in high-concurrency.
-29. **Factory vs. Abstract Factory (248/250):** Tests ability to manage complex object families in SaaS.
-30. **Process vs. Thread (141):** Testing OS-level resource understanding.
-31. **Task vs. Thread (143):** Testing knowledge of the **Thread Pool** and async efficiency.
-32. **Lock Statement (144):** Essential for thread-safe state mutations.
-33. **ACID Properties (144/37):** Testing the foundation of reliable transaction management.
-34. **Stored Procedure vs. Function (138/35):** Testing data logic location strategy.
-35. **Nth Highest Salary (143/37):** Testing complex SQL set-based logic over procedural row-thinking.
-36. **View vs. Subquery (124/126):** Testing logical abstraction vs. query performance.
-37. **Primary Key vs. Unique Key (122):** Testing knowledge of **Clustered vs. Non-clustered index** physical storage.
-38. **CORS Restrictions (155/230):** Testing web security boundary knowledge.
-39. **OData/Attribute Routing (181/154):** Testing modern API discoverability and contract management.
-40. **Wait vs. Await (139):** (Implicit in Task questions) Tests understanding of **context switching** vs. thread blocking.
+**Reflection (5):** Tests understanding of runtime metadata and performance overhead.
+
+**IEnumerable vs. IEnumerator (47):** Shows if the dev understands state management during iteration.
+
+**Throw vs. Throw ex (56/25):** A classic differentiator; using `throw ex` destroys the diagnostic trail.
+
+**Generics Performance (57):** Differentiates those who know about boxing taxes.
+
+**IEnumerable vs. IQueryable (64/133):** Critical for preventing the **N+1 problem** by moving filtering to the DB.
+
+**Private Constructors (72):** Tests knowledge of the **Singleton Pattern** and inheritance prevention.
+
+**Destructors (74):** Differentiates between managed and unmanaged cleanup.
+
+**Boxing/Unboxing Performance (77):** Tests "Heap-allocation tax" awareness.
+
+**GC Generations (80):** Shows if the dev understands how to minimize "Stop-the-World" pauses.
+
+**Dispose vs. Finalize (81):** Essential for preventing **production socket/connection exhaustion** .
+
+**Circular Reference (85):** Tests knowledge of memory leaks in complex object graphs.
+
+**ConfigureServices vs. Configure (92/93):** Differentiates between **DI registration** and **Middleware pipeline** setup.
+
+**Request Processing Pipeline (94):** Shows a holistic view of how a request survives the server.
+
+**Custom Middleware (104):** Testing the ability to handle **cross-cutting concerns** like auth or logging.
+
+**Request Delegate (106):** Tests low-level understanding of the ASP.NET pipeline.
+
+**DI Lifetimes (AddSingleton, etc.) (120/121):** Critical to prevent **Captive Dependencies** that crash production apps.
+
+**Connected vs. Disconnected Architecture (172):** Tests data-at-rest vs. data-in-flight strategy.
+
+**ORM Approcahes (180):** Tests the ROI of Code-First vs. DB-First in a CI/CD environment.
+
+**Web API vs. MVC Controller (189):** Tests understanding of content negotiation and statelessness.
+
+**Basic vs. API Key vs. JWT Auth (191/195):** Tests the ability to choose the right security layer for N tenants.
+
+**Content Negotiation (201):** Differentiates those who understand API flexibility.
+
+**In-Memory vs. Distributed Caching (231):** Tests scalability awareness for **Web Farms** .
+
+**Global Exception Handling (232):** Tests "Production Paranoia" and consistent error responses.
+
+**SOLID: Single Responsibility (235):** Tests ability to keep logic pure and testable.
+
+**SOLID: Open-Closed (236):** Testing if they use **Polymorphic Strategies** over deep `if-else` blocks.
+
+**SOLID: Liskov Substitution (237):** The primary reason "clean" architectures fail in edge cases.
+
+**SOLID: Dependency Inversion (239):** Tests understanding of **Domain Purity** vs. Infrastructure.
+
+**Singleton Thread Safety (247):** Tests awareness of race conditions in high-concurrency.
+
+**Factory vs. Abstract Factory (248/250):** Tests ability to manage complex object families in SaaS.
+
+**Process vs. Thread (141):** Testing OS-level resource understanding.
+
+**Task vs. Thread (143):** Testing knowledge of the **Thread Pool** and async efficiency.
+
+**Lock Statement (144):** Essential for thread-safe state mutations.
+
+**ACID Properties (144/37):** Testing the foundation of reliable transaction management.
+
+**Stored Procedure vs. Function (138/35):** Testing data logic location strategy.
+
+**Nth Highest Salary (143/37):** Testing complex SQL set-based logic over procedural row-thinking.
+
+**View vs. Subquery (124/126):** Testing logical abstraction vs. query performance.
+
+**Primary Key vs. Unique Key (122):** Testing knowledge of **Clustered vs. Non-clustered index** physical storage.
+
+**CORS Restrictions (155/230):** Testing web security boundary knowledge.
+
+**OData/Attribute Routing (181/154):** Testing modern API discoverability and contract management.
+
+**Wait vs. Await (139):** (Implicit in Task questions) Tests understanding of **context switching** vs. thread blocking.
 
 ---
 
