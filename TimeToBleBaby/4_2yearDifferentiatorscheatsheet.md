@@ -271,7 +271,7 @@ Transient → new instance
 
 **Insight**
 
-Injecting **Scoped into Singleton** causes runtime errors.
+Injecting **Scoped into Singleton** causes runtime errors, Captive dependency issue(a service lives longer than it should).
 
 ---
 
