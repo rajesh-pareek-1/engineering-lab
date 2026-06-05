@@ -1,0 +1,92 @@
+.
+├── .DS_Store
+├── .vscode
+│   └── settings.json
+├── INDEX.md
+├── README.md
+├── REPO_TREE.txt
+├── RESTRUCTURE_REPORT.md
+├── archive
+│   ├── README.md
+│   ├── legacy
+│   │   ├── 7-day-revision-plan.md
+│   │   ├── arena-search-readme.md
+│   │   ├── mock-readme.md
+│   │   ├── priority-roadmap.md
+│   │   ├── react-native-extra-blocks-original.md
+│   │   ├── react-native-readme.md
+│   │   └── root-readme.md
+│   ├── migration-notes.md
+│   └── repo-snapshots
+│       ├── repo-inventory.txt
+│       └── repo-tree.txt
+├── coding-drills
+│   ├── README.md
+│   ├── csharp-coding-drills.md
+│   ├── csharp-output-traps.md
+│   ├── javascript-this-bind-closures.md
+│   ├── scripts
+│   │   ├── README.md
+│   │   ├── csharp
+│   │   │   ├── README.md
+│   │   │   └── scratch.csx
+│   │   └── javascript
+│   │       ├── README.md
+│   │       └── play.js
+│   └── topic-map.md
+├── engineering-lab
+│   ├── README.md
+│   ├── csharp-oop-solid-deep-dive.md
+│   ├── csharp-runtime-performance-deep-dive.md
+│   ├── dotnet-webapi-deep-dive.md
+│   ├── ef-core-linq-deep-dive.md
+│   ├── react-native-api-auth-offline-release.md
+│   ├── react-native-internals-cheatsheet.md
+│   ├── react-navigation-screen-lifecycle.md
+│   ├── sql-interview-source.md
+│   ├── sql-leetcode-patterns.md
+│   └── topic-map.md
+├── mock-arenas
+│   ├── README.md
+│   ├── backend-round.md
+│   ├── dotnet-deep-dive.md
+│   ├── resume-based-round.md
+│   ├── sql-round.md
+│   └── topic-map.md
+├── projects-explained
+│   ├── README.md
+│   ├── multitenancy-deep-dive.md
+│   ├── resume-answer-bank.md
+│   ├── roll-on-dispatch.md
+│   └── topic-map.md
+├── resources
+│   ├── README.md
+│   ├── referral-template.md
+│   ├── resumes
+│   │   ├── README.md
+│   │   ├── backend-2025.pdf
+│   │   ├── backend-role-2-plus-years.pdf
+│   │   ├── backend-v2.pdf
+│   │   ├── frontend-2025.pdf
+│   │   ├── fullstack-2025.pdf
+│   │   ├── fullstack-v2.pdf
+│   │   ├── mobile-v2.pdf
+│   │   └── react-native-2025.pdf
+│   ├── source-map.md
+│   └── topic-map.md
+├── revision
+│   ├── README.md
+│   ├── backend-webapi.md
+│   ├── csharp-oop-solid.md
+│   ├── csharp-runtime.md
+│   ├── ef-core-linq.md
+│   ├── last-30-minutes.md
+│   ├── last-minute-revision-path.md
+│   ├── project-defense.md
+│   ├── question-bank.md
+│   ├── react-native.md
+│   ├── sql.md
+│   └── topic-map.md
+└── topic-map.md
+
+15 directories, 75 files

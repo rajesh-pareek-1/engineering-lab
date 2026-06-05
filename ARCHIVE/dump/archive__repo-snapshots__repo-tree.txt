@@ -1,0 +1,64 @@
+.
+├── .DS_Store
+├── .vscode
+│   └── settings.json
+├── README.md
+├── REPO_INVENTORY.txt
+├── REPO_TREE.txt
+├── arena-search
+│   ├── README.md
+│   ├── last-minute-interview.md
+│   ├── referral-template.md
+│   └── resumes
+│       ├── README.md
+│       ├── backend-2025.pdf
+│       ├── backend-role-2-plus-years.pdf
+│       ├── backend-v2.pdf
+│       ├── frontend-2025.pdf
+│       ├── fullstack-2025.pdf
+│       ├── fullstack-v2.pdf
+│       ├── mobile-v2.pdf
+│       └── react-native-2025.pdf
+├── coding
+│   ├── csharp-coding-drills.md
+│   ├── csharp-output-traps.md
+│   └── javascript-this-bind-closures.md
+├── engineering-lab-react-native
+│   └── react-native
+│       ├── README.md
+│       ├── blocks
+│       │   ├── block-09-react-navigation-screen-lifecycle.md
+│       │   └── extrablocks.md
+│       └── cheatsheets
+│           └── react-native-internals-cheatsheet.md
+├── experience
+│   ├── multitenancy-deep-dive.md
+│   ├── resume-answer-bank.md
+│   └── roll-on-dispatch.md
+├── mock
+│   ├── README.md
+│   ├── backend-round.md
+│   ├── dotnet-deep-dive.md
+│   ├── resume-based-round.md
+│   └── sql-round.md
+├── notes
+│   ├── 00-priority-roadmap.md
+│   ├── 7-day-revision-plan.md
+│   ├── csharp-oop-solid.md
+│   ├── csharp-runtime-performance.md
+│   ├── dotnet-webapi.md
+│   ├── efcore-linq.md
+│   ├── leetcodeSql50.md
+│   ├── question-bank-prioritized.md
+│   └── sql-revision.md
+├── scripts
+│   ├── README.md
+│   ├── csharp
+│   │   ├── README.md
+│   │   └── scratch.csx
+│   └── javascript
+│       ├── README.md
+│       └── play.js
+└── source-map.md
+
+15 directories, 47 files

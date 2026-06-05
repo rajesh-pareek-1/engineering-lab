@@ -1,0 +1,108 @@
+.
+├── ARCHIVE
+│   ├── INDEX.md
+│   ├── README.md
+│   ├── REPO_TREE.txt
+│   ├── RESTRUCTURE_REPORT.md
+│   ├── archive__README.md
+│   ├── archive__legacy__7-day-revision-plan.md
+│   ├── archive__legacy__arena-search-readme.md
+│   ├── archive__legacy__mock-readme.md
+│   ├── archive__legacy__priority-roadmap.md
+│   ├── archive__legacy__react-native-extra-blocks-original.md
+│   ├── archive__legacy__react-native-readme.md
+│   ├── archive__legacy__root-readme.md
+│   ├── archive__migration-notes.md
+│   ├── archive__repo-snapshots__repo-inventory.txt
+│   ├── archive__repo-snapshots__repo-tree.txt
+│   ├── coding-drills__README.md
+│   ├── coding-drills__csharp-coding-drills.md
+│   ├── coding-drills__csharp-output-traps.md
+│   ├── coding-drills__javascript-this-bind-closures.md
+│   ├── coding-drills__scripts__README.md
+│   ├── coding-drills__scripts__csharp__README.md
+│   ├── coding-drills__scripts__csharp__scratch.csx
+│   ├── coding-drills__scripts__javascript__README.md
+│   ├── coding-drills__scripts__javascript__play.js
+│   ├── coding-drills__topic-map.md
+│   ├── dot-DS_Store
+│   ├── dot-vscode__settings.json
+│   ├── engineering-lab__README.md
+│   ├── engineering-lab__csharp-oop-solid-deep-dive.md
+│   ├── engineering-lab__csharp-runtime-performance-deep-dive.md
+│   ├── engineering-lab__dotnet-webapi-deep-dive.md
+│   ├── engineering-lab__ef-core-linq-deep-dive.md
+│   ├── engineering-lab__react-native-api-auth-offline-release.md
+│   ├── engineering-lab__react-native-internals-cheatsheet.md
+│   ├── engineering-lab__react-navigation-screen-lifecycle.md
+│   ├── engineering-lab__sql-interview-source.md
+│   ├── engineering-lab__sql-leetcode-patterns.md
+│   ├── engineering-lab__topic-map.md
+│   ├── mock-arenas__README.md
+│   ├── mock-arenas__backend-round.md
+│   ├── mock-arenas__dotnet-deep-dive.md
+│   ├── mock-arenas__resume-based-round.md
+│   ├── mock-arenas__sql-round.md
+│   ├── mock-arenas__topic-map.md
+│   ├── projects-explained__README.md
+│   ├── projects-explained__multitenancy-deep-dive.md
+│   ├── projects-explained__resume-answer-bank.md
+│   ├── projects-explained__roll-on-dispatch.md
+│   ├── projects-explained__topic-map.md
+│   ├── resources__README.md
+│   ├── resources__referral-template.md
+│   ├── resources__resumes__README.md
+│   ├── resources__resumes__backend-2025.pdf
+│   ├── resources__resumes__backend-role-2-plus-years.pdf
+│   ├── resources__resumes__backend-v2.pdf
+│   ├── resources__resumes__frontend-2025.pdf
+│   ├── resources__resumes__fullstack-2025.pdf
+│   ├── resources__resumes__fullstack-v2.pdf
+│   ├── resources__resumes__mobile-v2.pdf
+│   ├── resources__resumes__react-native-2025.pdf
+│   ├── resources__source-map.md
+│   ├── resources__topic-map.md
+│   ├── revision__README.md
+│   ├── revision__backend-webapi.md
+│   ├── revision__csharp-oop-solid.md
+│   ├── revision__csharp-runtime.md
+│   ├── revision__ef-core-linq.md
+│   ├── revision__last-30-minutes.md
+│   ├── revision__last-minute-revision-path.md
+│   ├── revision__project-defense.md
+│   ├── revision__question-bank.md
+│   ├── revision__react-native.md
+│   ├── revision__sql.md
+│   ├── revision__topic-map.md
+│   └── topic-map.md
+├── CODING
+│   ├── CODING_DRILLS.md
+│   ├── play.js
+│   └── scratch.csx
+├── LAB
+│   ├── DOTNET_DEEP.md
+│   ├── REACT_NATIVE_DEEP.md
+│   └── SQL_DEEP.md
+├── MOCKS
+│   └── MOCK_ARENA.md
+├── PROJECTS
+│   └── PROJECTS.md
+├── REPO_TREE.txt
+├── RESUMES
+│   ├── REFERRAL_TEMPLATE.md
+│   ├── backend-2025.pdf
+│   ├── backend-role-2-plus-years.pdf
+│   ├── backend-v2.pdf
+│   ├── frontend-2025.pdf
+│   ├── fullstack-2025.pdf
+│   ├── fullstack-v2.pdf
+│   ├── mobile-v2.pdf
+│   └── react-native-2025.pdf
+└── REVISION
+    ├── MASTER_BEHAVIORAL.md
+    ├── MASTER_DOTNET.md
+    ├── MASTER_REACT_NATIVE.md
+    ├── MASTER_SQL.md
+    └── START_HERE.md
+
+8 directories, 98 files
