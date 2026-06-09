@@ -1,709 +1,651 @@
 # PROJECTS
 
-Detailed project proof. Use only after `REVISION/MASTER_BEHAVIORAL.md`.
+Use this file when the Arenaer asks:
 
-## RollOnDispatch
+- "Tell me about your project."
+- "Did you use microservices?"
+- "Explain the architecture."
+- "What did you actually work on?"
+- "How did you handle performance / background jobs / multi-tenancy?"
+- "Have you used agentic AI?"
+- "Which database did you use and why?"
+- "Where did you use dependency injection?"
 
-## 30 Second Introduction
+## 10-Second Project Selector
 
-```text
-Hi, I am Rajesh. I work as a software developer at In Time Tec with experience across ASP.NET Core APIs, React/React Native, EF Core, SQL, and Azure-based product systems. I have worked on production workflows involving multi-tenant APIs, shipment and driver workflows, database optimization, background processing, and mobile/web integrations.
-```
+| Arena angle                                 | Use this project                                              |
+| ------------------------------------------- | ------------------------------------------------------------- |
+| Backend APIs, logistics, shipments, drivers | ROD                                                           |
+| Microservices / integration services        | ROD QuickBooks service                                        |
+| React Native, mobile driver flows           | ROD Driver Mobile App                                         |
+| Multi-tenant SaaS, cattle/feedlot domain    | Feedlot Manager                                               |
+| Background jobs, Hangfire, tenant context   | Both                                                          |
+| Real-time notifications / MQTT              | Feedlot Manager                                               |
+| EF Core, SQL, performance, reports          | Both                                                          |
+| Database design, tenant DBs, reporting      | Both                                                          |
+| Dependency injection                        | Both                                                          |
+| Agentic AI/dev workflow                     | Dev flow, not production runtime unless specifically verified |
 
-## 60-90 Second Project Pitch
+## Architecture Truth: Are These Microservices?
 
-```text
-RollOnDispatch is a multi-tenant SaaS platform for trucking and livestock logistics. It manages the shipment lifecycle: creating shipments, assigning drivers, tracking delivery status, generating invoices, reports, and syncing accounting data with QuickBooks.
+Do not overclaim.
 
-The backend follows a layered architecture: controllers receive HTTP requests, services handle validation and business logic, repositories handle persistence, and EF Core maps domain entities to SQL. Tenant context comes from authenticated claims and resolves tenant-specific database access.
+Best answer:
 
-For scalability, heavy work such as invoice generation and external QuickBooks sync is moved out of the request path using Hangfire and Azure Service Bus. I worked mainly around shipment APIs, driver/load workflows, validation, async processing, and query performance improvements.
+```text
+I would not call the whole system pure microservices. The core backend is mostly a modular monolith: one ASP.NET Core API with layered projects for controllers, services, repositories, EF Core, common utilities, and tenant management.
+
+But ROD has a separate QuickBooks integration service, with its own solution, Dockerfile, pipeline, data layer, background processing, and SOAP/message-processing flow. So I describe the architecture as hybrid: modular monolith for the core domain API, plus separate integration services/background workers where isolation and async processing make sense.
 ```
 
-## Architecture
+### Feedlot Manager
 
 ```text
-Controller -> Service -> Repository -> EF Core -> SQL
+Feedlot Manager is not a pure microservices system. It is a modular ASP.NET Core backend with multi-tenancy, EF Core, Hangfire background jobs, MQTT notifications, feature flags, and external integrations.
 ```
-
-Responsibilities:
 
-- Controller: HTTP request, response, status codes.
-- Service: business rules, validation, orchestration.
-- Repository: data access and reusable persistence methods.
-- EF Core: ORM, tracking, queries, migrations.
-- Background jobs: slow work outside request path.
+### ROD
 
-## Create Shipment API Flow
-
-1. Request reaches controller.
-2. Authentication middleware validates JWT.
-3. Tenant/user context is available to scoped services.
-4. Controller calls service.
-5. Service validates DTO, maps to entity, applies business rules.
-6. Repository adds entity using EF Core.
-7. `SaveChangesAsync` persists data.
-8. Activity logging captures changes from EF ChangeTracker.
-9. Response returns shipment ID/status.
-
-Interview line:
-
 ```text
-I explain APIs as flow, reason, and tradeoff: what happens, why we designed it that way, and what can go wrong.
+ROD is closer to service-oriented architecture. The main dispatch API is modular/layered, while QuickBooks integration is separated into its own deployable service. That gives an independent boundary for accounting sync and background processing.
 ```
 
-## Key Concepts
+## ROD: RollOnDispatch
 
-### Repository Pattern
+### Project Description
 
 ```text
-Repository separates data access from business logic and centralizes common operations like Add, Update, GetList, and Delete.
-```
-
-Tradeoff:
+ROD is a multi-tenant logistics and dispatch SaaS platform. It helps dispatch teams manage shipments, orders, driver loads, attachments, invoices, customer/broker data, reporting, and accounting sync.
 
-```text
-Too generic a repository can hide EF Core's query power, so optimized queries should still allow projection and filtering.
+The backend is ASP.NET Core Web API with EF Core and SQL Server/Azure SQL. The main API owns core dispatch workflows, while the separate QuickBooks service handles accounting integration, request/response queues, SOAP/Web Connector flow, and background processing. The system also includes a React web app, React Native driver app, tenant provisioning scripts, Docker/pipeline assets, and integration/background job infrastructure.
 ```
 
-### Generic CRUD
+### 30-Second Pitch
 
 ```text
-Generic base services/repositories reduce duplicate CRUD logic across entities. Business-specific service logic calls common base operations after validation.
+RollOnDispatch is a multi-tenant logistics platform for dispatch and trucking workflows. It manages shipments, driver assignment, load tracking, invoicing, reporting, and QuickBooks integration. The main backend is ASP.NET Core with EF Core and SQL, and it follows controller-service-repository layering. It also has React web and React Native driver apps. For slower or integration-heavy work, it uses background jobs and a separate QuickBooks service.
 ```
 
-### FluentValidation
+### 90-Second Pitch
 
 ```text
-Validation stays in the service/application layer instead of making controllers large. It also allows conditional rules based on shipment status or workflow state.
-```
+ROD is a SaaS logistics system. The main API handles shipment and driver workflows: creating shipments, assigning loads, tracking driver progress, uploading/handling attachments, generating invoices, and supporting tenant-specific data access.
 
-### Activity Logging
+The backend is layered: controllers handle HTTP, services enforce business rules, repositories handle EF Core persistence, and tenant management resolves the correct tenant context/database. Authentication uses JWT, and scoped services use tenant/user context during the request.
 
-```text
-Activity logging can use EF ChangeTracker to record what changed during SaveChangesAsync.
+The interesting architecture point is that the core API is not split into many microservices. It is a modular monolith. But QuickBooks is separated into its own service, with its own solution, Docker build, pipeline, data layer, Hangfire/background processing, and SOAP endpoint for QuickBooks Web Connector. That isolation makes sense because accounting sync is external-system-heavy, retryable, and operationally different from normal dispatch APIs.
 ```
 
-Tradeoff:
+### Main Components
 
 ```text
-If audit logging failure is swallowed, the main operation succeeds but audit trail may have gaps. If audit logging is in the same transaction, reliability improves but failures can block business operations.
-```
-
-### TransactionScope
+dm-api
+  RollOnDispatch API
+  RollOnDispatch.Data
+  RollOnDispatch.Common
+  TenantManagement
 
-```text
-TransactionScope is useful when multiple DB operations must succeed or rollback together.
-```
+quickbooks-service
+  QuickBooks API/service
+  QuickBooks.Data
+  QuickBooks.Library
+  background/message processing
 
-## Performance Talking Points
+dm-web
+  React web client
 
-### Pagination
+dm-driver-mobile-app
+  React Native driver app
 
-Use `Skip` and `Take`, but enforce maximum page size.
+dm-cicd
+  pipelines, tenant provisioning, infrastructure scripts
+```
 
-Tradeoff:
+### Request Flow
 
 ```text
-No max limit can still allow huge responses and DB pressure.
+Client/mobile/web
+-> ASP.NET Core middleware
+-> JWT authentication
+-> tenant/user context
+-> controller
+-> service validation/business rules
+-> repository
+-> EF Core
+-> tenant/global SQL database
+-> response DTO
 ```
 
-### Projection
+### QuickBooks Service Flow
 
-Use `Select` to fetch only needed columns.
-
 ```text
-Projection reduces memory usage, network transfer, and EF tracking overhead.
+Dispatch workflow creates invoice/accounting work
+-> message/request queue or background process
+-> QuickBooks service picks up work
+-> builds QuickBooks XML/SOAP request
+-> QuickBooks Web Connector / QuickBooks Online flow
+-> response stored in response queue/status tables
+-> failures retried or surfaced for review
 ```
 
-### Async/Await
+Say:
 
 ```text
-Async APIs prevent request threads from blocking while waiting for DB or external calls.
+QuickBooks is a good boundary because it talks to an external accounting system, needs retry and status tracking, and has a different operational lifecycle from normal shipment APIs.
 ```
 
-Trap:
+### Microservices Answer For ROD
 
 ```text
-Avoid sync DB calls inside async flows.
+ROD is hybrid. The core dispatch backend is a modular monolith, not dozens of microservices. But QuickBooks is separated as its own deployable integration service. We also use async/background processing patterns like Hangfire and Service Bus-style messaging to decouple slow external work from request/response APIs.
 ```
-
-### Indexes
-
-Add indexes on fields frequently used by shipment, associate, driver, status, and date filters.
 
-## Async Systems
+### What I Worked Around / Can Explain
 
-### Hangfire
+- Shipment and driver/load workflows.
+- API integration between backend, web, and mobile.
+- Validation and DTO/service/repository flow.
+- EF Core query behavior and performance.
+- Tenant-aware backend flows.
+- Background jobs and external sync tradeoffs.
+- QuickBooks integration at architecture level.
 
-Used for background jobs such as invoice generation, notifications, and scheduled processing.
+### Strong Technical Talking Points
 
-### Azure Service Bus
+#### Multi-tenancy
 
-Used to decouple QuickBooks sync or other external integration work.
-
-Flow:
-
 ```text
-API creates work -> message/job queued -> background processor handles it -> retry/log on failure
+Tenant identity comes from authenticated claims/request context. Tenant-aware services use that context to resolve tenant data access. The benefit is isolation; the tradeoff is migration, connection, reporting, and background-job complexity.
 ```
 
-### Invoice Flow
+#### Background jobs
 
 ```text
-API request -> background job -> generate invoice/report -> send email -> publish QuickBooks sync message
+Slow or retryable work should not block the API request. The request records or enqueues work, returns quickly, and a worker processes it with retry, logging, and idempotency.
 ```
-
-## Tradeoffs To Mention
-
-- No optimistic concurrency can lead to last-write-wins.
-- Activity logging may have gaps if failures are ignored.
-- Pagination needs max limits.
-- Double `SaveChanges` can increase DB overhead.
-- Background jobs need tenant context isolation.
-- External sync must be idempotent because retries can happen.
 
-## Common Questions
+#### Performance
 
-### Why Service Bus?
-
 ```text
-To decouple the API from slow or unavailable external systems. It gives asynchronous processing and retry support.
+For list/report APIs, I focus on filtering before materialization, projection with Select, pagination limits, AsNoTracking for reads, indexes on common filters, and avoiding N+1.
 ```
 
-### Why Hangfire?
+#### Mobile integration
 
 ```text
-To process heavy or scheduled work outside the request path and avoid request timeouts.
+The driver mobile app consumes API contracts for load/driver workflows. The important backend responsibility is stable DTOs, predictable status transitions, auth, offline/network tolerance, and clear error responses.
 ```
 
-### How Does Multi-Tenancy Work?
+### ROD Arena Questions
 
+#### Did ROD use microservices?
+
 ```text
-The authenticated request carries tenant identity. Scoped request context exposes TenantId, and tenant-aware data access resolves the correct tenant database.
+Partially. The core domain API is a modular monolith, while QuickBooks integration is separated into its own service. I would call it a hybrid architecture rather than pure microservices.
 ```
 
-### What Would You Improve?
+#### Why separate QuickBooks?
 
 ```text
-I would enforce pagination limits, add optimistic concurrency where update conflicts matter, make audit logging reliability explicit, and strengthen tenant validation before DB access.
+Because accounting sync is slow, retryable, external-system-dependent, and operationally different from normal dispatch APIs. Separating it reduces coupling and lets failures be retried/monitored independently.
 ```
-
-## Safety Lines
-
-Use these when you know the area but did not own all of it:
-
-- "I worked around this flow and understand the high-level design."
-- "I did not implement that end-to-end, but the way it works is..."
-- "The tradeoff I would watch for is..."
-
-## Multi-Tenancy Deep Dive
-
-## High-Level Model
-
-The architecture uses two database categories:
-
-1. Global database
-2. Tenant databases
-
-Global database stores:
-
-- Tenants
-- Users
-- Roles
-- Permissions
-- Accounts
-- Config
-
-Tenant database stores:
-
-- Shipments
-- Loads
-- Driver/domain data
-- Tenant-specific business entities
 
-## Request Tenant Flow
+#### Why not split everything?
 
 ```text
-JWT contains tenant claim
--> authentication middleware validates token
--> RequestContext extracts TenantId
--> scoped services use RequestContext
--> ITenantDbContextFactory builds tenant connection
--> tenant DbContext created
--> context cached per request
+Microservices add deployment, observability, network, data consistency, and debugging complexity. For core CRUD/domain workflows, a modular monolith can be simpler and faster. Split only where the boundary gives real operational value.
 ```
 
-Interview line:
+#### What can go wrong in background sync?
 
 ```text
-Tenant is resolved per request after authentication, so a normal startup-registered DbContext is not enough when the connection string changes per tenant.
+Retries can duplicate side effects, tenant context can be missing, external systems can be down, and partial failures can leave unclear status. The answer is idempotency, correlation IDs, retry/dead-letter handling, and visible sync status.
 ```
 
-## Why DbContext Is Not Registered Directly
+## Feedlot Manager
 
-Reasons:
+### Project Description
 
-- Tenant connection string depends on the authenticated user/request.
-- Tenant is not known at application startup.
-- DbContext must be created at runtime.
-- The same request should reuse the same context for consistency.
-
-## Why Cache DbContext Per Request
-
-Without request cache:
-
-- Multiple DbContexts per request.
-- Multiple DB connections.
-- Fragmented change tracking.
-- Harder transaction boundary.
-- More overhead.
-
-With request cache:
-
-- One unit of work.
-- Shared tracking.
-- Reduced connection churn.
-- Better transactional consistency.
+```text
+Feedlot Manager is a multi-tenant cattle feedlot operations platform. It manages feed calls, rations, pens, cattle movement, medical treatments, inventory-style workflows, billing, reports, finance/QuickBooks-related flows, and operational notifications.
 
-## Reflection-Based Factory
+The backend is ASP.NET Core 8 with EF Core and SQL Server/Azure SQL. It uses database-per-tenant resolution, a global shared database, tenant-aware request context, Hangfire priority queues, MQTT notifications, OData-style read endpoints, feature flags, raw SQL/stored procedures for reports, and React Native/mobile integration.
+```
 
-Original idea:
+### 30-Second Pitch
 
 ```text
-Factory receives generic DbContext type and invokes static Create/CreateWithUserContext methods dynamically.
+Feedlot Manager is a multi-tenant cattle feedlot management platform. It supports feed operations, cattle movement, medical treatments, billing, reporting, inventory-style workflows, QuickBooks-related finance flows, and real-time notifications. The backend is ASP.NET Core 8 with EF Core, SQL, Hangfire, MQTT, feature flags, and React Native/mobile integration.
 ```
 
-Why it was used:
+### 90-Second Pitch
 
-- Generic factory needs to instantiate concrete context types.
-- Older C# cannot enforce static method contracts on generic types.
-
-Risks:
-
-- Method rename is not caught at compile time.
-- Signature changes fail at runtime.
-- Fallbacks can silently lose user/audit context.
-
-Better options:
-
-- Static abstract interface members on modern C#.
-- Explicit factory delegates registered at startup.
-- Per-context factory implementation.
+```text
+Feedlot Manager is a full-stack SaaS platform for cattle feedlot operations. It manages feed calls, rations, pens, cattle movement, medical treatments, billing, reports, and operational notifications.
 
-## Database-Per-Tenant Benefits
+The backend is a modular ASP.NET Core API. It uses controller-service-repository layering, EF Core repositories, tenant-aware database resolution, feature flags, OData-style querying for read-heavy endpoints, and Hangfire for background jobs. It also uses MQTT for real-time notifications, where messages can be published per environment, tenant, feedlot, and topic.
 
-- Strong tenant isolation.
-- Smaller blast radius.
-- Easier per-tenant restore.
-- No noisy-neighbor issue.
-- Tenant-specific scaling possible.
-- Safer data access boundaries.
+Architecturally, it is not pure microservices. It is a modular monolith with distributed integration patterns: background queues, MQTT notifications, QuickBooks/finance messaging, and a separate migration app. That design keeps core domain workflows in one backend while still decoupling slow or external work.
+```
 
-## Database-Per-Tenant Tradeoffs
+### Main Components
 
-- Migration orchestration complexity.
-- Higher infrastructure cost.
-- Cross-tenant reporting is harder.
-- Connection pool pressure at scale.
-- Operational overhead grows with tenant count.
+```text
+FeedlotManager
+  Main ASP.NET Core API
+  JWT auth
+  controllers/routes
+  Hangfire dashboard/server
+  MQTT startup/integration
 
-## Migration Strategy
+FeedlotManager.Data
+  EF Core DbContext
+  repositories
+  migrations
+  raw SQL/stored procedure files
 
-Use separate migration tracks:
+FeedlotManager.Common
+  feature flags
+  constants
+  shared utilities
+  timezone helpers
 
-- Global DB migrations.
-- Tenant DB migrations.
+TenantManagement
+  tenant context
+  tenant DB factory
+  audit base context
+  Hangfire tenant context
 
-Avoid auto-migrating all tenants on app startup because:
+FeedlotManager.DataMigration
+  migration runner
 
-- Startup time scales with tenant count.
-- Multiple app instances can race.
-- Partial failures become hard to detect.
-- App availability should not depend on migration duration.
+ngat-fm-app
+  React Native app
+```
 
-Better migration orchestrator:
+### Request Flow
 
 ```text
-Read tenant list from global DB
--> check each tenant __EFMigrationsHistory
--> apply pending migrations with limited parallelism
--> record status per tenant
--> retry failures
--> alert/report failed tenants
+React Native/web client
+-> ASP.NET Core middleware
+-> JWT/auth policy
+-> route/action filters
+-> request context loads tenant/feedlot/user info
+-> controller
+-> service
+-> repository
+-> tenant DbContext
+-> SQL
+-> DTO response
 ```
-
-## Principal Engineer Risk Review
-
-### 1. Single Secret Catastrophe
 
-Problem:
+### Multi-Tenant Flow
 
 ```text
-One AppSecret signs JWTs, derives tenant DB passwords, and hashes refresh tokens.
+JWT/user context
+-> RequestContext stores TenantId, UserId, FeedLotId, timezone, roles
+-> TenantDbContextFactory resolves tenant database
+-> CCFMContext handles tenant business data
+-> AppGlobalContext handles shared/global data
 ```
 
-Risk:
+Say:
 
 ```text
-Compromise one secret and attacker may access tokens, sessions, and tenant DBs.
+The important design point is that tenant is resolved per request, not hard-coded at startup. That is why tenant-aware DbContext creation and request context matter.
 ```
-
-Better:
-
-- Asymmetric JWT signing keys with rotation.
-- Azure Managed Identity for DB auth, or per-tenant random credentials in Key Vault.
-- Separate refresh token secret/storage.
-
-### 2. Silent Null Tenant Propagation
 
-Problem:
+### Background Job Flow
 
 ```text
-Missing tenant claim returns null context, then failure appears deep in repository/service.
+API/service identifies slow or async work
+-> enqueue Hangfire job
+-> preserve tenant/feedlot/audit context
+-> worker runs on configured queue
+-> update DB/status/logs
 ```
 
-Better:
+Queues:
 
 ```text
-Tenant validation middleware after authentication. Fail fast with 400/401/403 and log clear reason.
+acute, critical, default, minimal, nonessential
 ```
 
-### 3. Reflection Factory With No Safety Net
+Say:
 
-Problem:
-
 ```text
-GetMethod("CreateWithUserContext") can fail silently or at runtime.
+The main production risk is context loss. Background jobs run outside the original HTTP request, so tenant/feedlot/user/audit context must be captured and restored.
 ```
 
-Better:
+### MQTT Flow
 
 ```text
-Compile-time factory registration or static abstract interfaces.
+Domain event or operation changes state
+-> service publishes notification
+-> MQTT topic includes environment/tenant/feedlot/topic
+-> clients can react to operational updates
 ```
 
-### 4. Thread-Local Hangfire Tenant Context
+Say:
 
-Problem:
-
 ```text
-Thread.ManagedThreadId based storage can leak tenant context across reused threads or async continuations.
+MQTT is used for real-time operational updates. It is not the same as microservices; it is a messaging/notification integration pattern.
 ```
 
-Better:
+### Feedlot Manager Microservices Answer
 
-```csharp
-private static readonly AsyncLocal<BackgroundJobContext?> Current = new();
+```text
+Feedlot Manager is not a pure microservices architecture. It is a modular monolith with distributed pieces. The domain API is one main backend, but it uses Hangfire for background processing, MQTT for real-time notifications, feature flags for controlled rollout, tenant-aware DB resolution, and external integrations like QuickBooks/finance messaging.
 ```
 
-Add nested-context guard and always clear context.
+### Strong Technical Talking Points
 
-### 5. Invisible Schema Drift
+#### OData/read-heavy endpoints
 
-Problem:
-
 ```text
-Some tenant DBs can miss migrations and fail only for specific tenants at runtime.
+For read-heavy list screens, OData-style query support helps with filtering, selecting, ordering, counting, and expanding. The risk is over-fetching or expensive queries, so API limits and query review matter.
 ```
-
-Better:
-
-- Migration log per tenant.
-- Drift health check.
-- Admin migration-status endpoint.
-- Alerting on failed migrations.
-
-## Scale Evolution
 
-At very large scale:
+#### Raw SQL/reports
 
 ```text
-Tenant -> Shard -> Database
+For report-heavy flows, raw SQL/stored procedures can be useful when EF queries become too complex or need performance tuning. The tradeoff is maintainability and migration/version control.
 ```
 
-Hybrid model:
+#### Feature flags
 
-- Small tenants share shards.
-- Large tenants get isolated DBs.
-- Tenant metadata decides connection routing.
-
-## Best Interview Close
-
 ```text
-Database-per-tenant gives strong isolation and simpler tenant safety, but it shifts complexity into migrations, connection management, cross-tenant reporting, and operational tooling.
+Feature flags allow controlled rollout and safer production changes. The tradeoff is flag cleanup and avoiding too many conditional paths.
 ```
 
-## Resume Answer Bank
+#### Timezone handling
 
-Use this file to connect resume bullets to spoken interview answers.
+```text
+Feedlot operations depend on feedlot-local dates, not just UTC. Shared timezone helpers prevent inconsistent date calculations across validation, billing, reports, and background jobs.
+```
 
-## Role Positioning
+### Feedlot Manager Arena Questions
 
-### Backend Role
+#### Did Feedlot Manager use microservices?
 
 ```text
-I am strongest in ASP.NET Core APIs, EF Core, SQL optimization, background processing, authentication, and multi-tenant backend workflows. I also understand frontend/mobile integration, which helps me design practical API contracts.
+Not in the strict sense. It is mainly a modular monolith. It uses service-style integration patterns like Hangfire, MQTT, and external finance/QuickBooks messaging, but the core business domains live in one backend API.
 ```
 
-### Full Stack Role
+#### Why use Hangfire?
 
 ```text
-I can own features end-to-end: React/React Native UI, API integration, ASP.NET Core backend, SQL workflows, and deployment coordination.
+For work that should not block request/response flow: report generation, notifications, finance sync, or scheduled processing. It gives queues, retries, dashboard visibility, and background execution.
 ```
 
-### Mobile/Frontend Role
+#### Why use MQTT?
 
 ```text
-I have worked on React Native and React TypeScript apps with Redux Toolkit, RTK Query, API integration, offline-aware workflows, push notifications, and performance-focused dashboards.
+For real-time operational notifications where clients need timely updates. It decouples state changes from client update delivery.
 ```
 
-## Tell Me About Yourself
+#### What was hard technically?
 
 ```text
-I am Rajesh Pareek, a software developer with around 2.5 years of hands-on experience across ASP.NET Core, React, React Native, EF Core, SQL, and Azure DevOps. At In Time Tec, I have worked on SaaS and logistics platforms involving shipment workflows, driver/mobile features, multi-tenant backend services, REST APIs, database performance, background jobs, and production support. My strength is connecting product workflows with clean technical implementation and explaining tradeoffs clearly.
+The hard part is keeping tenant/feedlot/timezone context consistent across normal HTTP requests, background jobs, reports, and real-time notifications.
 ```
 
-## Strong Project Story: Performance Improvement
+## Cross-Project Architecture Summary
 
-Situation:
+## Modular Monolith vs Microservices
 
 ```text
-Some API/listing flows had performance pressure because queries were fetching more data than required.
+Multiple projects in a .NET solution are not automatically microservices. If they compile into one deployable API, they are modules/layers. A microservice boundary usually means independently deployed, independently scalable, with its own runtime/process and often its own data ownership.
 ```
 
-Action:
+## What These Projects Actually Use
 
-```text
-I used pagination, projection with Select, avoided unnecessary materialization, reviewed indexes on frequently filtered columns, and used async EF Core calls.
-```
+| Pattern                      | ROD                     | Feedlot Manager  |
+| ---------------------------- | ----------------------- | ---------------- |
+| ASP.NET Core Web API         | Yes                     | Yes              |
+| EF Core / SQL                | Yes                     | Yes              |
+| Multi-tenancy                | Yes                     | Yes              |
+| Modular layered architecture | Yes                     | Yes              |
+| Hangfire background jobs     | Yes                     | Yes              |
+| Separate integration service | Yes, QuickBooks service | Not primarily    |
+| React Native app             | Yes, driver app         | Yes, ngat-fm-app |
+| Real-time/MQTT               | Less central            | Yes              |
+| Azure pipelines/Docker       | Yes                     | Yes              |
+| Pure microservices           | No                      | No               |
 
-Result:
+## Arena-Safe Final Answer
 
 ```text
-Response time improved and DB load reduced. The key lesson was to push filtering/projection to SQL instead of doing it in memory.
+Both systems are backend-heavy SaaS products with modular ASP.NET Core APIs. I would not overstate them as pure microservices. The core domain backends are modular monoliths with clean layering and tenant-aware data access. ROD has a clearer microservice-style boundary through the separate QuickBooks integration service. Feedlot Manager uses distributed integration patterns like Hangfire and MQTT but keeps the core domain inside one backend.
 ```
 
-## Strong Project Story: Background Processing
+## Real Arena Add-Ons
 
-Situation:
+## Agentic AI: Have You Used Or Integrated AI Tools?
 
-```text
-Invoice/report/QuickBooks workflows could be slow or depend on external systems.
-```
-
-Action:
+### Short Answer
 
 ```text
-Heavy work was moved to Hangfire/background jobs and Service Bus style messaging so API requests were not blocked.
+I have used agentic AI more in the development workflow than as a production runtime feature in these systems. I would not claim the products are AI-native unless there is an actual shipped AI workflow. In dev flow, AI is useful for understanding legacy code, generating first-draft tests, summarizing flows, creating PR/commit context, and reviewing risky changes. I still treat it as assisted engineering, with human review, because these projects touch tenant data, billing, and external accounting sync.
 ```
 
-Result:
+### Project-Safe Answer
 
 ```text
-Users get faster API responses, and background work can retry or be monitored separately.
-```
-
-Tradeoff:
+In Feedlot Manager there is explicit coding-agent guidance for developers: how an AI coding agent should understand the backend structure, tenant context, commit context, tests, and architecture. That is dev-process integration, not a customer-facing AI feature.
 
-```text
-Background work must be idempotent and tenant-safe because retries can happen.
+For production, I would only integrate agentic AI behind controlled boundaries: read-only first, strict tool allowlists, human approval for writes, audit logs, tenant isolation, and no direct unsupervised changes to billing, accounting, or cattle/shipment state.
 ```
-
-## Strong Project Story: Multi-Tenancy
 
-Situation:
+### If They Ask "How Would You Add AI?"
 
 ```text
-The product needed tenant isolation for logistics/customer data.
-```
+I would start with an internal operations assistant, not automatic domain actions.
 
-Action:
-
-```text
-Tenant identity flows from JWT into request context. Tenant-aware services resolve the correct tenant DB dynamically and cache DbContext per request.
+Example:
+User asks a support/debugging question
+-> API authenticates tenant/user
+-> AI orchestration service retrieves allowed docs/log summaries/status data
+-> tool calls are allowlisted and tenant-scoped
+-> answer includes evidence and correlation IDs
+-> any write action requires explicit human confirmation
+-> audit record is stored
 ```
 
-Result:
+### Good Use Cases
 
-```text
-This gives strong isolation and safer per-tenant operations.
-```
+- Explain failed QuickBooks sync status.
+- Summarize background job failures by tenant/correlation ID.
+- Suggest likely slow endpoints from logs/query metrics.
+- Generate test cases for service/repository changes.
+- Create release notes or migration risk summaries.
+- Help developers navigate legacy service/repository flows.
 
-Tradeoff:
+### Red Lines
 
-```text
-It adds migration, connection, and cross-tenant reporting complexity.
-```
+- Do not let AI directly create invoices, post accounting entries, update tenant data, or change cattle/shipment state without approval.
+- Do not send secrets, full production data, or cross-tenant data into an AI tool.
+- Do not trust generated SQL/migrations without review and test data.
+- Do not use AI as a replacement for authorization, validation, audit, or idempotency.
 
-## Strong Project Story: Frontend/API Integration
+## Database: Which DB And Why?
 
-Situation:
+### Short Answer
 
 ```text
-Frontend/mobile screens needed reliable API contracts for dashboards, forms, and driver workflows.
+Both projects use SQL Server/Azure SQL through EF Core. That fit the domain because the data is highly relational and transactional: tenants, users, roles, shipments, orders, driver loads, invoices, feedlots, pens, cattle, treatments, billing, and reports. We needed joins, foreign keys, transactions, indexes, migrations, reporting queries, and mature EF Core provider support.
 ```
 
-Action:
+### Do Not Say
 
 ```text
-I worked with typed API integration, reusable hooks/components, Redux Toolkit/RTK Query patterns, and consistent DTOs between frontend and backend.
+SQL Server is the only database that can do this.
 ```
 
-Result:
+### Better Say
 
 ```text
-Feature delivery became more predictable and integration bugs were easier to debug.
+Other databases can solve parts of this, but SQL Server was a strong fit because the core source of truth is relational and consistency-heavy. NoSQL would be useful for logs, events, telemetry, or document-style payloads, but the main business workflows need transactional updates, joins, constraints, reports, and tenant-aware relational data access.
 ```
 
-## Common Resume Bullet Explanations
+### Project Database Design
 
-### "Built REST APIs"
-
-```text
-I built endpoints with controller-service-repository layering, request validation, DTO mapping, EF Core persistence, auth checks, structured errors, pagination, and async DB calls.
-```
+| Area            | What To Say                                                                         |
+| --------------- | ----------------------------------------------------------------------------------- |
+| Primary DB      | SQL Server/Azure SQL with EF Core                                                   |
+| Multi-tenancy   | Tenant-specific database/context resolved from authenticated request context        |
+| Global data     | Separate global/shared context for tenant/account/config style data                 |
+| ORM             | EF Core repositories and migrations                                                 |
+| Heavy reads     | OData-style filtering/sorting/paging; projections; `AsNoTracking` where appropriate |
+| Reports         | Raw SQL/stored procedures for complex reporting paths                               |
+| Performance     | Indexes, pagination, projection, avoiding N+1, query plan review                    |
+| Background jobs | Persist job status/audit; preserve tenant context outside HTTP                      |
+| QuickBooks      | Request/response queue tables and sync state tracking                               |
+| Audit           | EF Core change tracking/audit context for created/updated/deleted records           |
 
-### "Optimized SQL / EF Core"
+### Special Things Worth Sharing
 
 ```text
-I focused on filtering early, projection, indexes, avoiding N+1, using AsNoTracking for reads, and checking generated SQL/execution plans where needed.
+The most interesting database part is multi-tenancy. Tenant data is not just filtered by TenantId in one table; the architecture can resolve a tenant database per request through tenant context. That improves isolation, but it makes migrations, background jobs, reports, connection resolution, and debugging more complex.
 ```
-
-### "JWT Authentication"
 
 ```text
-JWT is validated by middleware, claims populate HttpContext.User, and role/policy authorization controls access to endpoints.
+Feedlot Manager also has a global context plus tenant contexts. Some report paths can use a read-only replica behind a feature flag, and raw SQL/stored procedures are used where report queries are too complex or performance-sensitive for normal EF query composition.
 ```
 
-### "Clean Architecture / SOLID"
-
 ```text
-I keep controllers thin, services focused on business logic, repositories focused on persistence, and dependencies injected through interfaces so code remains testable and maintainable.
+ROD has accounting sync state around QuickBooks: request queues, response queues, connection details, tenant-specific sync state, and background/message processing. The DB is not only CRUD storage; it also helps make async external integration observable and retryable.
 ```
 
-### "React Native"
+### Database Edge Cases
 
-```text
-I worked on cross-platform mobile workflows using React Native, TypeScript, navigation, secure storage, push notifications, geolocation, offline sync, and API integration.
-```
+- Tenant context must never leak across requests or background jobs.
+- Background jobs run outside HTTP, so tenant/feedlot/user/audit context must be captured and restored.
+- OData or flexible filters can accidentally create expensive queries.
+- Reports need pagination/limits and query-plan review.
+- EF `Include` can create N+1 or over-fetching if used casually.
+- Cross-database or external-service workflows need idempotency because one side can succeed while the other fails.
+- Read replicas can be stale, so use them for reporting, not critical writes.
+- Migrations across many tenant databases need orchestration and rollback discipline.
+- Raw SQL must be parameterized and versioned with the application.
 
-### "CI/CD"
+### 60-Second Arena Answer
 
 ```text
-I contributed to Azure DevOps style pipelines for automated build, lint/test checks, and controlled deployments across environments.
+We used SQL Server/Azure SQL with EF Core because the domain is relational and transaction-heavy. In ROD you have shipments, orders, driver loads, invoices, customers, tenants, and QuickBooks sync state. In Feedlot Manager you have feedlots, pens, cattle movement, medical treatment, billing, inventory-style workflows, and reports.
+
+The interesting part is tenant-aware database access. Tenant identity comes from request/auth context, then services/repositories use a tenant DbContext factory to resolve the right database/context. That gives isolation, but it creates edge cases for migrations, background jobs, read replicas, reports, and debugging. For performance, we use indexes, projection, pagination, OData carefully, AsNoTracking for reads, and raw SQL/stored procedures for complex reports.
 ```
 
-## Resume Claim Defense Map
+## Dependency Injection: Where Did You Use It?
 
-Use this when an interviewer points to one bullet and asks, "Explain this."
+### Short Answer
 
-| Resume claim | What they may ask | Strong answer angle | Project proof | Tradeoff to mention |
-| --- | --- | --- | --- | --- |
-| Multi-tenant SaaS | How does tenant resolution work? | JWT/request context resolves tenant-specific DB access. | RollOnDispatch tenant-aware data flow. | Migrations, connection pools, cross-tenant reporting. |
-| REST APIs | What happens in one API call? | Controller -> service -> repository -> EF Core -> response. | Shipment/driver/load workflows. | Validation, errors, pagination, transaction boundary. |
-| JWT authentication | How is token verified? | Middleware validates issuer/audience/expiry and sets claims. | Protected APIs and role-based workflows. | Token expiry, refresh, claim trust, tenant validation. |
-| SQL optimization | How did you improve performance? | Projection, indexes, AsNoTracking, avoid N+1, pagination. | Listing/report-style queries. | Index write overhead, stale assumptions without execution plan. |
-| Background jobs | Why not process in API? | Move slow/retryable work out of request path. | Invoice/report/QuickBooks-style flows. | Idempotency, retries, monitoring, tenant context. |
-| Clean architecture | What does clean mean practically? | Thin controller, service business logic, repository persistence, DI. | API layering used in backend workflows. | Too many abstractions can slow simple changes. |
-| React/React Native | What was hard? | State/API sync, offline/network handling, native features, performance. | Driver app, web dashboards, mobile workflows. | Device differences, stale state, retry handling. |
-| CI/CD | What did pipeline do? | Build/test/lint/deploy with controlled environments. | Azure DevOps style deployment flow. | Secrets, rollback, environment drift. |
+```text
+DI is used throughout the ASP.NET Core backend. Controllers depend on services, services depend on repositories, repositories depend on EF Core DbContexts, and cross-cutting services like logging, configuration, feature flags, request context, audit context, background job service, email/message integrations, and tenant DbContext factories are registered in the container.
+```
 
-## Bullet-To-Answer Scripts
+### Concrete Examples From Projects
 
-### Multi-Tenant Backend
+| DI Usage                 | Example Talking Point                                                                                   |
+| ------------------------ | ------------------------------------------------------------------------------------------------------- |
+| Service layer            | `IFMFeedlotService -> FMFeedlotService`, `IBillingService -> BillingService`, shipment/invoice services |
+| Repository layer         | Repository interfaces registered to repository implementations                                          |
+| Tenant infrastructure    | `IRequestContext`, `ITenantDbContextFactory`, `IAuditContext`                                           |
+| EF Core                  | `AddDbContextPool` / tenant DbContext factory for SQL Server contexts                                   |
+| Feature flags            | Feature manager abstraction injected into services                                                      |
+| Background jobs          | `IBackgroundJobService`; Hangfire activator creates scoped job instances                                |
+| Multiple implementations | Audit handlers, email/message integrations, QuickBooks-related services                                 |
+| Testing                  | Swap real services with mocks/in-memory contexts in unit/integration tests                              |
 
-Question:
+### Lifetimes
 
 ```text
-Your resume says multi-tenant backend. Explain the design.
+Most domain services and repositories are scoped because they depend on request-specific tenant context and EF Core DbContext. Singletons are only safe for stateless/shared infrastructure, authorization handlers, or test doubles that do not capture scoped state. Background workers must create a scope before resolving scoped services.
 ```
-
-Answer:
 
-```text
-The system separates global data from tenant business data. After JWT authentication, tenant identity is available in request context. Tenant-aware data access uses that context to resolve the correct tenant database and create/reuse DbContext for the request. The benefit is strong tenant isolation. The tradeoff is operational complexity around migrations, connection pooling, background jobs, and cross-tenant reporting.
-```
+### Ways DI Appears
 
-### Performance Optimization
+- Constructor injection in controllers, services, repositories, and background processors.
+- Interface-to-implementation registration in `IServiceCollection` extension methods.
+- DbContext registration/factories for SQL Server and tenant-specific context resolution.
+- Multiple implementations for plugin-like behavior such as audit handlers or email/message integrations.
+- Scope creation in background processing where there is no active HTTP request.
+- Test-time replacement of services with mocks, fake feature managers, or in-memory DbContexts.
+- Framework-provided injections: `ILogger<T>`, `IConfiguration`, `IHttpContextAccessor`, AutoMapper, feature flags, cache, and authorization handlers.
 
-Question:
+### Production Edge Cases
 
-```text
-How exactly did you optimize database performance?
-```
+- Do not inject scoped DbContext/request context into a singleton.
+- Do not store tenant context in static state.
+- Create a DI scope inside hosted services, queue listeners, and Hangfire jobs.
+- Be careful with multiple implementations of the same interface; use clear selection logic or `IEnumerable<T>`.
+- Avoid service locator patterns except at framework boundaries like job activation.
+- Keep controllers thin; inject one service that owns the use case instead of many repositories directly.
+- In tests, replace dependencies at the container boundary instead of touching production code paths.
 
-Answer:
+### 60-Second Arena Answer
 
 ```text
-I look at whether the query fetches too much data, runs too often, or uses poor access paths. Practically that means projection with Select, filtering before materialization, AsNoTracking for read-only queries, pagination limits, indexes on filter/join columns, and avoiding N+1. I would verify using generated SQL or execution plan rather than guessing.
+We used ASP.NET Core DI heavily. Controllers received services through constructor injection. Services received repositories, tenant context, feature flags, loggers, mappers, and background job services. Repositories received EF Core DbContexts or tenant DbContext factories.
+
+The main reason DI mattered was multi-tenancy and testability. Request-scoped services could safely use the current tenant/user/feedlot context. Background jobs were trickier because they run outside HTTP, so they needed a new scope and restored tenant context before resolving scoped services. I would avoid injecting scoped DbContext into singleton services because that can create stale context and cross-request bugs.
 ```
 
-### Background Jobs
+## Common Resume Defense Lines
 
-Question:
+### If asked "what did you personally do?"
 
 ```text
-Why use Hangfire or queues?
+I worked around these flows and can explain the architecture, integration points, and tradeoffs. For the exact pieces I did not own end-to-end, I separate what I implemented from what I understand.
 ```
 
-Answer:
+### If asked "why this architecture?"
 
 ```text
-Slow or retryable work should not block an API request. A request can enqueue work, return quickly, and a background worker can process with retry, logging, and failure handling. For invoice or external sync flows, this improves responsiveness and reliability. The important details are idempotency, monitoring, and tenant-safe context propagation.
+The architecture keeps core domain logic simple in one backend, while using background jobs or separate services for slow, retryable, or external-system-heavy work.
 ```
 
-### React Native
+### If asked "what would you improve?"
 
-Question:
-
 ```text
-What did you do in React Native?
+I would focus on stronger idempotency around external sync, better correlation IDs/logging for background jobs, clearer tenant-context validation, pagination limits, query plan review for reports, and cleanup of old feature flags.
 ```
 
-Answer:
+### If asked "what production risks do you watch?"
 
 ```text
-I worked on API-driven mobile workflows using React Native and TypeScript, including navigation, state management, secure storage, push notification integration, geolocation/timezone behavior, document/image features, and offline-aware flows. The main challenge is predictable state when API calls, device permissions, and network conditions vary.
+Tenant context leakage, duplicate background work, slow reporting queries, missing pagination, stale mobile state, external system downtime, migration drift, and unclear failure visibility.
 ```
 
-### Full Stack Ownership
+## 5 Answers To Memorize
 
-Question:
+### 1. Microservices
 
 ```text
-What does full stack mean in your case?
+Hybrid architecture: modular monolith for core APIs, separate integration service where the boundary gives operational value.
 ```
 
-Answer:
+### 2. Multi-tenancy
 
 ```text
-For me it means I can follow a feature from UI behavior to API contract to service logic to database query. I may not own every infrastructure detail, but I can debug integration issues across frontend, backend, and data flow.
+Tenant is resolved from authenticated context, not hard-coded. Tenant-aware data access picks the correct database/context per request.
 ```
-
-## Red-Flag Questions And Safe Answers
 
-### "Did You Personally Build This?"
+### 3. Background jobs
 
 ```text
-I worked on parts of this flow directly and worked around the full system enough to explain the architecture and tradeoffs. For the exact piece I did not own end-to-end, I will separate what I implemented from what I understand.
+Use them for slow or retryable work. Preserve tenant context, make work idempotent, log status, and expose failures.
 ```
 
-### "What Was The Hardest Bug?"
+### 4. Performance
 
 ```text
-The hardest bugs are usually integration or data-flow bugs: API returns correct data but UI state is stale, query fetches too much data, background work retries and risks duplicates, or tenant context is missing. My approach is to trace request ID/logs, reproduce with data, inspect generated SQL or payload, and fix the root flow rather than only the symptom.
+Filter early, project only needed fields, avoid N+1, paginate, use AsNoTracking for reads, index common filters, and verify SQL plans.
 ```
 
-### "What Are You Weak At?"
+### 5. React Native integration
 
 ```text
-I am still deepening system design at larger scale, especially around distributed consistency and advanced cloud operations. I compensate by being clear about tradeoffs, reading production behavior carefully, and validating designs with logs, metrics, and simpler failure modes.
+Mobile workflows depend on stable API contracts, auth/session handling, predictable status changes, offline/network tolerance, and clear errors.
 ```
-
-## Questions To Ask Interviewer
-
-- "What are the biggest backend reliability challenges in this product today?"
-- "How do you handle observability for APIs and background jobs?"
-- "How are database migrations managed across environments?"
-- "What does ownership look like for a developer in the first 3 months?"

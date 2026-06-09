@@ -2,14 +2,14 @@
 
 Open this first. The repo has one entry point per job.
 
-## Interview in 30 minutes
+## Arena in 30 minutes
 
 1. `MASTER_BEHAVIORAL.md` - intro, RollOnDispatch, ownership safety line.
 2. `MASTER_DOTNET.md` - lifecycle, DI, EF Core, async, queues, auth.
 3. `MASTER_SQL.md` - execution order, joins, ranking, indexes, traps.
 4. Speak. Do not browse `LAB`.
 
-## Interview tomorrow
+## Arena tomorrow
 
 Morning:
 
