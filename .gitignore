@@ -1,1 +1,33 @@
 company-projects/
+
+# Confidential work repositories stay local and must never be committed here.
+company-repos/
+
+# Generated dependencies and build output: restore them from lockfiles/build tools.
+**/.git/
+**/node_modules/
+**/.yarn/cache/
+**/Pods/
+**/build/
+**/bin/
+**/obj/
+**/.gradle/
+**/.cxx/
+**/vendor/bundle/
+
+# Environment, mobile-service, and local signing configuration: do not publish these to the public repository.
+**/.env
+**/.env.*
+!**/.env.example
+**/appsettings*.json
+**/google-services.json
+**/*.keystore
+**/staticwebapp.pipeline.yml
+
+# Local machine and personal-contact exports: do not publish these to the public repository.
+.DS_Store
+Arena-Backend-Pitch.zip
+Unique_HR_Contacts_Not_In_Master.xlsx
+hr_contacts_extracted.xlsx
+newEmails.txt
+previousemials.txt
