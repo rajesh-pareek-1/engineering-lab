@@ -34,13 +34,13 @@ public sealed class Query
 
 ## 2. REST methods—short answer with examples
 
-| Method | Meaning | ROD-style example | Typical success |
-|---|---|---|---|
-| `GET` | Read; no side effect | `GET /api/shipments/42` | `200` |
-| `POST` | Create or command | `POST /api/shipments` | `201 Created` |
-| `PUT` | Replace known resource representation | `PUT /api/shipments/42` | `200` / `204` |
-| `PATCH` | Partial update | `PATCH /api/shipments/42` status only | `200` / `204` |
-| `DELETE` | Remove/deactivate | `DELETE /api/attachments/9` | `204` |
+| Method     | Meaning                               | ROD-style example                       | Typical success   |
+| ---------- | ------------------------------------- | --------------------------------------- | ----------------- |
+| `GET`    | Read; no side effect                  | `GET /api/shipments/42`               | `200`           |
+| `POST`   | Create or command                     | `POST /api/shipments`                 | `201 Created`   |
+| `PUT`    | Replace known resource representation | `PUT /api/shipments/42`               | `200` / `204` |
+| `PATCH`  | Partial update                        | `PATCH /api/shipments/42` status only | `200` / `204` |
+| `DELETE` | Remove/deactivate                     | `DELETE /api/attachments/9`           | `204`           |
 
 > `PUT` is normally idempotent: sending the same representation again has the same final state. `POST` is not automatically idempotent, so for retryable creates I use an idempotency key or a durable uniqueness rule.
 
@@ -159,11 +159,11 @@ static int SecondLargestDistinct(IEnumerable<int> values)
 
 ## 11. DI lifetimes
 
-| Lifetime | Meaning | Good use |
-|---|---|---|
-| Transient | New object whenever resolved | small stateless helper |
-| Scoped | One instance per HTTP request/job scope | DbContext, repositories, services, tenant context |
-| Singleton | One instance for app lifetime | thread-safe shared configuration/client/factory |
+| Lifetime  | Meaning                                 | Good use                                          |
+| --------- | --------------------------------------- | ------------------------------------------------- |
+| Transient | New object whenever resolved            | small stateless helper                            |
+| Scoped    | One instance per HTTP request/job scope | DbContext, repositories, services, tenant context |
+| Singleton | One instance for app lifetime           | thread-safe shared configuration/client/factory   |
 
 > Never inject a scoped DbContext/repository directly into a singleton. The singleton outlives the request/job scope and can hold invalid or cross-request state.
 

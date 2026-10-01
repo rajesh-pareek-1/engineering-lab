@@ -1,0 +1,19 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    # SQL Server 2019 Linux images are x86_64; Docker Desktop emulates this on Apple Silicon.
+    platform: linux/amd64
+    container_name: arena-sqlserver-2019
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: Developer
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:?Copy .env.example to .env and choose a password}
+    ports:
+      # Deliberately local-only: no database port exposed to the network.
+      - "127.0.0.1:1433:1433"
+    volumes:
+      - arena-sqlserver-2019-data:/var/opt/mssql
+
+volumes:
+  arena-sqlserver-2019-data:
+
