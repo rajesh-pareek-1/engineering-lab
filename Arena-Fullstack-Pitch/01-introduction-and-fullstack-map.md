@@ -79,4 +79,3 @@ The `dm-web` Git history does not show commits under your name. Therefore, do no
 ## Confidence rule
 
 Do not try to sound like you wrote the entire platform. Sound like an engineer who understands the complete system, knows exactly what he owned, and can reason about the parts around it.
-

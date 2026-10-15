@@ -201,3 +201,59 @@ React ProductCard
 5. Finish with the backend revalidation/security boundary.
 
 That is a complete design answer—not just “I would use Redux.”
+
+---
+
+## 7. React performance + large-state question — Pratham follow-up
+
+### Measure before optimizing
+
+```text
+React DevTools Profiler  -> which component re-rendered and how long?
+Chrome Performance       -> main-thread work, scripting, paint, memory
+Network tab              -> slow API, oversized payload, waterfall, cache headers
+Web Vitals               -> LCP (loading), INP (interaction), CLS (layout shift)
+Production telemetry     -> real-user p75/p95 web-vital and API correlation
+```
+
+```tsx
+// Optional focused measurement in code
+<Profiler id="ShipmentList" onRender={onRender}>
+  <ShipmentList />
+</Profiler>
+```
+
+**Interview line:** “I first identify whether the delay is API/network, JavaScript work, rendering, or memory. Then I use React Profiler and browser Performance tools to prove the bottleneck before changing code.”
+
+### 200 MB cache: do **not** put it in Context or Redux
+
+```text
+Bad: fetch 200 MB -> Context/Redux -> every subscriber risks re-render/memory pressure.
+
+Better:
+Server-side filter + pagination / cursor
+  -> request only visible data
+  -> virtualized list (only render visible rows)
+  -> bounded client cache with expiry/eviction
+  -> IndexedDB only if offline persistence is genuinely needed
+```
+
+```text
+UI state                  -> useState
+Small cross-screen state  -> Context / Redux Toolkit
+Server response cache     -> RTK Query / React Query, with invalidation and limits
+Large offline data        -> IndexedDB; read pages/chunks, not all into JS memory
+```
+
+### Practical fixes
+
+- Paginate or cursor-paginate API responses; do not return the full data set.
+- Virtualize long lists with a library such as `react-window`/`react-virtualized` so 10,000 rows do not become 10,000 DOM nodes.
+- Normalize repeated entities by ID; retain only fields the screen needs.
+- Use `React.memo`, `useMemo`, and `useCallback` only after profiling identifies needless re-renders.
+- Code-split routes/components with `React.lazy`; compress images and avoid large bundles.
+- Keep cache TTL/eviction explicit; clear tenant/user data at logout.
+
+### Best 20-second answer
+
+> “I would not keep 200 MB of server data in React Context or Redux. I would move filtering and pagination to the API, virtualize the visible list, cache only a bounded set of pages through RTK Query or React Query, and use IndexedDB only for an intentional offline requirement. I would verify improvement with React Profiler, browser memory/performance tools, and production Web Vitals.”

@@ -42,6 +42,77 @@ const onSelect = useCallback(
 
 > Use server-side filtering, sorting, and pagination so the browser does not download every shipment. Use stable keys and virtualization for long visible lists. Avoid N+1 API calls from each row, cache shared lookups, debounce search, and keep response DTOs focused.
 
+## List virtualization — React web + React Native
+
+```text
+Normal list:       10,000 records -> 10,000 DOM/native row components mounted
+Virtualized list:  10,000 records -> only viewport rows + small buffer mounted
+```
+
+Virtualization improves **rendering and memory**. It does **not** solve an API that downloads 10,000 records—filter, sort, and paginate/cursor-paginate on the server first.
+
+### React web
+
+```tsx
+// Typical concept with a virtual-list library such as react-window.
+// Only rows in the viewport are rendered.
+<VirtualList
+  height={600}
+  itemCount={shipments.length}
+  itemSize={48}
+  itemData={shipments}
+>
+  {ShipmentRow}
+</VirtualList>
+```
+
+```text
+Use stable key: shipment.shipmentId
+Keep row props small and stable
+Memoize an expensive row only after profiling proves repeat renders
+For a slow filter input: debounce API calls or useDeferredValue for non-critical rendering
+```
+
+### React Native
+
+```text
+ScrollView = renders every child; avoid it for long data.
+FlatList   = virtualized list; use it for driver/shipment/history lists.
+```
+
+```tsx
+const renderDriver = useCallback(
+  ({ item }: { item: Driver }) => <DriverRow driver={item} />,
+  []
+);
+
+<FlatList
+  data={drivers}
+  renderItem={renderDriver}
+  keyExtractor={(driver) => driver.associateId.toString()}
+  initialNumToRender={10}
+  windowSize={5}
+  getItemLayout={(_, index) => ({
+    length: 72,
+    offset: 72 * index,
+    index
+  })}
+  onEndReached={loadNextPage}
+  onEndReachedThreshold={0.5}
+/>
+```
+
+```text
+initialNumToRender = first batch; enough to fill screen, not much more
+windowSize         = viewports kept mounted around current viewport
+getItemLayout      = skip measuring when every row has fixed height
+onEndReached       = fetch next cursor/page, not entire data set
+```
+
+### Interview answer
+
+> “For a large shipment or driver list, I first make the API server-filtered and cursor/page-paginated. On React web I virtualize rows so off-screen DOM nodes do not mount. In React Native I use `FlatList`, stable `keyExtractor`, a memoized row renderer, and `getItemLayout` when row height is fixed. I profile first because virtualization helps render cost, not an oversized API response or slow SQL query.”
+
 ## Debugging mnemonic: **R-E-S-C-U-E**
 
 - **R - Reproduce** consistently.
@@ -127,4 +198,3 @@ many focused tests       business and component behavior
 ## Performance story structure
 
 > I would start with a measured user symptom, isolate whether time is in render, network, API, or SQL, apply one targeted change, and compare before/after using the same data. For a large grid, that may mean server pagination plus virtualization; for a slow API, projection, `AsNoTracking`, a better index, or fewer round trips.
-

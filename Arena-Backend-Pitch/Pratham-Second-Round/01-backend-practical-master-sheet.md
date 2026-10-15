@@ -295,3 +295,96 @@ More drills: [Pratham SQL crash sprint](/Users/RajeshPareek/Downloads/engineerin
 - **Telemetry**: p95, error rate, dependency duration, trace correlation; do not claim unverified OTel.
 - **CI/CD**: test → artifact → Docker image → immutable tag → ACR → approved deploy → health check.
 - **Plan**: actual plan, not guessed plan; measure logical reads before/after.
+
+---
+
+## 9. EF Core lazy loading + `IQueryable` — Pratham follow-up
+
+### The exact idea
+
+```text
+IQueryable = a query definition, not data yet.
+Where / OrderBy add to its SQL expression.
+ToListAsync = EF translates it and executes SQL.
+```
+
+### Lazy loading example
+
+```csharp
+// NuGet: Microsoft.EntityFrameworkCore.Proxies
+// Program.cs — generic EF Core setup; not a claim about current ROD configuration.
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(connectionString)
+           .UseLazyLoadingProxies());
+
+public class Shipment
+{
+    public int ShipmentId { get; set; }
+    public int DriverId { get; set; }
+    public virtual Driver Driver { get; set; } = null!;
+}
+
+var shipment = await _context.Shipments
+    .FirstAsync(x => x.ShipmentId == id);
+
+var driverName = shipment.Driver.FullName;
+// Accessing Driver here causes EF to query Driver if it was not loaded.
+```
+
+```text
+Lazy loading: navigation accessed -> EF runs an extra query only then.
+Good: one optional related object, genuinely needed rarely.
+Risk: loop over 100 shipments and touch Driver -> 1 + 100 queries (N+1).
+```
+
+For a list/API, normally prefer explicit shape/eager load:
+
+```csharp
+var rows = await _context.Shipments
+    .AsNoTracking()
+    .Where(s => s.IsActive)
+    .Select(s => new { s.ShipmentId, DriverName = s.Driver.FullName })
+    .ToListAsync();
+```
+
+### Many optional user filters — compose one `IQueryable`
+
+```csharp
+public sealed record ShipmentFilter(
+    string? Status,
+    int? DriverId,
+    DateTime? From,
+    DateTime? To,
+    int Page = 1,
+    int PageSize = 20);
+
+public async Task<PagedResult<ShipmentDto>> Search(ShipmentFilter filter)
+{
+    IQueryable<Shipment> query = _context.Shipments.AsNoTracking();
+
+    if (!string.IsNullOrWhiteSpace(filter.Status))
+        query = query.Where(s => s.Status == filter.Status);
+    if (filter.DriverId is not null)
+        query = query.Where(s => s.DriverId == filter.DriverId);
+    if (filter.From is not null)
+        query = query.Where(s => s.CreatedDatetime >= filter.From);
+    if (filter.To is not null)
+        query = query.Where(s => s.CreatedDatetime < filter.To.Value.AddDays(1));
+
+    var total = await query.CountAsync();
+    var page = Math.Max(filter.Page, 1);
+    var size = Math.Clamp(filter.PageSize, 1, 100);
+
+    var items = await query
+        .OrderByDescending(s => s.CreatedDatetime)
+        .ThenByDescending(s => s.ShipmentId) // stable pagination
+        .Skip((page - 1) * size)
+        .Take(size)
+        .Select(s => new ShipmentDto(s.ShipmentId, s.Status, s.CreatedDatetime))
+        .ToListAsync();
+
+    return new(items, total, page, size);
+}
+```
+
+**Interview line:** “I keep the source as `IQueryable`, add only supplied filters, then materialize once at `CountAsync`/`ToListAsync`. That keeps filtering and pagination in SQL rather than loading all records into memory.”

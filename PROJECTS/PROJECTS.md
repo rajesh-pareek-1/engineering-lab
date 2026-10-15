@@ -490,18 +490,18 @@ Other databases can solve parts of this, but SQL Server was a strong fit because
 
 ### Project Database Design
 
-| Area            | What To Say                                                                         |
-| --------------- | ----------------------------------------------------------------------------------- |
-| Primary DB      | SQL Server/Azure SQL with EF Core                                                   |
-| Multi-tenancy   | Tenant-specific database/context resolved from authenticated request context        |
-| Global data     | Separate global/shared context for tenant/account/config style data                 |
-| ORM             | EF Core repositories and migrations                                                 |
-| Heavy reads     | OData-style filtering/sorting/paging; projections; `AsNoTracking` where appropriate |
-| Reports         | Raw SQL/stored procedures for complex reporting paths                               |
-| Performance     | Indexes, pagination, projection, avoiding N+1, query plan review                    |
-| Background jobs | Persist job status/audit; preserve tenant context outside HTTP                      |
-| QuickBooks      | Request/response queue tables and sync state tracking                               |
-| Audit           | EF Core change tracking/audit context for created/updated/deleted records           |
+| Area            | What To Say                                                                          |
+| --------------- | ------------------------------------------------------------------------------------ |
+| Primary DB      | SQL Server/Azure SQL with EF Core                                                    |
+| Multi-tenancy   | Tenant-specific database/context resolved from authenticated request context         |
+| Global data     | Separate global/shared context for tenant/account/config style data                  |
+| ORM             | EF Core repositories and migrations                                                  |
+| Heavy reads     | OData-style filtering/sorting/paging; projections;`AsNoTracking` where appropriate |
+| Reports         | Raw SQL/stored procedures for complex reporting paths                                |
+| Performance     | Indexes, pagination, projection, avoiding N+1, query plan review                     |
+| Background jobs | Persist job status/audit; preserve tenant context outside HTTP                       |
+| QuickBooks      | Request/response queue tables and sync state tracking                                |
+| Audit           | EF Core change tracking/audit context for created/updated/deleted records            |
 
 ### Special Things Worth Sharing
 
@@ -547,16 +547,16 @@ DI is used throughout the ASP.NET Core backend. Controllers depend on services, 
 
 ### Concrete Examples From Projects
 
-| DI Usage                 | Example Talking Point                                                                                   |
-| ------------------------ | ------------------------------------------------------------------------------------------------------- |
+| DI Usage                 | Example Talking Point                                                                                       |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------- |
 | Service layer            | `IFMFeedlotService -> FMFeedlotService`, `IBillingService -> BillingService`, shipment/invoice services |
-| Repository layer         | Repository interfaces registered to repository implementations                                          |
-| Tenant infrastructure    | `IRequestContext`, `ITenantDbContextFactory`, `IAuditContext`                                           |
-| EF Core                  | `AddDbContextPool` / tenant DbContext factory for SQL Server contexts                                   |
-| Feature flags            | Feature manager abstraction injected into services                                                      |
-| Background jobs          | `IBackgroundJobService`; Hangfire activator creates scoped job instances                                |
-| Multiple implementations | Audit handlers, email/message integrations, QuickBooks-related services                                 |
-| Testing                  | Swap real services with mocks/in-memory contexts in unit/integration tests                              |
+| Repository layer         | Repository interfaces registered to repository implementations                                              |
+| Tenant infrastructure    | `IRequestContext`, `ITenantDbContextFactory`, `IAuditContext`                                         |
+| EF Core                  | `AddDbContextPool` / tenant DbContext factory for SQL Server contexts                                     |
+| Feature flags            | Feature manager abstraction injected into services                                                          |
+| Background jobs          | `IBackgroundJobService`; Hangfire activator creates scoped job instances                                  |
+| Multiple implementations | Audit handlers, email/message integrations, QuickBooks-related services                                     |
+| Testing                  | Swap real services with mocks/in-memory contexts in unit/integration tests                                  |
 
 ### Lifetimes
 

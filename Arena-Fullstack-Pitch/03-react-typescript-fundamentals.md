@@ -134,4 +134,3 @@ function getErrorMessage(error: unknown): string {
 **What causes re-render?** State update, parent render, context change, or external-store subscription update. A render does not always mean a DOM change.
 
 **What is an error boundary?** A component boundary that catches rendering lifecycle errors below it and displays fallback UI. The ROD entry point uses `react-error-boundary`.
-

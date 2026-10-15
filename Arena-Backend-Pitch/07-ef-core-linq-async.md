@@ -44,7 +44,7 @@ shipment.LoadBoardLastUpdatedTime = DateTime.UtcNow;
 await db.SaveChangesAsync(cancellationToken);
 ```
 
-> EF translates the LINQ predicate into SQL, materializes and tracks the shipment plus loads, detects the modified property, creates a parameterized `UPDATE`, and executes it when `SaveChangesAsync` is called. One `SaveChanges` is transactional for its generated database commands.
+>   .mnnm.vhmvgmv.     bvvnEF translates the LINQ predicate into SQL, materializes and tracks the shipment plus loads, detects the modified property, creates a parameterized `UPDATE`, and executes it when `SaveChangesAsync` is called. One `SaveChanges` is transacxbzxjhd. xhgxz gjgmnb.  bfxsgjn. mjxscjhf. xhcmhcdmgh.   hngfdg mbvkjtional for its generated database commands.
 
 ### Benefits and trade-offs
 

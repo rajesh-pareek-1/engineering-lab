@@ -98,14 +98,14 @@ HTTP request
   → HTTP response
 ```
 
-| Middleware | Filter |
-|---|---|
-| Runs in the ASP.NET Core HTTP pipeline | Runs inside MVC/controller execution |
-| Can apply to controllers, minimal APIs, static files, etc. depending on placement | Applies to MVC controllers/actions |
-| Has `HttpContext` and `RequestDelegate` | Has MVC contexts such as action arguments, controller, model state, and result |
-| Configured in `Program.cs` pipeline order | Applied globally, by attribute, or controller/action configuration |
-| Best for global HTTP cross-cutting concerns | Best for action/controller-specific cross-cutting behavior |
-| Can short-circuit before MVC is reached | Can short-circuit or alter action/result within MVC |
+| Middleware                                                                        | Filter                                                                         |
+| --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| Runs in the ASP.NET Core HTTP pipeline                                            | Runs inside MVC/controller execution                                           |
+| Can apply to controllers, minimal APIs, static files, etc. depending on placement | Applies to MVC controllers/actions                                             |
+| Has`HttpContext` and `RequestDelegate`                                        | Has MVC contexts such as action arguments, controller, model state, and result |
+| Configured in`Program.cs` pipeline order                                        | Applied globally, by attribute, or controller/action configuration             |
+| Best for global HTTP cross-cutting concerns                                       | Best for action/controller-specific cross-cutting behavior                     |
+| Can short-circuit before MVC is reached                                           | Can short-circuit or alter action/result within MVC                            |
 
 ### Filter types: **A-R-A-E-R**
 
@@ -334,13 +334,13 @@ public Task<Shipment?> GetShipmentAsync(
 
 ### GraphQL vs REST
 
-| REST | GraphQL |
-|---|---|
-| Multiple resource endpoints | Commonly one GraphQL endpoint |
-| Server defines response shape | Client selects fields within schema |
-| HTTP status and caching are natural | Application errors often appear in GraphQL response; caching needs deliberate design |
-| Simple and observable for many CRUD APIs | Useful for connected data and varying client needs |
-| Versioning may use routes/headers | Schema evolves through additive fields and deprecation |
+| REST                                     | GraphQL                                                                              |
+| ---------------------------------------- | ------------------------------------------------------------------------------------ |
+| Multiple resource endpoints              | Commonly one GraphQL endpoint                                                        |
+| Server defines response shape            | Client selects fields within schema                                                  |
+| HTTP status and caching are natural      | Application errors often appear in GraphQL response; caching needs deliberate design |
+| Simple and observable for many CRUD APIs | Useful for connected data and varying client needs                                   |
+| Versioning may use routes/headers        | Schema evolves through additive fields and deprecation                               |
 
 ### Benefits
 
