@@ -114,6 +114,31 @@ WHERE CreatedAt >= @Date
   AND CreatedAt < DATEADD(day, 1, @Date)
 ```
 
+## Pagination and optional filters (`OFFSET` / `FETCH`)
+
+```text
+OFFSET = skip rows
+FETCH  = return the next rows
+```
+
+```sql
+SELECT ShipmentId, Status, DriverId, CreatedAt
+FROM Shipments
+WHERE (@Status IS NULL OR Status = @Status)
+  AND (@DriverId IS NULL OR DriverId = @DriverId)
+ORDER BY CreatedAt DESC, ShipmentId DESC
+OFFSET (@PageNumber - 1) * @PageSize ROWS
+FETCH NEXT @PageSize ROWS ONLY;
+```
+
+```text
+Page 3, size 10
+OFFSET (3 - 1) * 10 ROWS  -> skip first 20 rows
+FETCH NEXT 10 ROWS ONLY    -> return rows 21 to 30
+```
+
+> `ORDER BY` is mandatory and must be deterministic: `ShipmentId` is the tie-breaker when timestamps match. For very deep pages or records changing while users scroll, prefer keyset/cursor pagination (`WHERE ShipmentId > @LastId`) over a large offset.
+
 ## Execution plan
 
 Mnemonic: **S-J-E-L**
